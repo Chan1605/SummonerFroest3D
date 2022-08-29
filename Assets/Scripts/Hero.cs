@@ -87,36 +87,6 @@ public class Hero : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //dir.x = Input.GetAxis("Horizontal");
-        //dir.z = Input.GetAxis("Vertical");
-        //dir.Normalize();
-
-        //transform.Translate(dir * speed * Time.deltaTime);
-
-        //-------------- 가감속 없이 이동 처리 하는 방법
-        h = Input.GetAxisRaw("Horizontal"); //화살표키 좌우키를 눌러주면 -1.0f, 0.0f, 1.0f 사이값을 리턴해 준다.
-        v = Input.GetAxisRaw("Vertical");   //화살표키 위아래키를 눌러주면 -1.0f, 0.0f, 1.0f 사이값을 리턴해 준다.
-        //-------------- 가감속 없이 이동 처리 하는 방법
-        if (v < 0.0f)
-            v = 0.0f;
-
-        if (0.0f != h || 0.0f != v) //키보드 이동처리
-        {
-            m_isPickMvOnOff = false;  //마우스 피킹 이동 취소
-
-            //-------- 일반적인 이동 계산법
-            a_CalcRotY = transform.eulerAngles.y;
-            a_CalcRotY = a_CalcRotY + (h * rotSpeed * Time.deltaTime);
-            transform.eulerAngles = new Vector3(0.0f, a_CalcRotY, 0.0f);
-
-        MoveVStep = transform.forward * v;
-        MoveNextStep = MoveVStep.normalized * speed * Time.deltaTime;
-        transform.position = transform.position + MoveNextStep;
-
-         MySetAnim(AnimState.move);
-            //    //-------- 일반적인 이동 계산법
-        }
-
         if (Input.GetMouseButtonDown(0))
             {
                 a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -140,8 +110,7 @@ public class Hero : MonoBehaviour
 
         MousePickUpdate();
 
-        if ((0.0f == h && 0.0f == v) &&
-                  m_isPickMvOnOff == false)
+        if (m_isPickMvOnOff == false)
             MySetAnim(AnimState.idle);
     }
 
