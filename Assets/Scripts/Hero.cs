@@ -136,29 +136,29 @@ public class Hero : MonoBehaviour
 
     public void MousePicking(Vector3 a_SetPickVec, GameObject a_PickMon = null)
     {
-        //a_StartPos = this.transform.position; //출발 위치    
-        //a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
+        a_StartPos = this.transform.position; //출발 위치    
+        a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
 
-        //a_CacLenVec = a_SetPickVec - a_StartPos;
-        //a_CacLenVec.y = 0.0f;
+        a_CacLenVec = a_SetPickVec - a_StartPos;
+        a_CacLenVec.y = 0.0f;
 
-        //if (a_CacLenVec.magnitude < 0.5f)  //너무 근거리 피킹은 스킵해 준다.
-        //    return;
+        if (a_CacLenVec.magnitude < 0.5f)  //너무 근거리 피킹은 스킵해 준다.
+            return;
 
-        //float a_PathLen = a_CacLenVec.magnitude;
+        float a_PathLen = a_CacLenVec.magnitude;
 
-        //m_TargetPos = a_SetPickVec;   //최종 목표 위치
-        //m_isPickMvOnOff = true;       //피킹 이동 OnOff
+        m_TargetPos = a_SetPickVec;   //최종 목표 위치
+        m_isPickMvOnOff = true;       //피킹 이동 OnOff
 
-        //m_MoveDir = a_CacLenVec.normalized;
-        //m_MoveDurTime = a_PathLen / m_MoveVelocity; //도착하는데 걸리는 시간
-        //m_AddTimeCount = 0.0;
+        m_MoveDir = a_CacLenVec.normalized;
+        m_MoveDurTime = a_PathLen / m_MoveVelocity; //도착하는데 걸리는 시간
+        m_AddTimeCount = 0.0;
 
-        //a_StartPos = this.transform.position; //출발 위치    
-        //a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
+        a_StartPos = this.transform.position; //출발 위치    
+        a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
 
-        //a_CacLenVec = a_SetPickVec - a_StartPos;
-        //a_CacLenVec.y = 0.0f;
+        a_CacLenVec = a_SetPickVec - a_StartPos;
+        a_CacLenVec.y = 0.0f;
 
         //------- Picking Enemy 공격 처리 부분
         //if (a_PickMon != null)
@@ -184,30 +184,30 @@ public class Hero : MonoBehaviour
 
         //    }//즉시 공격 하라
         //} //if (a_PickMon != null)
-        a_StartPos = this.transform.position; //출발 위치    
-        a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
+        //a_StartPos = this.transform.position; //출발 위치    
+        //a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
 
-        a_CacLenVec = a_SetPickVec - a_StartPos;
-        a_CacLenVec.y = 0.0f;
+        //a_CacLenVec = a_SetPickVec - a_StartPos;
+        //a_CacLenVec.y = 0.0f;
 
-        if (a_CacLenVec.magnitude < 0.5f)  //너무 근거리 피킹은 스킵해 준다.
-            return;
+        //if (a_CacLenVec.magnitude < 0.5f)  //너무 근거리 피킹은 스킵해 준다.
+        //    return;
 
-        float a_PathLen = a_CacLenVec.magnitude;
-        //---네비게이션 메쉬 길찾기를 이용할 때 코드
-        if (MyNavCalcPath(a_StartPos, a_SetPickVec, ref a_PathLen) == false)
-            return;
-        //---네비게이션 메쉬 길찾기를 이용할 때 코드
+        //float a_PathLen = a_CacLenVec.magnitude;
+        ////---네비게이션 메쉬 길찾기를 이용할 때 코드
+        //if (MyNavCalcPath(a_StartPos, a_SetPickVec, ref a_PathLen) == false)
+        //    return;
+        ////---네비게이션 메쉬 길찾기를 이용할 때 코드
 
-        m_TargetPos = a_SetPickVec;   //최종 목표 위치
-        m_isPickMvOnOff = true;       //피킹 이동 OnOff
+        //m_TargetPos = a_SetPickVec;   //최종 목표 위치
+        //m_isPickMvOnOff = true;       //피킹 이동 OnOff
 
-        m_MoveDir = a_CacLenVec.normalized;
-        m_MoveDurTime = a_PathLen / m_MoveVelocity; //도착하는데 걸리는 시간
-        m_AddTimeCount = 0.0;
+        //m_MoveDir = a_CacLenVec.normalized;
+        //m_MoveDurTime = a_PathLen / m_MoveVelocity; //도착하는데 걸리는 시간
+        //m_AddTimeCount = 0.0;
 
         //m_TargetUnit = a_PickMon; //타겟 초기화 또는 무효화 
-       
+
     }
 
 
@@ -216,33 +216,33 @@ public class Hero : MonoBehaviour
         ////-------------- 마우스 피킹 이동
         if (m_isPickMvOnOff == true)
         {
-        //    a_CacLenVec = m_TargetPos - this.transform.position;
-        //    a_CacLenVec.y = 0.0f;
+            a_CacLenVec = m_TargetPos - this.transform.position;
+            a_CacLenVec.y = 0.0f;
 
-        //    //캐릭터를 이동방향으로 회전시키는 코드 
-        //    if (0.1f < a_CacLenVec.magnitude)
-        //    {
-        //        m_MoveDir = a_CacLenVec.normalized;
-        //        a_TargetRot = Quaternion.LookRotation(m_MoveDir);
-        //        transform.rotation = Quaternion.Slerp(transform.rotation,
-        //                             a_TargetRot,
-        //                             Time.deltaTime * m_RotSpeed);
-        //    }
-        //    //캐릭터 회전   
+            //캐릭터를 이동방향으로 회전시키는 코드 
+            if (0.1f < a_CacLenVec.magnitude)
+            {
+                m_MoveDir = a_CacLenVec.normalized;
+                a_TargetRot = Quaternion.LookRotation(m_MoveDir);
+                transform.rotation = Quaternion.Slerp(transform.rotation,
+                                     a_TargetRot,
+                                     Time.deltaTime * m_RotSpeed);
+            }
+            //캐릭터 회전   
 
-        //    m_MoveDir = a_CacLenVec.normalized;
+            m_MoveDir = a_CacLenVec.normalized;
 
-        //    m_AddTimeCount = m_AddTimeCount + Time.deltaTime;
-        //    if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
-        //    {
-        //        m_isPickMvOnOff = false;
-        //    }
-        //    else
-        //    {
-        //        this.transform.position = this.transform.position +
-        //                                 (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-        //    }//else
-        m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
+            m_AddTimeCount = m_AddTimeCount + Time.deltaTime;
+            if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
+            {
+                m_isPickMvOnOff = false;
+            }
+            else
+            {
+                this.transform.position = this.transform.position +
+                                         (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+            }//else
+             //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
         } //if (m_isPickMvOnOff == true)
     }// void MousePickUpdate() 
 
