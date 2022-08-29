@@ -6,7 +6,7 @@ public class Cam : MonoBehaviour
 {
     public GameObject m_Player = null;
     private Vector3 m_TargetPos = Vector3.zero;
-
+    private Vector3 StartCamera = Vector3.zero;
     //---- 카메라 위치 계산용 변수
     private float m_RotH = 0.0f;    //마우스 좌우 조작값 계산용 변수 
     private float m_RotV = 0.0f;    //마우스 상하 조작값 계산용 변수 
@@ -20,15 +20,15 @@ public class Cam : MonoBehaviour
     //---- 카메라 위치 계산용 변수
 
     //---- 주인공을 기준으로 한 상대적인 구좌표계 기준의 초기값
-    private float m_DefaltRotH = 0.0f;   //평면 기준의 회전 각도
-    private float m_DefaltRotV = 25.0f;  //27.0f;  //높이 기준의 회전 각도
-    private float m_DefaltDist = 5.2f;   //타겟에서 카메라까지의 거리
+    private float m_DefaltRotH = 100.0f;   //평면 기준의 회전 각도
+    private float m_DefaltRotV = 17.0f;  //27.0f;  //높이 기준의 회전 각도
+    private float m_DefaltDist = 10.0f;   //타겟에서 카메라까지의 거리
     //---- 주인공을 기준으로 한 상대적인 구좌표계 기준의 초기값
 
     //---- 계산에 필요한 변수들...
     private Quaternion a_BuffRot;
     private Vector3 a_BasicPos = Vector3.zero;
-    private float distance = 17.0f;
+    private float distance = 30.0f;
     private Vector3 a_BuffPos;
     //---- 계산에 필요한 변수들...
 
@@ -42,7 +42,8 @@ public class Cam : MonoBehaviour
     {
         if (m_Player == null)
             return;
-
+   
+        
         m_TargetPos = m_Player.transform.position;
         m_TargetPos.y = m_TargetPos.y + 1.4f;
 
@@ -60,7 +61,7 @@ public class Cam : MonoBehaviour
 
         transform.position = a_BuffPos;  //<--- 카메라의 직각좌표계 기준의 위치
 
-        transform.LookAt(m_TargetPos);
+        //transform.LookAt(m_TargetPos);
         //-------카메라 위치 계산 공식
     }
 
@@ -72,7 +73,7 @@ public class Cam : MonoBehaviour
             return;
 
         m_TargetPos = m_Player.transform.position;
-        m_TargetPos.y = m_TargetPos.y + 1.4f;
+        m_TargetPos.y = m_TargetPos.y + 3.0f;
 
         if (Input.GetMouseButton(1))  //마우스 우측버튼을 누르고 있는 동안
         {
@@ -102,7 +103,7 @@ public class Cam : MonoBehaviour
         a_BuffPos = a_BuffRot * a_BasicPos + m_TargetPos;
 
         transform.position = a_BuffPos;
-        //<--- 카메라의 직각좌표계 기준의 위치
+        //< ---카메라의 직각좌표계 기준의 위치
 
         transform.LookAt(m_TargetPos);
     }

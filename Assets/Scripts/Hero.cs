@@ -56,6 +56,12 @@ public class Hero : MonoBehaviour
 
     GameObject m_TargetUnit = null;
 
+    Animator m_RefAnimator = null;
+    string m_prevState = "";
+    AnimState m_CurState = AnimState.idle; //IsMine == true 일때
+    public Anim anim;  //AnimSupporter.cs 쪽에 정의되어 있음
+    AnimatorStateInfo animaterStateInfo;
+
     void Awake()
     {
         Cam a_CamCtrl = Camera.main.GetComponent<Cam>();
@@ -71,6 +77,7 @@ public class Hero : MonoBehaviour
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
         m_layerMask |= 1 << LayerMask.NameToLayer("MyUnit"); //Unit 도 피킹
 
+        m_RefAnimator = this.gameObject.GetComponent<Animator>();
 
         movePath = new NavMeshPath();
         nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -105,7 +112,9 @@ public class Hero : MonoBehaviour
         MoveVStep = transform.forward * v;
         MoveNextStep = MoveVStep.normalized * speed * Time.deltaTime;
         transform.position = transform.position + MoveNextStep;
-        //    //-------- 일반적인 이동 계산법
+
+         MySetAnim(AnimState.move);
+            //    //-------- 일반적인 이동 계산법
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -130,6 +139,10 @@ public class Hero : MonoBehaviour
         }//if (Input.GetMouseButtonDown(0))
 
         MousePickUpdate();
+
+        if ((0.0f == h && 0.0f == v) &&
+                  m_isPickMvOnOff == false)
+            MySetAnim(AnimState.idle);
     }
 
 
@@ -159,7 +172,9 @@ public class Hero : MonoBehaviour
 
         a_CacLenVec = a_SetPickVec - a_StartPos;
         a_CacLenVec.y = 0.0f;
-
+       
+                  
+       
         //------- Picking Enemy 공격 처리 부분
         //if (a_PickMon != null)
         //{
@@ -241,6 +256,7 @@ public class Hero : MonoBehaviour
             {
                 this.transform.position = this.transform.position +
                                          (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                MySetAnim(AnimState.move);
             }//else
              //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
         } //if (m_isPickMvOnOff == true)
@@ -388,5 +404,38 @@ public class Hero : MonoBehaviour
 
         return a_isSucessed;
     }//public bool MoveToPath(float overSpeed = 1.0f)
+
+    public void MySetAnim(AnimState newAnim,
+              float CrossTime = 1.0f, string AnimName = "")
+    {
+        if (m_RefAnimator == null)
+            return;
+
+        if (m_prevState != null && !string.IsNullOrEmpty(m_prevState))
+        {
+            if (m_prevState.ToString() == newAnim.ToString())
+                return;
+        }
+
+        if (!string.IsNullOrEmpty(m_prevState))
+        {
+            m_RefAnimator.ResetTrigger(m_prevState.ToString());
+            m_prevState = null;
+        }
+
+        if (0.0f < CrossTime)
+        {
+            m_RefAnimator.SetTrigger(newAnim.ToString());
+        }
+        else
+        {
+            m_RefAnimator.Play(AnimName, -1, 0f);
+            //가운데는 Layer Index, 뒤에 0f는 처음부터 다시시작
+        }
+
+        m_prevState = newAnim.ToString(); //이전스테이트에 현재스테이트 저장
+        m_CurState = newAnim;
+
+    } //public void MySetAnim(AnimState newAnim,
 }
 
