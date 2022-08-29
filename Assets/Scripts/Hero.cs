@@ -85,7 +85,7 @@ public class Hero : MonoBehaviour
         //dir.Normalize();
 
         //transform.Translate(dir * speed * Time.deltaTime);
-        
+
         //-------------- 가감속 없이 이동 처리 하는 방법
         h = Input.GetAxisRaw("Horizontal"); //화살표키 좌우키를 눌러주면 -1.0f, 0.0f, 1.0f 사이값을 리턴해 준다.
         v = Input.GetAxisRaw("Vertical");   //화살표키 위아래키를 눌러주면 -1.0f, 0.0f, 1.0f 사이값을 리턴해 준다.
@@ -102,10 +102,10 @@ public class Hero : MonoBehaviour
             a_CalcRotY = a_CalcRotY + (h * rotSpeed * Time.deltaTime);
             transform.eulerAngles = new Vector3(0.0f, a_CalcRotY, 0.0f);
 
-            MoveVStep = transform.forward * v;
-            MoveNextStep = MoveVStep.normalized * m_MoveVelocity * Time.deltaTime;
-            transform.position = transform.position + MoveNextStep;
-            //-------- 일반적인 이동 계산법
+        MoveVStep = transform.forward * v;
+        MoveNextStep = MoveVStep.normalized * speed * Time.deltaTime;
+        transform.position = transform.position + MoveNextStep;
+        //    //-------- 일반적인 이동 계산법
         }
 
         if (Input.GetMouseButtonDown(0))
