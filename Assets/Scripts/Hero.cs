@@ -12,7 +12,7 @@ public class Hero : MonoBehaviour
     Vector3 MoveNextStep;            //보폭을 계산해 주기 위한 변수
     Vector3 MoveHStep;
     Vector3 MoveVStep;
-    float m_MoveVelocity = 10.0f;     //평면 초당 이동 속도...
+    float m_MoveVelocity = 8.0f;     //평면 초당 이동 속도...
     float a_CalcRotY = 0.0f;
     float rotSpeed = 150.0f; //초당 150도 회전하라는 속도
 
@@ -62,6 +62,13 @@ public class Hero : MonoBehaviour
     public Anim anim;  //AnimSupporter.cs 쪽에 정의되어 있음
     AnimatorStateInfo animaterStateInfo;
 
+    GameObject[] m_EnemyList = null;    //필드상의 몬스터들을 가져오기 위한 변수
+
+    float m_AttackDist = 1.9f;          //주인공의 공격거리    
+
+    Vector3 a_CacTgVec = Vector3.zero;  //타겟까지의 거리 계산용 변수
+    Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
+
     void Awake()
     {
         Cam a_CamCtrl = Camera.main.GetComponent<Cam>();
@@ -71,7 +78,6 @@ public class Hero : MonoBehaviour
 
     void Start()
     {
-
         GameMgr.Inst.m_refHero = this;
 
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
@@ -92,14 +98,14 @@ public class Hero : MonoBehaviour
                 a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity,                                                        m_layerMask.value))
             {
-                //if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-                //{ //몬스터 픽킹일 때 
-                //    MousePicking(hitInfo.point, hitInfo.collider.gameObject);
+                if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
+                { //몬스터 픽킹일 때 
+                    MousePicking(hitInfo.point, hitInfo.collider.gameObject);
 
-                //    if (GameMgr.Inst.m_CursorMark != null)
-                //        GameMgr.Inst.m_CursorMark.SetActive(false);
-                //}
-                //else  //지형 바닥 픽킹일 때 
+                    if (GameMgr.Inst.m_CursorMark != null)
+                        GameMgr.Inst.m_CursorMark.SetActive(false);
+                }
+                else  //지형 바닥 픽킹일 때 
                 {
                     MousePicking(hitInfo.point);
 
@@ -109,6 +115,7 @@ public class Hero : MonoBehaviour
         }//if (Input.GetMouseButtonDown(0))
 
         MousePickUpdate();
+        AttackRotUpdate();
 
         if (m_isPickMvOnOff == false)
             MySetAnim(AnimState.idle);
@@ -124,6 +131,30 @@ public class Hero : MonoBehaviour
         a_CacLenVec = a_SetPickVec - a_StartPos;
         a_CacLenVec.y = 0.0f;
 
+        //-------Picking Enemy 공격 처리 부분
+        if (a_PickMon != null)
+        {
+            a_CacTgVec = a_PickMon.transform.position - transform.position;
+
+            //공격가시거리... 타겟이 있고  +1.0f면 어차피 몬스터도 다가올꺼고 
+            //좀 일찍 공격애니에 들어가야 잠시라도 move 애니가 끼어 들지 못한다.
+            float a_AttDist = m_AttackDist;
+            //if (a_PickMon.GetComponent<MonsterCtrl>().m_AggroTarget
+            //                                         == this.gameObject)
+            //{
+            //    a_AttDist = m_AttackDist + 1.0f;
+            //    //지금 공격하려고 하는 몬스터의 어그로 타겟이 나면....
+            //}
+
+            if (a_CacTgVec.magnitude <= a_AttDist)
+            {
+                m_TargetUnit = a_PickMon;
+                AttackOrder();
+
+                return;
+
+            }//즉시 공격 하라
+        } //if (a_PickMon != null)
         if (a_CacLenVec.magnitude < 0.5f)  //너무 근거리 피킹은 스킵해 준다.
             return;
 
@@ -141,56 +172,6 @@ public class Hero : MonoBehaviour
 
         a_CacLenVec = a_SetPickVec - a_StartPos;
         a_CacLenVec.y = 0.0f;
-       
-                  
-       
-        //------- Picking Enemy 공격 처리 부분
-        //if (a_PickMon != null)
-        //{
-        //    a_CacTgVec = a_PickMon.transform.position - transform.position;
-
-        //    //공격가시거리... 타겟이 있고  +1.0f면 어차피 몬스터도 다가올꺼고 
-        //    //좀 일찍 공격애니에 들어가야 잠시라도 move 애니가 끼어 들지 못한다.
-        //    float a_AttDist = m_AttackDist;
-        //    if (a_PickMon.GetComponent<MonsterCtrl>().m_AggroTarget
-        //                                             == this.gameObject)
-        //    {
-        //        a_AttDist = m_AttackDist + 1.0f;
-        //        //지금 공격하려고 하는 몬스터의 어그로 타겟이 나면....
-        //    }
-
-        //    if (a_CacTgVec.magnitude <= a_AttDist)
-        //    {
-        //        m_TargetUnit = a_PickMon;
-        //        AttackOrder();  //즉시 공격
-
-        //        return;
-
-        //    }//즉시 공격 하라
-        //} //if (a_PickMon != null)
-        //a_StartPos = this.transform.position; //출발 위치    
-        //a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
-
-        //a_CacLenVec = a_SetPickVec - a_StartPos;
-        //a_CacLenVec.y = 0.0f;
-
-        //if (a_CacLenVec.magnitude < 0.5f)  //너무 근거리 피킹은 스킵해 준다.
-        //    return;
-
-        //float a_PathLen = a_CacLenVec.magnitude;
-        ////---네비게이션 메쉬 길찾기를 이용할 때 코드
-        //if (MyNavCalcPath(a_StartPos, a_SetPickVec, ref a_PathLen) == false)
-        //    return;
-        ////---네비게이션 메쉬 길찾기를 이용할 때 코드
-
-        //m_TargetPos = a_SetPickVec;   //최종 목표 위치
-        //m_isPickMvOnOff = true;       //피킹 이동 OnOff
-
-        //m_MoveDir = a_CacLenVec.normalized;
-        //m_MoveDurTime = a_PathLen / m_MoveVelocity; //도착하는데 걸리는 시간
-        //m_AddTimeCount = 0.0;
-
-        //m_TargetUnit = a_PickMon; //타겟 초기화 또는 무효화 
 
     }
 
@@ -227,12 +208,41 @@ public class Hero : MonoBehaviour
                                          (m_MoveDir * Time.deltaTime * m_MoveVelocity);
                 MySetAnim(AnimState.move);
             }//else
-             //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
+
+            if (m_TargetUnit != null)
+            { //<-- 공격 애니매이션 중이면 가장 가까운 타겟을 자동으로 잡게된다.
+                a_CacTgVec = m_TargetUnit.transform.position -
+                                                this.transform.position;
+                if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
+                    AttackOrder();
+            }
+            //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
         } //if (m_isPickMvOnOff == true)
     }// void MousePickUpdate() 
 
+    //void FindEnemyTarget()
+    //{
+    //    m_EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
 
-   
+    //    float a_MinLen = float.MaxValue;
+    //    a_iCount = m_EnemyList.Length;
+    //    m_TargetUnit = null;  //우선 타겟 무효화
+    //    for (int i = 0; i < a_iCount; ++i)
+    //    {
+    //        a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
+    //        a_CacTgVec.y = 0.0f;
+    //        if (a_CacTgVec.magnitude <= m_AttackDist)
+    //        {   //공격거리 안쪽에 있을 경우만 타겟으로 잡는다.
+    //            if (a_CacTgVec.magnitude < a_MinLen)
+    //            {
+    //                a_MinLen = a_CacTgVec.magnitude;
+    //                m_TargetUnit = m_EnemyList[i];
+    //            }
+    //        }//if (a_CacTgVec.magnitude < a_MinLen)
+    //    }//for (int i = 0; i < iCount; ++i)
+    //}
+
+
 
     void ClearMsPickPath() //마우스 픽킹이동 취소 함수
     {
@@ -406,5 +416,128 @@ public class Hero : MonoBehaviour
         m_CurState = newAnim;
 
     } //public void MySetAnim(AnimState newAnim,
+
+    float a_CacRotSpeed = 0.0f;
+    public void AttackRotUpdate()
+    { //공격애니메이션 중일 때 타겟을 향해 회전하게 하는 함수
+
+        if (m_TargetUnit == null)//타겟이 존재하지 않으면...
+            return;
+
+        a_CacTgVec = m_TargetUnit.transform.position - transform.position;
+        a_CacTgVec.y = 0.0f;
+
+        if (a_CacTgVec.magnitude <= (m_AttackDist + 0.3f)) //공격거리
+        {
+            //캐릭터 스프링 회전   
+            a_CacAtDir = a_CacTgVec.normalized;
+            if (0.0001f < a_CacAtDir.magnitude)
+            {
+                a_CacRotSpeed = m_RotSpeed * 3.0f;           //초당 회전 속도
+                Quaternion a_TargetRot = Quaternion.LookRotation(a_CacAtDir);
+                transform.rotation = Quaternion.Slerp(transform.rotation,
+                                        a_TargetRot,
+                                        Time.deltaTime * a_CacRotSpeed);
+            }
+        }//if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
+
+    }//public void AttackRotUpdate()
+
+    public void AttackOrder()
+    {
+        if (m_prevState == AnimState.idle.ToString()
+            || m_prevState == AnimState.move.ToString())
+        {
+            //Immediate 모드이고 키보드 컨트롤이나 조이스틱 컨트롤로 이동 중이고
+            //공격키를 연타해서 누르면 달리는 애니메이션에 잠깐동안 
+            //공격 애니가 끼어드는 문제가발생한다. <-- 이런 현상에 대한 예외처리
+
+            MySetAnim(AnimState.attack);
+
+            ClearMsPickPath();
+        }
+    }//public void AttackOrder()
+
+    public bool ISAttack()
+    {
+        if (m_prevState != null && !string.IsNullOrEmpty(m_prevState))
+        {
+            if (m_prevState.ToString() == AnimState.attack.ToString() ||
+                m_prevState.ToString() == AnimState.skill.ToString())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    bool IsTargetEnemyActive(float a_ExtLen = 0.0f)
+    {
+        if (m_TargetUnit == null)//타겟이 존재하지 않으면...
+            return false;
+
+        if (m_TargetUnit.activeSelf == false)
+        {
+            m_TargetUnit = null;
+            return false;
+        }
+
+        //isDie 죽어 있어도
+        //MonsterCtrl a_Unit = m_TargetUnit.GetComponent<MonsterCtrl>();
+        //if (a_Unit.MonState == AnimState.die)
+        //{
+        //    m_TargetUnit = null;
+        //    return false;
+        //}
+
+        a_CacTgVec = m_TargetUnit.transform.position - transform.position;
+        a_CacTgVec.y = 0.0f;
+        if (m_AttackDist + a_ExtLen < a_CacTgVec.magnitude)
+        {   //공격거리 바깥쪽에 있을 경우도 타겟을 무효화 해 버린다
+
+            //m_TargetUnit = null; //원거리라도 타겟을 공격할 수 있으니까...
+            return false;
+        }
+
+        return true; //타겟이 아직 유효 하다는 의미
+    }// bool IsTargetEnemyActive(float a_ExtLen = 0.0f)
+
+    void EnemyMonitor()
+    {
+        //마우스 피킹을 시도했고 이동 중이면 타겟을 다시 잡지 않는다.
+        if (m_isPickMvOnOff == true)
+            return;
+
+        //보간 때문에 정확히 정밀한 공격 애니메이션만 하고 있을 때만...
+        if (ISAttack() == false) //공격 애니메이션이 아니면...
+            return;
+
+        //공격 애니메이션 중이고 타겟이 무효화 되었다면... 타겟을 새로 잡아준다.
+        //타겟의 교체는 공격거리보다는 조금 더 여유(0.5f)를 두고 바꾸게 한다.
+        if (IsTargetEnemyActive(0.5f) == false)
+            FindEnemyTarget();
+    }
+    int a_iCount = 0;
+    void FindEnemyTarget()
+    {
+        m_EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
+
+        float a_MinLen = float.MaxValue;
+        a_iCount = m_EnemyList.Length;
+        m_TargetUnit = null;  //우선 타겟 무효화
+        for (int i = 0; i < a_iCount; ++i)
+        {
+            a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
+            a_CacTgVec.y = 0.0f;
+            if (a_CacTgVec.magnitude <= m_AttackDist)
+            {   //공격거리 안쪽에 있을 경우만 타겟으로 잡는다.
+                if (a_CacTgVec.magnitude < a_MinLen)
+                {
+                    a_MinLen = a_CacTgVec.magnitude;
+                    m_TargetUnit = m_EnemyList[i];
+                }
+            }//if (a_CacTgVec.magnitude < a_MinLen)
+        }//for (int i = 0; i < iCount; ++i)
+    }
 }
 
