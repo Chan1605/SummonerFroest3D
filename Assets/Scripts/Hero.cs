@@ -5,17 +5,11 @@ using UnityEngine.AI;
 
 public class Hero : MonoBehaviour
 {
-    Vector3 dir = Vector3.zero;
-    float speed = 10.0f;
+    public enum YasuoState { idle, trace, attack, hit,die };
 
-    float h = 0, v = 0;
-    Vector3 MoveNextStep;            //보폭을 계산해 주기 위한 변수
-    Vector3 MoveHStep;
-    Vector3 MoveVStep;
-    float m_MoveVelocity = 8.0f;     //평면 초당 이동 속도...
-    float a_CalcRotY = 0.0f;
-    float rotSpeed = 150.0f; //초당 150도 회전하라는 속도
+    public YasuoState yasuo = YasuoState.idle;
 
+    float m_MoveVelocity = 8.0f;     //평면 초당 이동 속도...    
     //------ Picking 관련 변수 
     Ray a_MousePos;
     RaycastHit hitInfo;
@@ -33,34 +27,10 @@ public class Hero : MonoBehaviour
     Vector3 a_CacLenVec = Vector3.zero; //계산용 변수
     Quaternion a_TargetRot;             //계산용 변수
 
-    //---------------------- 마우스 피킹 예약 이동 관련 변수 
-    float m_RsvPicking = 0.0f;             //reservation 예약 
-    //피킹 이동 예약의 유효시간 계산하기 위한 변수 3.5초 뒤에 무효화 됨
-    Vector3 m_RsvTargetPos = Vector3.zero; //최종 목표 위치
-    double m_RsvMvDurTime = 0.0;           //목표점까지 도착하는데 걸리는 시간
-
-    NavMeshAgent nvAgent;    //using UnityEngine.AI;
-    NavMeshPath movePath;
-    Vector3 m_PathEndPos = Vector3.zero;
     [HideInInspector] public int m_CurPathIndex = 1;
 
-    bool a_isSucessed = true;
-    Vector3 a_CurCPos = Vector3.zero;
-    Vector3 a_CacDestV = Vector3.zero;
-    Vector3 a_TargetDir;
-    float a_CacSpeed = 0.0f;
-    float a_NowStep = 0.0f;
-    Vector3 a_Velocity = Vector3.zero;
-    Vector3 a_vTowardNom = Vector3.zero;
-    int a_OldPathCount = 0;
-
     GameObject m_TargetUnit = null;
-
     Animator m_RefAnimator = null;
-    string m_prevState = "";
-    AnimState m_CurState = AnimState.idle; //IsMine == true 일때
-    public Anim anim;  //AnimSupporter.cs 쪽에 정의되어 있음
-    AnimatorStateInfo animaterStateInfo;
 
     GameObject[] m_EnemyList = null;    //필드상의 몬스터들을 가져오기 위한 변수
 
@@ -85,40 +55,82 @@ public class Hero : MonoBehaviour
 
         m_RefAnimator = this.gameObject.GetComponent<Animator>();
 
-        movePath = new NavMeshPath();
-        nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
-        nvAgent.updateRotation = false;
+        yasuo = YasuoState.idle;
     }
+
+
 
     // Update is called once per frame
     void Update()
-    {
+    {       
         if (Input.GetMouseButtonDown(0))
             {
-                a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //yasuo = YasuoState.trace;
+            a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity,                                                        m_layerMask.value))
-            {
+            {          
                 if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-                { //몬스터 픽킹일 때 
+                { //몬스터 픽킹일 때                     
                     MousePicking(hitInfo.point, hitInfo.collider.gameObject);
-
                     if (GameMgr.Inst.m_CursorMark != null)
-                        GameMgr.Inst.m_CursorMark.SetActive(false);
+                        GameMgr.Inst.m_CursorMark.SetActive(false);                                 
                 }
                 else  //지형 바닥 픽킹일 때 
                 {
                     MousePicking(hitInfo.point);
-
-                    GameMgr.Inst.CursorMarkOn(hitInfo.point);
+                    GameMgr.Inst.CursorMarkOn(hitInfo.point);                    
                 }//else  //지형 바닥 픽킹일 때
             }
         }//if (Input.GetMouseButtonDown(0))
+        
 
-        MousePickUpdate();
-        AttackRotUpdate();
-
+        MousePickUpdate();        
+        YasuoActionUpdate();       
         if (m_isPickMvOnOff == false)
-            MySetAnim(AnimState.idle);
+         yasuo = YasuoState.idle;
+        
+
+    }
+
+    private void AnimType(string anim)
+    {
+        m_RefAnimator.SetBool("Idle", false);
+        m_RefAnimator.SetBool("IsTrace", false);
+        m_RefAnimator.SetBool("IsAttack", false);
+        m_RefAnimator.SetBool("IsDie", false);     
+
+        m_RefAnimator.SetBool(anim, true);
+    }
+
+
+
+    void YasuoActionUpdate()
+    {
+        switch (yasuo)
+        {
+            
+            case YasuoState.idle:
+
+                AnimType("Idle");
+                break;
+
+            //추적 상태
+            case YasuoState.trace:
+                {
+                    AnimType("IsTrace");
+                }
+                break;
+
+            //공격 상태
+            case YasuoState.attack:
+                {
+                    AttackRotUpdate();
+                    AnimType("IsAttack");
+
+                }
+                break;
+
+        }
     }
 
 
@@ -148,8 +160,7 @@ public class Hero : MonoBehaviour
 
             if (a_CacTgVec.magnitude <= a_AttDist)
             {
-                m_TargetUnit = a_PickMon;
-                AttackOrder();
+                m_TargetUnit = a_PickMon;                
 
                 return;
 
@@ -200,21 +211,24 @@ public class Hero : MonoBehaviour
             m_AddTimeCount = m_AddTimeCount + Time.deltaTime;
             if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
             {
-                m_isPickMvOnOff = false;
+                m_isPickMvOnOff = false;                
+                yasuo = YasuoState.idle;
             }
             else
             {
                 this.transform.position = this.transform.position +
                                          (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                MySetAnim(AnimState.move);
+                yasuo = YasuoState.trace;
             }//else
 
             if (m_TargetUnit != null)
             { //<-- 공격 애니매이션 중이면 가장 가까운 타겟을 자동으로 잡게된다.
+                m_isPickMvOnOff = true;
                 a_CacTgVec = m_TargetUnit.transform.position -
                                                 this.transform.position;
                 if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
-                    AttackOrder();
+                    yasuo = YasuoState.attack;                                    
+
             }
             //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
         } //if (m_isPickMvOnOff == true)
@@ -248,174 +262,174 @@ public class Hero : MonoBehaviour
     {
         m_isPickMvOnOff = false;
 
-        //----피킹을 위한 동기화 부분
-        m_PathEndPos = transform.position;
-        if (0 < movePath.corners.Length)
-        {
-            movePath.ClearCorners();  //경로 모두 제거 
-        }
-        m_CurPathIndex = 1;       //진행 인덱스 초기화
+        ////----피킹을 위한 동기화 부분
+        //m_PathEndPos = transform.position;
+        //if (0 < movePath.corners.Length)
+        //{
+        //    movePath.ClearCorners();  //경로 모두 제거 
+        //}
+        //m_CurPathIndex = 1;       //진행 인덱스 초기화
         //----피킹을 위한 동기화 부분
 
         if (GameMgr.Inst.m_CursorMark != null)
             GameMgr.Inst.m_CursorMark.SetActive(false);
     }
 
-    Vector3 a_VecLen = Vector3.zero;
-    public bool MyNavCalcPath(Vector3 a_StartPos, Vector3 a_TargetPos,
-                              ref float a_PathLen) //길찾기...
-    { //경로 탐색 함수
+    //Vector3 a_VecLen = Vector3.zero;
+    //public bool MyNavCalcPath(Vector3 a_StartPos, Vector3 a_TargetPos,
+    //                          ref float a_PathLen) //길찾기...
+    //{ //경로 탐색 함수
 
-        //--- 기존 탐색된 경로가 있으면 초기화 하고 계산한다.
-        movePath.ClearCorners();  //경로 모두 제거 
-        m_CurPathIndex = 1;       //진행 인덱스 초기화 
-        m_PathEndPos = transform.position;
-        //--- 기존 탐색된 경로가 있으면 초기화 하고 계산한다.
+    //    //--- 기존 탐색된 경로가 있으면 초기화 하고 계산한다.
+    //    movePath.ClearCorners();  //경로 모두 제거 
+    //    m_CurPathIndex = 1;       //진행 인덱스 초기화 
+    //    m_PathEndPos = transform.position;
+    //    //--- 기존 탐색된 경로가 있으면 초기화 하고 계산한다.
 
-        if (nvAgent == null || nvAgent.enabled == false)
-            return false;
+    //    if (nvAgent == null || nvAgent.enabled == false)
+    //        return false;
 
-        if (NavMesh.CalculatePath(a_StartPos, a_TargetPos, -1, movePath) == false)
-        { //네비게이션 메쉬에서 경로를 탐색해 주는 함수
-            return false;
-        }
+    //    if (NavMesh.CalculatePath(a_StartPos, a_TargetPos, -1, movePath) == false)
+    //    { //네비게이션 메쉬에서 경로를 탐색해 주는 함수
+    //        return false;
+    //    }
 
-        for (int i = 1; i < movePath.corners.Length; ++i)
-        {
-            //#if UNITY_EDITOR
-            //            Debug.DrawLine(movePath.corners[i - 1],
-            //                             movePath.corners[i], Color.cyan, 10);
-            //            //맨마지막 인자 duration 라인을 표시하는 시간
-            //            Debug.DrawLine(movePath.corners[i],
-            //                             movePath.corners[i] + Vector3.up * i,
-            //                             Color.cyan, 10);
-            //#endif
-            a_VecLen = movePath.corners[i] - movePath.corners[i - 1];
-            //a_VecLen.y = 0.0f;
-            a_PathLen = a_PathLen + a_VecLen.magnitude;
-        }//for (int i = 1; i < movePath.corners.Length; ++i)
+    //    for (int i = 1; i < movePath.corners.Length; ++i)
+    //    {
+    //        //#if UNITY_EDITOR
+    //        //            Debug.DrawLine(movePath.corners[i - 1],
+    //        //                             movePath.corners[i], Color.cyan, 10);
+    //        //            //맨마지막 인자 duration 라인을 표시하는 시간
+    //        //            Debug.DrawLine(movePath.corners[i],
+    //        //                             movePath.corners[i] + Vector3.up * i,
+    //        //                             Color.cyan, 10);
+    //        //#endif
+    //        a_VecLen = movePath.corners[i] - movePath.corners[i - 1];
+    //        //a_VecLen.y = 0.0f;
+    //        a_PathLen = a_PathLen + a_VecLen.magnitude;
+    //    }//for (int i = 1; i < movePath.corners.Length; ++i)
 
-        if (a_PathLen <= 0.0f)
-            return false;
+    //    if (a_PathLen <= 0.0f)
+    //        return false;
 
-        //-- 캐릭터가 마지막 위치에 도착했을 때 정확한 방향을 
-        // 바라보게 하고 싶은 경우 때문에 계산해 놓는다.
-        m_PathEndPos = movePath.corners[(movePath.corners.Length - 1)];
+    //    //-- 캐릭터가 마지막 위치에 도착했을 때 정확한 방향을 
+    //    // 바라보게 하고 싶은 경우 때문에 계산해 놓는다.
+    //    m_PathEndPos = movePath.corners[(movePath.corners.Length - 1)];
 
-        return true;
+    //    return true;
 
-    } //public bool MyNavCalcPath(
+    //} //public bool MyNavCalcPath(
 
-    public bool MoveToPath(float overSpeed = 1.0f)
-    {
-        a_isSucessed = true;
+    //public bool MoveToPath(float overSpeed = 1.0f)
+    //{
+    //    a_isSucessed = true;
 
-        if (movePath == null)
-            movePath = new NavMeshPath();
+    //    if (movePath == null)
+    //        movePath = new NavMeshPath();
 
-        a_OldPathCount = m_CurPathIndex;
-        if (m_CurPathIndex < movePath.corners.Length)
-        { //최소 m_CurPathIndex = 1 보다 큰 경우에는 캐릭터를 이동시켜 준다.
+    //    a_OldPathCount = m_CurPathIndex;
+    //    if (m_CurPathIndex < movePath.corners.Length)
+    //    { //최소 m_CurPathIndex = 1 보다 큰 경우에는 캐릭터를 이동시켜 준다.
 
-            a_CurCPos = this.transform.position;
-            a_CacDestV = movePath.corners[m_CurPathIndex];
-            a_CurCPos.y = a_CacDestV.y;
-            //높이 오차가 있어서 도착 판정을 못하는 경우가 있다. 
-            a_TargetDir = a_CacDestV - a_CurCPos;
-            a_TargetDir.y = 0.0f;
-            a_TargetDir.Normalize();
+    //        a_CurCPos = this.transform.position;
+    //        a_CacDestV = movePath.corners[m_CurPathIndex];
+    //        a_CurCPos.y = a_CacDestV.y;
+    //        //높이 오차가 있어서 도착 판정을 못하는 경우가 있다. 
+    //        a_TargetDir = a_CacDestV - a_CurCPos;
+    //        a_TargetDir.y = 0.0f;
+    //        a_TargetDir.Normalize();
 
-            a_CacSpeed = m_MoveVelocity;
-            a_CacSpeed = a_CacSpeed * overSpeed;
+    //        a_CacSpeed = m_MoveVelocity;
+    //        a_CacSpeed = a_CacSpeed * overSpeed;
 
-            a_NowStep = a_CacSpeed * Time.deltaTime;
-            //이번에 이동했을 때 이 안으로만 들어와도 무조건 도착한 것으로 본다.
+    //        a_NowStep = a_CacSpeed * Time.deltaTime;
+    //        //이번에 이동했을 때 이 안으로만 들어와도 무조건 도착한 것으로 본다.
 
-            a_Velocity = a_CacSpeed * a_TargetDir;
-            a_Velocity.y = 0.0f;
-            nvAgent.velocity = a_Velocity;          //이동 처리...
+    //        a_Velocity = a_CacSpeed * a_TargetDir;
+    //        a_Velocity.y = 0.0f;
+    //        nvAgent.velocity = a_Velocity;          //이동 처리...
 
-            //중간점에 도착했는지 판단하는 부분
-            if ((a_CacDestV - a_CurCPos).magnitude <= a_NowStep)
-            {//중간점에 도착한 것으로 본다.  여기서 a_CurCPos == Old Position의미
-                movePath.corners[m_CurPathIndex] = this.transform.position;
-                m_CurPathIndex = m_CurPathIndex + 1;
-            }//if ((a_CacDestV - a_CurCPos).magnitude <= a_NowStep) .  
+    //        //중간점에 도착했는지 판단하는 부분
+    //        if ((a_CacDestV - a_CurCPos).magnitude <= a_NowStep)
+    //        {//중간점에 도착한 것으로 본다.  여기서 a_CurCPos == Old Position의미
+    //            movePath.corners[m_CurPathIndex] = this.transform.position;
+    //            m_CurPathIndex = m_CurPathIndex + 1;
+    //        }//if ((a_CacDestV - a_CurCPos).magnitude <= a_NowStep) .  
 
-            m_AddTimeCount = m_AddTimeCount + Time.deltaTime;
-            if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
-            {
-                m_CurPathIndex = movePath.corners.Length;
-            }
+    //        m_AddTimeCount = m_AddTimeCount + Time.deltaTime;
+    //        if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
+    //        {
+    //            m_CurPathIndex = movePath.corners.Length;
+    //        }
 
-        }//if (m_CurPathIndex < movePath.corners.Length) 
+    //    }//if (m_CurPathIndex < movePath.corners.Length) 
 
-        if (m_CurPathIndex < movePath.corners.Length)
-        {  //목적지에 아직 도착 하지 않은 경우
+    //    if (m_CurPathIndex < movePath.corners.Length)
+    //    {  //목적지에 아직 도착 하지 않은 경우
 
-            //-------------캐릭터 회전 / 애니메이션 방향 조정
-            a_vTowardNom = movePath.corners[m_CurPathIndex] - this.transform.position;
-            a_vTowardNom.y = 0.0f;
-            a_vTowardNom.Normalize();        // 단위 벡터를 만든다.
+    //        //-------------캐릭터 회전 / 애니메이션 방향 조정
+    //        a_vTowardNom = movePath.corners[m_CurPathIndex] - this.transform.position;
+    //        a_vTowardNom.y = 0.0f;
+    //        a_vTowardNom.Normalize();        // 단위 벡터를 만든다.
 
-            if (0.0001f < a_vTowardNom.magnitude)  //로테이션에서는 모두 들어가야 한다.
-            {
-                Quaternion a_TargetRot = Quaternion.LookRotation(a_vTowardNom);
-                transform.rotation = Quaternion.Slerp(transform.rotation,
-                                            a_TargetRot, Time.deltaTime * m_RotSpeed);
-            }
+    //        if (0.0001f < a_vTowardNom.magnitude)  //로테이션에서는 모두 들어가야 한다.
+    //        {
+    //            Quaternion a_TargetRot = Quaternion.LookRotation(a_vTowardNom);
+    //            transform.rotation = Quaternion.Slerp(transform.rotation,
+    //                                        a_TargetRot, Time.deltaTime * m_RotSpeed);
+    //        }
 
     
-            //-------------캐릭터 회전 / 애니메이션 방향 조정
-        }
-        else //최종 목적지에 도착한 경우 매 플레임
-        {
-            //최종 목적지에 도착한 경우 한번 발생시키기 위한 부분
-            if (a_OldPathCount < movePath.corners.Length)
-            {
-                ClearMsPickPath();
+    //        //-------------캐릭터 회전 / 애니메이션 방향 조정
+    //    }
+    //    else //최종 목적지에 도착한 경우 매 플레임
+    //    {
+    //        //최종 목적지에 도착한 경우 한번 발생시키기 위한 부분
+    //        if (a_OldPathCount < movePath.corners.Length)
+    //        {
+    //            ClearMsPickPath();
 
-            }
+    //        }
 
-            a_isSucessed = false;
-            //아직 목적지에 도착하지 않았다면 다시 잡아 줄 것이기 때문에... 
-        }
+    //        a_isSucessed = false;
+    //        //아직 목적지에 도착하지 않았다면 다시 잡아 줄 것이기 때문에... 
+    //    }
 
-        return a_isSucessed;
-    }//public bool MoveToPath(float overSpeed = 1.0f)
+    //    return a_isSucessed;
+    //}//public bool MoveToPath(float overSpeed = 1.0f)
 
-    public void MySetAnim(AnimState newAnim,
-              float CrossTime = 1.0f, string AnimName = "")
-    {
-        if (m_RefAnimator == null)
-            return;
+    //public void MySetAnim(AnimState newAnim,
+    //          float CrossTime = 1.0f, string AnimName = "")
+    //{
+    //    if (m_RefAnimator == null)
+    //        return;
 
-        if (m_prevState != null && !string.IsNullOrEmpty(m_prevState))
-        {
-            if (m_prevState.ToString() == newAnim.ToString())
-                return;
-        }
+    //    if (m_prevState != null && !string.IsNullOrEmpty(m_prevState))
+    //    {
+    //        if (m_prevState.ToString() == newAnim.ToString())
+    //            return;
+    //    }
 
-        if (!string.IsNullOrEmpty(m_prevState))
-        {
-            m_RefAnimator.ResetTrigger(m_prevState.ToString());
-            m_prevState = null;
-        }
+    //    if (!string.IsNullOrEmpty(m_prevState))
+    //    {
+    //        m_RefAnimator.ResetTrigger(m_prevState.ToString());
+    //        m_prevState = null;
+    //    }
 
-        if (0.0f < CrossTime)
-        {
-            m_RefAnimator.SetTrigger(newAnim.ToString());
-        }
-        else
-        {
-            m_RefAnimator.Play(AnimName, -1, 0f);
-            //가운데는 Layer Index, 뒤에 0f는 처음부터 다시시작
-        }
+    //    if (0.0f < CrossTime)
+    //    {
+    //        m_RefAnimator.SetTrigger(newAnim.ToString());
+    //    }
+    //    else
+    //    {
+    //        m_RefAnimator.Play(AnimName, -1, 0f);
+    //        //가운데는 Layer Index, 뒤에 0f는 처음부터 다시시작
+    //    }
 
-        m_prevState = newAnim.ToString(); //이전스테이트에 현재스테이트 저장
-        m_CurState = newAnim;
+    //    m_prevState = newAnim.ToString(); //이전스테이트에 현재스테이트 저장
+    //    m_CurState = newAnim;
 
-    } //public void MySetAnim(AnimState newAnim,
+    //} //public void MySetAnim(AnimState newAnim,
 
     float a_CacRotSpeed = 0.0f;
     public void AttackRotUpdate()
@@ -437,40 +451,12 @@ public class Hero : MonoBehaviour
                 Quaternion a_TargetRot = Quaternion.LookRotation(a_CacAtDir);
                 transform.rotation = Quaternion.Slerp(transform.rotation,
                                         a_TargetRot,
-                                        Time.deltaTime * a_CacRotSpeed);
+                                        Time.deltaTime * a_CacRotSpeed);                
             }
         }//if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
 
     }//public void AttackRotUpdate()
 
-    public void AttackOrder()
-    {
-        if (m_prevState == AnimState.idle.ToString()
-            || m_prevState == AnimState.move.ToString())
-        {
-            //Immediate 모드이고 키보드 컨트롤이나 조이스틱 컨트롤로 이동 중이고
-            //공격키를 연타해서 누르면 달리는 애니메이션에 잠깐동안 
-            //공격 애니가 끼어드는 문제가발생한다. <-- 이런 현상에 대한 예외처리
-
-            MySetAnim(AnimState.attack);
-
-            ClearMsPickPath();
-        }
-    }//public void AttackOrder()
-
-    public bool ISAttack()
-    {
-        if (m_prevState != null && !string.IsNullOrEmpty(m_prevState))
-        {
-            if (m_prevState.ToString() == AnimState.attack.ToString() ||
-                m_prevState.ToString() == AnimState.skill.ToString())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
     bool IsTargetEnemyActive(float a_ExtLen = 0.0f)
     {
         if (m_TargetUnit == null)//타겟이 존재하지 않으면...
@@ -483,19 +469,19 @@ public class Hero : MonoBehaviour
         }
 
         //isDie 죽어 있어도
-        //MonsterCtrl a_Unit = m_TargetUnit.GetComponent<MonsterCtrl>();
-        //if (a_Unit.MonState == AnimState.die)
-        //{
-        //    m_TargetUnit = null;
-        //    return false;
-        //}
+        ZombieCtrl a_Unit = m_TargetUnit.GetComponent<ZombieCtrl>();
+        if (a_Unit.monsterState == ZombieCtrl.MonsterState.die)
+        {
+            m_TargetUnit = null;
+            return false;
+        }
 
         a_CacTgVec = m_TargetUnit.transform.position - transform.position;
         a_CacTgVec.y = 0.0f;
         if (m_AttackDist + a_ExtLen < a_CacTgVec.magnitude)
         {   //공격거리 바깥쪽에 있을 경우도 타겟을 무효화 해 버린다
 
-            //m_TargetUnit = null; //원거리라도 타겟을 공격할 수 있으니까...
+            m_TargetUnit = null; //원거리라도 타겟을 공격할 수 있으니까...
             return false;
         }
 
@@ -509,8 +495,8 @@ public class Hero : MonoBehaviour
             return;
 
         //보간 때문에 정확히 정밀한 공격 애니메이션만 하고 있을 때만...
-        if (ISAttack() == false) //공격 애니메이션이 아니면...
-            return;
+        //if (ISAttack() == false) //공격 애니메이션이 아니면...
+        //    return;
 
         //공격 애니메이션 중이고 타겟이 무효화 되었다면... 타겟을 새로 잡아준다.
         //타겟의 교체는 공격거리보다는 조금 더 여유(0.5f)를 두고 바꾸게 한다.

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WolfCtrl : MonoBehaviour
 {
-    public enum MonsterState { idle, trace, attack, die };
+    public enum MonsterState { idle, trace, attack, hit, die };
 
     //몬스터의 현재 상태 정보를 저장할 Enum 변수
     public MonsterState monsterState = MonsterState.idle;
@@ -73,7 +73,7 @@ public class WolfCtrl : MonoBehaviour
         else if (dist <= traceDist) //추적거리 범위 이내로 들어왔는지 확인
         {
             monsterState = MonsterState.trace; //몬스터의 상태를 추적으로 설정
-        }
+        }        
         else
         {
             monsterState = MonsterState.idle;   //몬스터의 상태를 idle 모드로 설정
