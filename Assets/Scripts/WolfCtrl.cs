@@ -20,7 +20,7 @@ public class WolfCtrl : MonoBehaviour
 
     private bool isDie = false;
 
-    private int hp = 100;
+    public int hp = 100;
 
     void Awake()
     {
@@ -173,5 +173,47 @@ public class WolfCtrl : MonoBehaviour
         //    Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
         //}
         //---- 보상으로 아이템 드롭 
+    }
+
+    void OnCollisionEnter(Collision coll)
+    {
+        if (coll.gameObject.tag == "Player")
+        {            
+            hp -= coll.gameObject.GetComponent<Hero>().damage;
+            if (hp <= 0)
+            {
+                MonsterDie();
+            }
+
+           
+            Destroy(coll.gameObject);            
+            animator.SetTrigger("IsHit");
+        }
+    }
+
+    public void TakeDamage(int a_Value)
+    {
+        if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
+            return;
+
+        hp -= a_Value;
+        if (hp <= 0)
+        {
+            hp = 0;
+            MonsterDie();
+        }
+        animator.SetTrigger("IsHit");
+    }
+
+    void OnPlayerDie()
+    {
+        if (isDie == true)
+            return;
+
+        //몬스터의 상태를 체크하는 코루틴 함수를 모두 정지시킴
+        StopAllCoroutines();
+        //추적을 정지하고 애니메이션을 수행
+        //nvAgent.isStopped = true;
+        animator.SetTrigger("IsPlayerDie");
     }
 }

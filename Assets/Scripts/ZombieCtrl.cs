@@ -6,6 +6,8 @@ public class ZombieCtrl : MonoBehaviour
 {
     public enum MonsterState { idle, trace, attack, die };
 
+    float m_CurHP = 100.0f;
+    float m_MaxHP = 100.0f;
     //몬스터의 현재 상태 정보를 저장할 Enum 변수
     public MonsterState monsterState = MonsterState.idle;
 
@@ -172,5 +174,51 @@ public class ZombieCtrl : MonoBehaviour
         //    Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
         //}
         //---- 보상으로 아이템 드롭 
+    }
+
+    void OnCollisionEnter(Collision coll)
+    {
+        if (coll.gameObject.tag == "Player")
+        {
+
+
+            //맞은 총알의 Damage를 추출해 몬스터 hp 차감
+            hp -= coll.gameObject.GetComponent<Hero>().damage;
+            if (hp <= 0)
+            {
+                MonsterDie();
+            }
+
+
+            Destroy(coll.gameObject);
+            //IsHit Trigger를 발생시키면 Any State에서 githit로 전이됨
+            //animator.SetTrigger("IsHit");
+        }
+    }
+
+    public void TakeDamage(int a_Value)
+    {
+        if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
+            return;
+
+        hp -= a_Value;
+        if (hp <= 0)
+        {
+            hp = 0;
+            MonsterDie();
+        }
+        //animator.SetTrigger("IsHit");
+    }
+
+    void OnPlayerDie()
+    {
+        if (isDie == true)
+            return;
+
+        //몬스터의 상태를 체크하는 코루틴 함수를 모두 정지시킴
+        StopAllCoroutines();
+        //추적을 정지하고 애니메이션을 수행
+        //nvAgent.isStopped = true;
+        animator.SetTrigger("IsPlayerDie");
     }
 }

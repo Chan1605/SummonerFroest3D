@@ -8,9 +8,9 @@ public class Hero : MonoBehaviour
     public enum YasuoState { idle, trace, attack, hit,die };
 
     public YasuoState yasuo = YasuoState.idle;
-
-    float m_CurHp = 100.0f;
-    float m_MaxHp = 100.0f;
+    public int damage = 20;
+    [SerializeField]float m_CurHp = 100.0f;
+    [SerializeField]float m_MaxHp = 100.0f;
 
     public Image hpbar;
 
@@ -361,6 +361,40 @@ public class Hero : MonoBehaviour
         m_CurHp -= a_Val;
 
         hpbar.fillAmount = m_CurHp / m_MaxHp;
+    }
+
+    void PlayerDie()
+    {
+        Debug.Log("Player Die !!");
+
+    }
+
+    void OnTriggerEnter(Collider coll)
+    {        
+        if (coll.gameObject.tag == "Enemy")
+        {
+            
+            if (m_CurHp <= 0.0f)
+                return;
+            m_CurHp -= 10;             
+
+            if (hpbar != null)
+                hpbar.fillAmount = m_CurHp / m_MaxHp;
+            //Player의 생명이 0이하이면 사망 처리
+            if (m_CurHp <= 0)
+            {
+                PlayerDie();
+            }
+        }//if(coll.gameObject.tag == "PUNCH")
+        //else if (coll.gameObject.name.Contains("CoinPrefab") == true)
+        //{
+        //    GameMgr.Inst.AddGold();
+
+        //    if (Ad_Source != null && CoinSfx != null)
+        //        Ad_Source.PlayOneShot(CoinSfx, 0.3f);
+
+        //    Destroy(coll.gameObject);
+        //}
     }
 }
 
