@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Hero : MonoBehaviour
 {
     public enum YasuoState { idle, trace, attack, hit,die };
 
     public YasuoState yasuo = YasuoState.idle;
+
+    float m_CurHp = 100.0f;
+    float m_MaxHp = 100.0f;
+
+    public Image hpbar;
 
     float m_MoveVelocity = 8.0f;     //평면 초당 이동 속도...    
     //------ Picking 관련 변수 
@@ -53,8 +58,7 @@ public class Hero : MonoBehaviour
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
         m_layerMask |= 1 << LayerMask.NameToLayer("MyUnit"); //Unit 도 피킹
 
-        m_RefAnimator = this.gameObject.GetComponent<Animator>();
-
+        m_RefAnimator = this.gameObject.GetComponent<Animator>();        
         yasuo = YasuoState.idle;
     }
 
@@ -347,6 +351,16 @@ public class Hero : MonoBehaviour
                 }
             }//if (a_CacTgVec.magnitude < a_MinLen)
         }//for (int i = 0; i < iCount; ++i)
+    }
+
+    void TakeDamage(float a_Val)
+    {
+        if (m_CurHp == 0.0f)
+            return;
+
+        m_CurHp -= a_Val;
+
+        hpbar.fillAmount = m_CurHp / m_MaxHp;
     }
 }
 
