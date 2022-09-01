@@ -837,6 +837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterState: 0
+  monType: 1
   traceDist: 20
   attackDist: 2
   hp: 100

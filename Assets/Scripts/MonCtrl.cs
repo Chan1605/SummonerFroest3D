@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WolfCtrl : MonoBehaviour
+public class MonCtrl : MonoBehaviour
 {
     public enum MonsterState { idle, trace, attack, hit, die };
 
+    public enum MonType { Zombie, Wolf };
+
     //몬스터의 현재 상태 정보를 저장할 Enum 변수
     public MonsterState monsterState = MonsterState.idle;
+
+    public MonType monType = MonType.Zombie;
 
     private Transform monsterTr;
     private Transform playerTr;
@@ -21,11 +25,11 @@ public class WolfCtrl : MonoBehaviour
     private bool isDie = false;
 
     public int hp = 100;
-
+    [SerializeField]float m_MoveVelocity = 5.0f;
     void Awake()
     {
-        traceDist = 18.0f; //100.0f;
-        attackDist = 2.5f; //1.8f;
+        //traceDist = 18.0f; 
+        //attackDist = 2.5f; 
 
         //몬스터의 Transform 할당
         monsterTr = this.gameObject.GetComponent<Transform>();
@@ -106,7 +110,7 @@ public class WolfCtrl : MonoBehaviour
                     //nvAgent.isStopped = false;  //nvAgent.Resume();
 
                     //-------- 이동 구현
-                    float m_MoveVelocity = 5.0f;      //평면 초당 이동 속도...
+                    //float m_MoveVelocity = 5.0f;      //평면 초당 이동 속도...
                     Vector3 m_MoveDir = Vector3.zero;
                     m_MoveDir = playerTr.position - this.transform.position;
                     m_MoveDir.y = 0.0f;

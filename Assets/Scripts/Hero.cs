@@ -296,8 +296,8 @@ public class Hero : MonoBehaviour
         }
 
         //isDie Á×¾î ÀÖ¾îµµ
-        ZombieCtrl a_Unit = m_TargetUnit.GetComponent<ZombieCtrl>();
-        if (a_Unit.monsterState == ZombieCtrl.MonsterState.die)
+        MonCtrl a_Unit = m_TargetUnit.GetComponent<MonCtrl>();
+        if (a_Unit.monsterState == MonCtrl.MonsterState.die)
         {
             m_TargetUnit = null;
             return false;
