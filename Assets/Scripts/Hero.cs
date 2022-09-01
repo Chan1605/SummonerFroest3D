@@ -95,7 +95,7 @@ public class Hero : MonoBehaviour
 
 
 
-
+        EnemyMonitor();
         MousePickUpdate();
         YasuoActionUpdate();
         if (m_isPickMvOnOff == false)
@@ -137,8 +137,7 @@ public class Hero : MonoBehaviour
             //공격 상태
             case YasuoState.attack:
                 {
-                    if (m_TargetUnit == null)
-                        return;
+
                     AttackRotUpdate();
                     AnimType("IsAttack");
                        
@@ -426,8 +425,7 @@ public class Hero : MonoBehaviour
 
     void Event_AttDamage()
     {
-        
-
+        SwordCol.enabled = true;
         m_EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
         a_iCount = m_EnemyList.Length;
         float a_fCacLen = 0.0f;
@@ -447,8 +445,8 @@ public class Hero : MonoBehaviour
                 if (m_AttackDist + 0.1f < a_fCacLen)
                     continue;
 
-
-                m_EnemyList[i].GetComponent<MonCtrl>().TakeDamage(10);
+            
+            m_EnemyList[i].GetComponent<MonCtrl>().TakeDamage(10);
 
             }//for (int i = 0; i < a_iCount; ++i)
 
@@ -492,80 +490,17 @@ public class Hero : MonoBehaviour
 
     }// void Event_AttDamage(string Type)
 
-    //void Event_AttFinish(string Type)
-    //{ //공격애니메이션 끝났는지? 판단하는 이벤트 함수
+    void Event_AttFinish()
+    { //공격애니메이션 끝났는지? 판단하는 이벤트 함수
+        SwordCol.enabled = false;
+        if (m_isPickMvOnOff == true)      
+        {            
+            yasuo = YasuoState.idle;
+        }
 
-    //    if ((0.0f != h || 0.0f != v) || 0.0f < m_JoyMvLen
-    //             || m_isPickMvOnOff == true)
-    //    //키보드 이동조작이 있거나, 조이스틱 조작이 있는 경우
-    //    {   //스킬 사용 중에 이동을 누르고 있다가 이쪽으로 들어오면 
-    //        //예약 즉시 취소를 위한 코드
-    //        MySetAnim(AnimState.move);
-    //        m_RsvPicking = 0.0f;
-    //        return;
-    //    }
 
-    //    if (0.0f < m_RsvPicking) //마우스 피킹 예약이 있었다면...
-    //    {
-    //        ////---- 길찾기를 이용하지 않고 예약 이동 처리를 할 때 코드
-    //        //m_TargetUnit = m_RsvTgUnit;  //타겟도 바꾸거나 무효화 시켜 버린다.
-    //        //m_RsvPicking = 0.0f;
-    //        ////스킬 끝나는 시점에 한번만 적용되니까 
-    //        ////스킬 끝나는 시점에 키보드 마우스 이동이 있으면 다음 Update에서 취소될 것이다.
-    //        //m_TargetPos = m_RsvTargetPos;
-    //        //m_MoveDurTime = m_RsvMvDurTime;
-    //        //m_isPickMvOnOff = true;
-    //        //m_AddTimeCount = 0.0;
-    //        ////---- 길찾기를 이용하지 않고 예약 이동 처리를 할 때 코드
 
-    //        //---- 네비게이션 메시를 이용한 이동 방식
-    //        m_TargetUnit = m_RsvTgUnit;  //타겟도 바꾸거나 무효화 시켜 버린다.
-    //        a_StartPos = this.transform.position; //출발 위치     
-    //        m_TargetPos = m_RsvTargetPos;
-    //        m_TargetPos.y = this.transform.position.y; // 최종 목표 위치
-
-    //        float a_PathLen = 0.0f;
-    //        if (MyNavCalcPath(a_StartPos, m_TargetPos, ref a_PathLen) == true)
-    //        {
-    //            m_isPickMvOnOff = true;                 //피킹 이동 OnOff
-    //            a_CacLenVec = m_TargetPos - a_StartPos;
-    //            a_CacLenVec.y = 0.0f;
-    //            m_MoveDir = a_CacLenVec.normalized;
-    //            m_MoveDurTime = a_PathLen / m_MoveVelocity; //도착하는데 걸리는 시간
-    //            m_AddTimeCount = 0.0;
-    //        }
-    //        //---- 네비게이션 메시를 이용한 이동 방식
-
-    //        MySetAnim(AnimState.move);
-
-    //        return;
-    //    } //if (0.0f < m_RsvPicking) //마우스 피킹 예약이 있었다면...
-
-    //    //Skill상태일때는 Skill상태로 끝나야 하고 
-    //    //Attack상태일대는 Attack상태로 끝나야 하고 
-    //    //상태는 Skill인데 Attack애니메이션 끝이 들어온 경우라면 제외시켜버린다.
-    //    //공격 애니 중에 스킬 발동시 공격 끝나는 이벤트 함수가 들어와서 스킬이
-    //    //취소되는 현상이 있을 수 있어서 예외 처리함
-    //    //또 하나의 해결책은 Event_SkillFinish()함수를 따로 만들어 주면 된다.
-    //    if (m_prevState.ToString() == AnimState.skill.ToString() &&
-    //        Type == AnimState.attack.ToString())
-    //        return;
-
-    //    if (m_prevState.ToString() == AnimState.attack.ToString() &&
-    //        Type == AnimState.skill.ToString())
-    //        return;
-
-    //    if (IsTargetEnemyActive(0.2f) == true) //공격 거리 안에 타겟이 있느냐?
-    //    {
-    //        //스킬 애니메이션으로 끝난 경우 자동 공격 애니메이션을 하게 하고 싶은 경우
-    //        MySetAnim(AnimState.attack);  //다시 공격 애니
-    //        ClearMsPickPath();
-    //    }
-    //    else
-    //    {
-    //        MySetAnim(AnimState.idle);
-    //    }
-    //}
+    }
 
 }
 

@@ -27,7 +27,7 @@ public class MonCtrl : MonoBehaviour
     public int hp = 100;
     [SerializeField]float m_MoveVelocity = 5.0f;
     public GameObject Attackpos;
-    BoxCollider wolfCol;
+    BoxCollider MonCol;
     void Awake()
     {
         //traceDist = 18.0f; 
@@ -45,8 +45,8 @@ public class MonCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        wolfCol = Attackpos.GetComponent<BoxCollider>();
-        wolfCol.enabled = false;
+        MonCol = Attackpos.GetComponent<BoxCollider>();
+        MonCol.enabled = false;
     }
 
     // Update is called once per frame
@@ -184,22 +184,7 @@ public class MonCtrl : MonoBehaviour
     //}
 
 
-    //void OnTriggerEnter(Collider coll)
-    //{
-    //    if (coll.gameObject.tag == "Sword")
-    //    {   
-            
-    //        if (hp <= 0)
-    //        {
-    //            MonsterDie();
-    //        }
 
-    //        if (monType == MonType.Wolf)
-    //        {
-    //            animator.SetTrigger("IsHit");
-    //        }
-    //    }
-    //}
 
     public void TakeDamage(int a_Value)
     {
@@ -235,16 +220,33 @@ public class MonCtrl : MonoBehaviour
             return;
 
         playerTr.GetComponent<Hero>().TakeDamage(10);
-        wolfCol.enabled = true;
+        MonCol.enabled = true;
     }
 
-    public void WolfAttackEnd()
+    public void WolffAttackEnd()
     {
         if (monType == MonType.Zombie)
             return;
 
-        wolfCol.enabled = false;
+        MonCol.enabled = false;
     }
 
+
+    public void ZomAttack()
+    {
+        if (monType == MonType.Wolf)
+            return;
+
+        playerTr.GetComponent<Hero>().TakeDamage(10);
+        MonCol.enabled = true;
+    }
+
+    public void ZomAttackEnd()
+    {
+        if (monType == MonType.Wolf)
+            return;
+
+        MonCol.enabled = false;
+    }
 
 }
