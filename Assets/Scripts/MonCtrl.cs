@@ -166,60 +166,64 @@ public class MonCtrl : MonoBehaviour
  
     }//void MonActionUpdate()
 
-    void MonsterDie()
-    {
-        isDie = true;
-        monsterState = MonsterState.die;        
-        animator.SetTrigger("IsDie");
-        Destroy(gameObject);
-        //---- 보상으로 아이템 드롭 
-        //if (GameMgr.m_CoinItem != null)
-        //{
-        //    GameObject a_CoinObj = (GameObject)Instantiate(GameMgr.m_CoinItem);
-        //    a_CoinObj.transform.position = this.transform.position;
-        //    Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
-        //}
-        //---- 보상으로 아이템 드롭 
-    }
+    //void MonsterDie()
+    //{
+    //    Debug.Log("늑대주겅");
+    //    isDie = true;
+    //    monsterState = MonsterState.die;        
+    //    animator.SetTrigger("IsDie");
+        
+    //    //---- 보상으로 아이템 드롭 
+    //    //if (GameMgr.m_CoinItem != null)
+    //    //{
+    //    //    GameObject a_CoinObj = (GameObject)Instantiate(GameMgr.m_CoinItem);
+    //    //    a_CoinObj.transform.position = this.transform.position;
+    //    //    Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
+    //    //}
+    //    //---- 보상으로 아이템 드롭 
+    //}
 
 
-    void OnTriggerEnter(Collider coll)
-    {
-        if (coll.gameObject.tag == "Sword")
-        {   
+    //void OnTriggerEnter(Collider coll)
+    //{
+    //    if (coll.gameObject.tag == "Sword")
+    //    {   
             
-            if (hp <= 0)
-            {
-                MonsterDie();
-            }
+    //        if (hp <= 0)
+    //        {
+    //            MonsterDie();
+    //        }
 
-            if (monType == MonType.Wolf)
-            {
-                animator.SetTrigger("IsHit");
-            }
-        }
-    }
+    //        if (monType == MonType.Wolf)
+    //        {
+    //            animator.SetTrigger("IsHit");
+    //        }
+    //    }
+    //}
 
     public void TakeDamage(int a_Value)
     {
         if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
             return;
+
         animator.SetTrigger("IsHit");
         hp -= a_Value;
         if (hp <= 0)
         {
             hp = 0;
-            MonsterDie();
+            isDie = true;
+            monsterState = MonsterState.die;
+            animator.SetTrigger("IsDie");
+            Destroy(gameObject);
+            
         }        
     }
+
 
     void OnPlayerDie()
     {
         if (isDie == true)
             return;
-
-        //몬스터의 상태를 체크하는 코루틴 함수를 모두 정지시킴
-        StopAllCoroutines();
         //추적을 정지하고 애니메이션을 수행
         //nvAgent.isStopped = true;
         animator.SetTrigger("IsPlayerDie");
@@ -241,4 +245,6 @@ public class MonCtrl : MonoBehaviour
 
         wolfCol.enabled = false;
     }
+
+
 }
