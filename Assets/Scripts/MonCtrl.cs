@@ -26,10 +26,12 @@ public class MonCtrl : MonoBehaviour
 
     public int hp = 100;
     [SerializeField]float m_MoveVelocity = 5.0f;
+    public GameObject Attackpos;
+    BoxCollider wolfCol;
     void Awake()
     {
         //traceDist = 18.0f; 
-        //attackDist = 2.5f; 
+        //attackDist = 2.5f;         
 
         //몬스터의 Transform 할당
         monsterTr = this.gameObject.GetComponent<Transform>();
@@ -43,7 +45,8 @@ public class MonCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        wolfCol = Attackpos.GetComponent<BoxCollider>();
+        wolfCol.enabled = false;
     }
 
     // Update is called once per frame
@@ -154,7 +157,7 @@ public class MonCtrl : MonoBehaviour
                     Quaternion a_TargetRot =
                                 Quaternion.LookRotation(a_CacVLen.normalized);
                     transform.rotation = Quaternion.Slerp(transform.rotation,
-                                              a_TargetRot, Time.deltaTime * m_RotSpeed);
+                                              a_TargetRot, Time.deltaTime * m_RotSpeed);                    
                     //---몬스터가 주인공을 공격하면서 바라 보도록 해야 한다. 
                 }
                 break;
@@ -168,7 +171,7 @@ public class MonCtrl : MonoBehaviour
         isDie = true;
         monsterState = MonsterState.die;        
         animator.SetTrigger("IsDie");
-
+        Destroy(gameObject);
         //---- 보상으로 아이템 드롭 
         //if (GameMgr.m_CoinItem != null)
         //{
@@ -179,19 +182,21 @@ public class MonCtrl : MonoBehaviour
         //---- 보상으로 아이템 드롭 
     }
 
-    void OnCollisionEnter(Collision coll)
+
+    void OnTriggerEnter(Collider coll)
     {
-        if (coll.gameObject.tag == "Player")
-        {            
-            hp -= coll.gameObject.GetComponent<Hero>().damage;
+        if (coll.gameObject.tag == "Sword")
+        {   
+            
             if (hp <= 0)
             {
                 MonsterDie();
             }
 
-           
-            Destroy(coll.gameObject);            
-            animator.SetTrigger("IsHit");
+            if (monType == MonType.Wolf)
+            {
+                animator.SetTrigger("IsHit");
+            }
         }
     }
 
@@ -199,14 +204,13 @@ public class MonCtrl : MonoBehaviour
     {
         if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
             return;
-
+        animator.SetTrigger("IsHit");
         hp -= a_Value;
         if (hp <= 0)
         {
             hp = 0;
             MonsterDie();
-        }
-        animator.SetTrigger("IsHit");
+        }        
     }
 
     void OnPlayerDie()
@@ -219,5 +223,22 @@ public class MonCtrl : MonoBehaviour
         //추적을 정지하고 애니메이션을 수행
         //nvAgent.isStopped = true;
         animator.SetTrigger("IsPlayerDie");
+    }
+
+    public void WolfAttack()
+    {
+        if (monType == MonType.Zombie)
+            return;
+
+        playerTr.GetComponent<Hero>().TakeDamage(10);
+        wolfCol.enabled = true;
+    }
+
+    public void WolfAttackEnd()
+    {
+        if (monType == MonType.Zombie)
+            return;
+
+        wolfCol.enabled = false;
     }
 }

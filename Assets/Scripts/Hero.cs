@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class Hero : MonoBehaviour
 {
-    public enum YasuoState { idle, trace, attack, hit,die };
+    public enum YasuoState { idle, trace, attack, hit, die, skill };
 
     public YasuoState yasuo = YasuoState.idle;
-    public int damage = 20;
-    [SerializeField]float m_CurHp = 100.0f;
-    [SerializeField]float m_MaxHp = 100.0f;
+    [SerializeField] float m_CurHp = 100.0f;
+    [SerializeField] float m_MaxHp = 100.0f;
 
     public Image hpbar;
 
@@ -43,12 +42,17 @@ public class Hero : MonoBehaviour
 
     Vector3 a_CacTgVec = Vector3.zero;  //타겟까지의 거리 계산용 변수
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
+    
+    BoxCollider SwordCol;
+    public GameObject Sword;
+
 
     void Awake()
     {
         Cam a_CamCtrl = Camera.main.GetComponent<Cam>();
         if (a_CamCtrl != null)
             a_CamCtrl.InitCamera(this.gameObject);
+        
     }
 
     void Start()
@@ -58,7 +62,9 @@ public class Hero : MonoBehaviour
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
         m_layerMask |= 1 << LayerMask.NameToLayer("MyUnit"); //Unit 도 피킹
 
-        m_RefAnimator = this.gameObject.GetComponent<Animator>();        
+        m_RefAnimator = this.gameObject.GetComponent<Animator>();
+        SwordCol = Sword.GetComponent<BoxCollider>();
+        SwordCol.enabled = false;
         yasuo = YasuoState.idle;
     }
 
@@ -66,33 +72,35 @@ public class Hero : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {       
+    {
         if (Input.GetMouseButtonDown(0))
-            {
+        {
             //yasuo = YasuoState.trace;
             a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity,                                                        m_layerMask.value))
-            {          
+            if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
+            {
                 if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
                 { //몬스터 픽킹일 때                     
                     MousePicking(hitInfo.point, hitInfo.collider.gameObject);
                     if (GameMgr.Inst.m_CursorMark != null)
-                        GameMgr.Inst.m_CursorMark.SetActive(false);                                 
+                        GameMgr.Inst.m_CursorMark.SetActive(false);
                 }
                 else  //지형 바닥 픽킹일 때 
                 {
                     MousePicking(hitInfo.point);
-                    GameMgr.Inst.CursorMarkOn(hitInfo.point);                    
+                    GameMgr.Inst.CursorMarkOn(hitInfo.point);
                 }//else  //지형 바닥 픽킹일 때
             }
         }//if (Input.GetMouseButtonDown(0))
-        
 
-        MousePickUpdate();        
-        YasuoActionUpdate();       
+
+
+
+        MousePickUpdate();
+        YasuoActionUpdate();
         if (m_isPickMvOnOff == false)
-         yasuo = YasuoState.idle;
-        
+            yasuo = YasuoState.idle;
+
 
     }
 
@@ -101,7 +109,7 @@ public class Hero : MonoBehaviour
         m_RefAnimator.SetBool("Idle", false);
         m_RefAnimator.SetBool("IsTrace", false);
         m_RefAnimator.SetBool("IsAttack", false);
-        m_RefAnimator.SetBool("IsDie", false);     
+        m_RefAnimator.SetBool("IsDie", false);
 
         m_RefAnimator.SetBool(anim, true);
     }
@@ -112,12 +120,13 @@ public class Hero : MonoBehaviour
     {
         switch (yasuo)
         {
-            
+
             case YasuoState.idle:
+                {
+                    AnimType("Idle");
 
-                AnimType("Idle");
+                }
                 break;
-
             //추적 상태
             case YasuoState.trace:
                 {
@@ -128,8 +137,12 @@ public class Hero : MonoBehaviour
             //공격 상태
             case YasuoState.attack:
                 {
+
                     AttackRotUpdate();
                     AnimType("IsAttack");
+                    
+                    //MonCtrl mon = GetComponent<MonCtrl>();
+                    //mon.TakeDamage(10);
 
                 }
                 break;
@@ -164,7 +177,7 @@ public class Hero : MonoBehaviour
 
             if (a_CacTgVec.magnitude <= a_AttDist)
             {
-                m_TargetUnit = a_PickMon;                
+                m_TargetUnit = a_PickMon;
 
                 return;
 
@@ -215,7 +228,7 @@ public class Hero : MonoBehaviour
             m_AddTimeCount = m_AddTimeCount + Time.deltaTime;
             if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
             {
-                m_isPickMvOnOff = false;                
+                m_isPickMvOnOff = false;
                 yasuo = YasuoState.idle;
             }
             else
@@ -231,7 +244,7 @@ public class Hero : MonoBehaviour
                 a_CacTgVec = m_TargetUnit.transform.position -
                                                 this.transform.position;
                 if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
-                    yasuo = YasuoState.attack;                                    
+                    yasuo = YasuoState.attack;
 
             }
             //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
@@ -256,7 +269,7 @@ public class Hero : MonoBehaviour
             GameMgr.Inst.m_CursorMark.SetActive(false);
     }
 
-  
+
 
     float a_CacRotSpeed = 0.0f;
     public void AttackRotUpdate()
@@ -278,7 +291,7 @@ public class Hero : MonoBehaviour
                 Quaternion a_TargetRot = Quaternion.LookRotation(a_CacAtDir);
                 transform.rotation = Quaternion.Slerp(transform.rotation,
                                         a_TargetRot,
-                                        Time.deltaTime * a_CacRotSpeed);                
+                                        Time.deltaTime * a_CacRotSpeed);
             }
         }//if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
 
@@ -353,7 +366,8 @@ public class Hero : MonoBehaviour
         }//for (int i = 0; i < iCount; ++i)
     }
 
-    void TakeDamage(float a_Val)
+
+    public void TakeDamage(float a_Val)
     {
         if (m_CurHp == 0.0f)
             return;
@@ -370,13 +384,12 @@ public class Hero : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider coll)
-    {        
-        if (coll.gameObject.tag == "Enemy")
+    {
+        if (coll.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
         {
-            
             if (m_CurHp <= 0.0f)
                 return;
-            m_CurHp -= 10;             
+            m_CurHp -= 10;
 
             if (hpbar != null)
                 hpbar.fillAmount = m_CurHp / m_MaxHp;
@@ -395,6 +408,17 @@ public class Hero : MonoBehaviour
 
         //    Destroy(coll.gameObject);
         //}
+    }
+
+    public void AttackStart()
+    {
+        SwordCol.enabled = true;
+    }
+
+
+    public void AttackEnd()
+    {
+        SwordCol.enabled = false;
     }
 }
 
