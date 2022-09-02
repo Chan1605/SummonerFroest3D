@@ -49,6 +49,7 @@ public class Hero : MonoBehaviour
     Transform Taget;
 
 
+
     void Awake()
     {
         Cam a_CamCtrl = Camera.main.GetComponent<Cam>();
@@ -68,6 +69,8 @@ public class Hero : MonoBehaviour
         SwordCol = Sword.GetComponent<BoxCollider>();
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
+
+
     }
 
 
@@ -97,7 +100,11 @@ public class Hero : MonoBehaviour
         }//if (Input.GetMouseButtonDown(0))
 
         if(Input.GetKeyDown(KeyCode.Q))
-        {
+        {            
+            if(GameObject.FindGameObjectWithTag("Enemy") !=null)
+            Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+            if (Taget == null)
+                return;
             IsSkill = true;
             yasuo = YasuoState.skill;
         }
@@ -161,8 +168,8 @@ public class Hero : MonoBehaviour
                 break;
 
             case YasuoState.skill:
-                {                    
-                    Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+                {
+                    //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;              
                     Vector3 dir = Taget.position - this.gameObject.transform.position;
                     dir.y = 0;
                     dir.Normalize();
