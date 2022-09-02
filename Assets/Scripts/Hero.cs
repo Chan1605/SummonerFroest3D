@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.ImageEffects;
 
 public class Hero : MonoBehaviour
 {
@@ -49,6 +50,8 @@ public class Hero : MonoBehaviour
     public GameObject Sword;
     Transform Taget;
 
+    ColorCorrectionCurves colorCorrection;
+
 
 
     void Awake()
@@ -61,6 +64,9 @@ public class Hero : MonoBehaviour
 
     void Start()
     {
+        colorCorrection = FindObjectOfType<ColorCorrectionCurves>();
+        
+
         GameMgr.Inst.m_refHero = this;
 
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
@@ -190,6 +196,8 @@ public class Hero : MonoBehaviour
                 {
                     //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;              
                     AnimType("IsSkill");
+                
+                    colorCorrection.enabled = true;
 
                 }
                 break;
@@ -206,6 +214,8 @@ public class Hero : MonoBehaviour
                     //Taget.GetComponent<Animator>().SetTrigger("IsDie");
                     this.gameObject.transform.position = tagetpos;
                     IsSkill = false;
+                    colorCorrection.enabled = false;
+
                 }
                 break;
 
