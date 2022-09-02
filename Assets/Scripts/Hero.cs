@@ -42,9 +42,11 @@ public class Hero : MonoBehaviour
 
     Vector3 a_CacTgVec = Vector3.zero;  //타겟까지의 거리 계산용 변수
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
-    
+
+    bool IsSkill = false;
     BoxCollider SwordCol;
     public GameObject Sword;
+    Transform Taget;
 
 
     void Awake()
@@ -72,10 +74,11 @@ public class Hero : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {  
         if (Input.GetMouseButtonDown(0))
         {
-            //yasuo = YasuoState.trace;
+            if (yasuo == YasuoState.skill)
+                return;
             a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
             {
@@ -93,12 +96,22 @@ public class Hero : MonoBehaviour
             }
         }//if (Input.GetMouseButtonDown(0))
 
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            IsSkill = true;
+            yasuo = YasuoState.skill;
+        }
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            IsSkill = false;
+            //AnimType("SkillEnd");
+        }
 
 
-        EnemyMonitor();
+        //EnemyMonitor();
         MousePickUpdate();
         YasuoActionUpdate();
-        if (m_isPickMvOnOff == false)
+        if (m_isPickMvOnOff == false && IsSkill == false)
             yasuo = YasuoState.idle;
 
 
@@ -110,6 +123,8 @@ public class Hero : MonoBehaviour
         m_RefAnimator.SetBool("IsTrace", false);
         m_RefAnimator.SetBool("IsAttack", false);
         m_RefAnimator.SetBool("IsDie", false);
+        m_RefAnimator.SetBool("IsSkill", false);
+        m_RefAnimator.SetBool("SkillEnd", false);
 
         m_RefAnimator.SetBool(anim, true);
     }
@@ -127,14 +142,14 @@ public class Hero : MonoBehaviour
 
                 }
                 break;
-            //추적 상태
+            
             case YasuoState.trace:
                 {
                     AnimType("IsTrace");
                 }
                 break;
 
-            //공격 상태
+            
             case YasuoState.attack:
                 {
 
@@ -145,6 +160,24 @@ public class Hero : MonoBehaviour
                 }
                 break;
 
+            case YasuoState.skill:
+                {                    
+                    Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+                    Vector3 dir = Taget.position - this.gameObject.transform.position;
+                    dir.y = 0;
+                    dir.Normalize();
+
+                    Vector3 tagetpos = Taget.position + (dir * 2.0f);
+                    this.gameObject.transform.forward = dir;
+                    AnimType("IsSkill");   
+                    Taget.GetComponent<MonCtrl>().TakeDamage(100);
+                    //Taget.GetComponent<Animator>().SetTrigger("IsDie");
+                    this.gameObject.transform.position = tagetpos;
+
+                }
+                break;
+
+
         }
     }
 
@@ -152,6 +185,8 @@ public class Hero : MonoBehaviour
 
     public void MousePicking(Vector3 a_SetPickVec, GameObject a_PickMon = null)
     {
+        if (yasuo == YasuoState.skill)
+            return;
         a_StartPos = this.transform.position; //출발 위치    
         a_SetPickVec.y = this.transform.position.y; // 최종 목표 위치
 
@@ -373,6 +408,12 @@ public class Hero : MonoBehaviour
         m_CurHp -= a_Val;
 
         hpbar.fillAmount = m_CurHp / m_MaxHp;
+
+        if(m_CurHp <= 0.0f)
+        {
+            m_CurHp = 0.0f;
+            PlayerDie();
+        }    
     }
 
     void PlayerDie()
@@ -381,32 +422,6 @@ public class Hero : MonoBehaviour
 
     }
 
-    void OnTriggerEnter(Collider coll)
-    {
-        if (coll.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-        {
-            if (m_CurHp <= 0.0f)
-                return;
-            m_CurHp -= 10;
-
-            if (hpbar != null)
-                hpbar.fillAmount = m_CurHp / m_MaxHp;
-            //Player의 생명이 0이하이면 사망 처리
-            if (m_CurHp <= 0)
-            {
-                PlayerDie();
-            }
-        }//if(coll.gameObject.tag == "PUNCH")
-        //else if (coll.gameObject.name.Contains("CoinPrefab") == true)
-        //{
-        //    GameMgr.Inst.AddGold();
-
-        //    if (Ad_Source != null && CoinSfx != null)
-        //        Ad_Source.PlayOneShot(CoinSfx, 0.3f);
-
-        //    Destroy(coll.gameObject);
-        //}
-    }
 
     public void AttackStart()
     {
@@ -497,7 +512,6 @@ public class Hero : MonoBehaviour
         {            
             yasuo = YasuoState.idle;
         }
-
 
 
     }

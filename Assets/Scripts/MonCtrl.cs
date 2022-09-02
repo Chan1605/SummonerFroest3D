@@ -16,13 +16,13 @@ public class MonCtrl : MonoBehaviour
     private Transform monsterTr;
     private Transform playerTr;
     //private NavMeshAgent nvAgent;
-    private Animator animator;
+    public Animator animator;
 
     public float traceDist = 10.0f;
     //공격 사정거리
     public float attackDist = 2.0f;
 
-    private bool isDie = false;
+    public bool isDie = false;
 
     public int hp = 100;
     [SerializeField]float m_MoveVelocity = 5.0f;
@@ -107,6 +107,7 @@ public class MonCtrl : MonoBehaviour
             //추적 상태
             case MonsterState.trace:
                 {
+  
                     ////추적 대상의 위치를 넘겨줌
                     //nvAgent.destination = playerTr.position;
                     ////추적을 재시작
@@ -145,6 +146,7 @@ public class MonCtrl : MonoBehaviour
             //공격 상태
             case MonsterState.attack:
                 {
+
                     ////추적 중지
                     //nvAgent.isStopped = true; //nvAgent.Stop();
                     //IsAttack 을 true로 설정해 attack State로 전이
@@ -190,8 +192,7 @@ public class MonCtrl : MonoBehaviour
     {
         if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
             return;
-
-        animator.SetTrigger("IsHit");
+        
         hp -= a_Value;
         if (hp <= 0)
         {
@@ -199,7 +200,7 @@ public class MonCtrl : MonoBehaviour
             isDie = true;
             monsterState = MonsterState.die;
             animator.SetTrigger("IsDie");
-            Destroy(gameObject);
+            Destroy(gameObject, 2.0f);
             
         }        
     }
@@ -216,6 +217,8 @@ public class MonCtrl : MonoBehaviour
 
     public void WolfAttack()
     {
+        if (isDie == true)
+            return;
         if (monType == MonType.Zombie)
             return;
 
@@ -225,6 +228,8 @@ public class MonCtrl : MonoBehaviour
 
     public void WolffAttackEnd()
     {
+        if (isDie == true)
+            return;
         if (monType == MonType.Zombie)
             return;
 
@@ -234,6 +239,8 @@ public class MonCtrl : MonoBehaviour
 
     public void ZomAttack()
     {
+        if (isDie == true)
+            return;
         if (monType == MonType.Wolf)
             return;
 
@@ -243,6 +250,8 @@ public class MonCtrl : MonoBehaviour
 
     public void ZomAttackEnd()
     {
+        if (isDie == true)
+            return;
         if (monType == MonType.Wolf)
             return;
 
