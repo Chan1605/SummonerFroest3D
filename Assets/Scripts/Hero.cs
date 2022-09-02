@@ -111,14 +111,7 @@ public class Hero : MonoBehaviour
             IsSkill = true;
             yasuo = YasuoState.skill;
         }
-        if (Input.GetKeyUp(KeyCode.Q))
-        {
-            IsSkill = false;
-            //AnimType("SkillEnd");
-        }
 
-
-        //EnemyMonitor();
         MousePickUpdate();
         YasuoActionUpdate();
         if (m_isPickMvOnOff == false && IsSkill == false)
@@ -183,6 +176,7 @@ public class Hero : MonoBehaviour
                     Taget.GetComponent<MonCtrl>().TakeDamage(100);
                     //Taget.GetComponent<Animator>().SetTrigger("IsDie");
                     this.gameObject.transform.position = tagetpos;
+                    IsSkill = false;
 
                 }
                 break;
