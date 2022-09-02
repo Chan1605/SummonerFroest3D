@@ -44,6 +44,7 @@ public class Hero : MonoBehaviour
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
 
     bool IsSkill = false;
+    bool IsDie = false;
     BoxCollider SwordCol;
     public GameObject Sword;
     Transform Taget;
@@ -77,7 +78,9 @@ public class Hero : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {  
+    {
+        if (IsDie == true)
+            return;
         if (Input.GetMouseButtonDown(0))
         {
             if (yasuo == YasuoState.skill)
@@ -447,7 +450,9 @@ public class Hero : MonoBehaviour
 
     void PlayerDie()
     {
+        IsDie = true;
         Debug.Log("Player Die !!");
+        AnimType("IsDie");        
 
     }
 

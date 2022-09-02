@@ -200,7 +200,7 @@ public class MonCtrl : MonoBehaviour
             isDie = true;
             monsterState = MonsterState.die;
             animator.SetTrigger("IsDie");
-            Destroy(gameObject, 2.0f);
+            Destroy(gameObject, 1.0f);
             
         }        
     }
