@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Hero : MonoBehaviour
 {
-    public enum YasuoState { idle, trace, attack, hit, die, skill };
+    public enum YasuoState { idle, trace, attack, hit, die, skill,skillend};
 
     public YasuoState yasuo = YasuoState.idle;
     [SerializeField] float m_CurHp = 100.0f;
@@ -99,17 +99,37 @@ public class Hero : MonoBehaviour
             }
         }//if (Input.GetMouseButtonDown(0))
 
-        if(Input.GetKeyDown(KeyCode.Q))
-        {            
+        //if(Input.GetKeyDown(KeyCode.Q))
+        //{            
+        //    if(GameObject.FindGameObjectWithTag("Enemy") !=null)
+        //    Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+        //    if (Taget == null)
+        //    {
+        //        yasuo = YasuoState.idle;
+        //        return;
+        //    }
+        //    IsSkill = true;
+        //    yasuo = YasuoState.skill;
+        //}
+
+        if(Input.GetKey(KeyCode.Q))
+        {
             if(GameObject.FindGameObjectWithTag("Enemy") !=null)
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
-            if (Taget == null)
+            if(Taget == null)
             {
                 yasuo = YasuoState.idle;
                 return;
             }
             IsSkill = true;
             yasuo = YasuoState.skill;
+
+        }
+        if(Input.GetKeyUp(KeyCode.Q))
+        {
+            if (yasuo != YasuoState.skill)
+                return;
+            yasuo = YasuoState.skillend;
         }
 
         MousePickUpdate();
@@ -166,18 +186,23 @@ public class Hero : MonoBehaviour
             case YasuoState.skill:
                 {
                     //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;              
+                    AnimType("IsSkill");
+
+                }
+                break;
+            case YasuoState.skillend:
+                {
                     Vector3 dir = Taget.position - this.gameObject.transform.position;
                     dir.y = 0;
                     dir.Normalize();
 
                     Vector3 tagetpos = Taget.position + (dir * 2.0f);
                     this.gameObject.transform.forward = dir;
-                    AnimType("IsSkill");   
+                    AnimType("SkillEnd");
                     Taget.GetComponent<MonCtrl>().TakeDamage(100);
                     //Taget.GetComponent<Animator>().SetTrigger("IsDie");
                     this.gameObject.transform.position = tagetpos;
                     IsSkill = false;
-
                 }
                 break;
 
