@@ -104,7 +104,10 @@ public class Hero : MonoBehaviour
             if(GameObject.FindGameObjectWithTag("Enemy") !=null)
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
             if (Taget == null)
+            {
+                yasuo = YasuoState.idle;
                 return;
+            }
             IsSkill = true;
             yasuo = YasuoState.skill;
         }
