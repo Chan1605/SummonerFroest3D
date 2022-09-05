@@ -6,7 +6,7 @@ using UnityStandardAssets.ImageEffects;
 
 public class Hero : MonoBehaviour
 {
-    public enum YasuoState { idle, trace, attack, hit, die, skill,skillend};
+    public enum YasuoState { idle, trace, attack, hit, die, skill, skillend };
 
     public YasuoState yasuo = YasuoState.idle;
     [SerializeField] float m_CurHp = 100.0f;
@@ -54,6 +54,8 @@ public class Hero : MonoBehaviour
 
     float skill_Time = 5.0f;
     float skill_Delay = 0.0f;
+    float GuideTimer = 0.0f;
+    
 
 
     void Awake()
@@ -61,13 +63,13 @@ public class Hero : MonoBehaviour
         Cam a_CamCtrl = Camera.main.GetComponent<Cam>();
         if (a_CamCtrl != null)
             a_CamCtrl.InitCamera(this.gameObject);
-        
+
     }
 
     void Start()
     {
         colorCorrection = FindObjectOfType<ColorCorrectionCurves>();
-        
+
 
         GameMgr.Inst.Yasuo = this;
 
@@ -111,81 +113,70 @@ public class Hero : MonoBehaviour
             }
         }//if (Input.GetMouseButtonDown(0))
 
-        //if(Input.GetKeyDown(KeyCode.Q))
-        //{            
-        //    if(GameObject.FindGameObjectWithTag("Enemy") !=null)
-        //    Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
-        //    if (Taget == null)
-        //    {
-        //        yasuo = YasuoState.idle;
-        //        return;
-        //    }
-        //    IsSkill = true;
-        //    yasuo = YasuoState.skill;
-        //}
         GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
         skill_Delay -= Time.deltaTime;
         GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
         GameMgr.Inst.SkillInfoText.text = skill_Delay.ToString("N0");
+
         if (skill_Delay <= 0.0f)
-        {            
+        {
             GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
             GameMgr.Inst.SkillInfoText.text = "Q";
+            
         }
-        
+
+
+
+
+
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
             if (Taget == null)
             {
-                GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                Debug.Log(GameMgr.Inst.GuideText);                
-                GameMgr.Inst.GuideText.text = "대상이 존재하지 않습니다.";
                 yasuo = YasuoState.idle;
                 return;
             }
 
             if (Input.GetKey(KeyCode.Q))
             {
+
                 if (skill_Delay > 0.0f)
-                    return;
+                {
+                  GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                  GuideTimer = 1.0f;
+                   return;
+                }
+
+
 
                 IsSkill = true;
-                
-                //if(GameObject.FindGameObjectWithTag("Enemy") !=null)
-                //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
-                //if(Taget == null)
-                //{
-                //    yasuo = YasuoState.idle;
-                //    return;
-                //}
                 yasuo = YasuoState.skill;
-     
-
             }
             if (Input.GetKeyUp(KeyCode.Q))
             {
- 
-
                 if (yasuo != YasuoState.skill)
-                    return;
-
+                    return;                
                 skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
 
-                ;
 
             }
         }
 
+        GuideTimer -= Time.deltaTime;
+        if (GuideTimer <= 0.0f)
+        {
+            GameMgr.Inst.GuideText.gameObject.SetActive(false);
+            GuideTimer = 0.0f;
+        }
 
+        MousePickUpdate();
+        YasuoActionUpdate();
+        if (m_isPickMvOnOff == false && IsSkill == false && yasuo != YasuoState.skillend && yasuo != YasuoState.skill)
+            yasuo = YasuoState.idle;
 
-            MousePickUpdate();
-            YasuoActionUpdate();
-            if (m_isPickMvOnOff == false && IsSkill == false &&  yasuo != YasuoState.skillend && yasuo != YasuoState.skill)
-                yasuo = YasuoState.idle;
-        
 
     }
 
@@ -214,32 +205,28 @@ public class Hero : MonoBehaviour
 
                 }
                 break;
-            
+
             case YasuoState.trace:
                 {
                     AnimType("IsTrace");
                 }
                 break;
 
-            
+
             case YasuoState.attack:
                 {
 
                     AttackRotUpdate();
                     AnimType("IsAttack");
-                       
+
 
                 }
                 break;
 
             case YasuoState.skill:
                 {
-                    //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;              
-
-                    //if (skill_Time <= 0.0f)
-                    //    Destroy(gameObject);
                     AnimType("IsSkill");
-                
+
                     colorCorrection.enabled = true;
 
                 }
@@ -348,7 +335,7 @@ public class Hero : MonoBehaviour
             if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
             {
                 m_isPickMvOnOff = false;
-                
+
             }
             else
             {
@@ -501,11 +488,11 @@ public class Hero : MonoBehaviour
 
         hpbar.fillAmount = m_CurHp / m_MaxHp;
 
-        if(m_CurHp <= 0.0f)
+        if (m_CurHp <= 0.0f)
         {
             m_CurHp = 0.0f;
             PlayerDie();
-        }    
+        }
     }
 
     void PlayerDie()
@@ -513,7 +500,7 @@ public class Hero : MonoBehaviour
         IsDie = true;
         Debug.Log("Player Die !!");
         AnimType("IsDie");
-   
+
 
     }
 
@@ -523,7 +510,7 @@ public class Hero : MonoBehaviour
         SwordCol.enabled = true;
         MonCtrl mon = GetComponent<MonCtrl>();
         mon.TakeDamage(10);
-        
+
     }
 
 
@@ -540,74 +527,32 @@ public class Hero : MonoBehaviour
         a_iCount = m_EnemyList.Length;
         float a_fCacLen = 0.0f;
 
-            for (int i = 0; i < a_iCount; ++i)
-            {
-                a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
-                a_fCacLen = a_CacTgVec.magnitude;
-                a_CacTgVec.y = 0.0f;
+        for (int i = 0; i < a_iCount; ++i)
+        {
+            a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
+            a_fCacLen = a_CacTgVec.magnitude;
+            a_CacTgVec.y = 0.0f;
 
-                //공격각도 안에 있는 경우
-                //70도 정도 //-0.7f) //-45도를 넘는 범위에 있다는 뜻
-                if (Vector3.Dot(transform.forward, a_CacTgVec.normalized) < 0.45f)
-                    continue;
+            //공격각도 안에 있는 경우
+            //70도 정도 //-0.7f) //-45도를 넘는 범위에 있다는 뜻
+            if (Vector3.Dot(transform.forward, a_CacTgVec.normalized) < 0.45f)
+                continue;
 
-                //공격 범위 밖에 있는 경우
-                if (m_AttackDist + 0.1f < a_fCacLen)
-                    continue;
+            //공격 범위 밖에 있는 경우
+            if (m_AttackDist + 0.1f < a_fCacLen)
+                continue;
 
-            
+
             m_EnemyList[i].GetComponent<MonCtrl>().TakeDamage(10);
 
-            }//for (int i = 0; i < a_iCount; ++i)
-
-        //if (Type == AnimState.attack.ToString()) //공격 애니메이션이면...
-        //else if (Type == AnimState.skill.ToString())
-        //{
-        //    a_EffObj = EffectPool.Inst.GetEffectObj("FX_AttackCritical_01",
-        //                                    Vector3.zero, Quaternion.identity);
-        //    a_EffPos = transform.position;
-        //    a_EffPos.y = a_EffPos.y + 1.0f;
-        //    a_EffObj.transform.position = a_EffPos + (transform.forward * 2.3f);
-        //    a_EffObj.transform.LookAt(a_EffPos + (-transform.forward * 2.0f));
-
-        //    //---------주변 모든 몬스터를 찾아서 데이지를 준다.(범위공격)
-        //    for (int i = 0; i < a_iCount; ++i)
-        //    {
-        //        a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
-        //        a_CacTgVec.y = 0.0f;
-
-        //        ////공격각도 안에 있는 경우
-        //        ////-45도를 넘는 범위에 있다는 뜻
-        //        //if (Vector3.Dot(transform.forward, a_CacTgVec.normalized) < -0.7f) 
-        //        //    continue;
-
-        //        //공격 범위 밖에 있는 경우
-        //        if (m_AttackDist + 0.1f < a_CacTgVec.magnitude)
-        //            continue;
-
-        //        a_EffObj = EffectPool.Inst.GetEffectObj("FX_Hit_01",
-        //                                Vector3.zero, Quaternion.identity);
-        //        a_EffPos = m_EnemyList[i].transform.position;
-        //        a_EffPos.y += 1.1f;
-        //        a_EffObj.transform.position = a_EffPos + (-a_CacTgVec.normalized * 1.13f); //0.7f);
-        //        a_EffObj.transform.LookAt(a_EffPos + (a_CacTgVec.normalized * 2.0f));
-        //        m_EnemyList[i].GetComponent<MonsterCtrl>().TakeDamage(this.gameObject, 50);
-
-        //    }//for (int i = 0; i < iCount; ++i)
+        }
 
 
-        //} //else if (Type == AnimState.skill.ToString())
-
-    }// void Event_AttDamage(string Type)
+    }
 
     void Event_AttFinish()
-    { //공격애니메이션 끝났는지? 판단하는 이벤트 함수
+    { 
         SwordCol.enabled = false;
-        //if (m_isPickMvOnOff == true)      
-        //{            
-        //    yasuo = YasuoState.idle;
-        //}
-
 
     }
 
