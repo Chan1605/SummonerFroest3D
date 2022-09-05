@@ -52,7 +52,7 @@ public class Hero : MonoBehaviour
 
     ColorCorrectionCurves colorCorrection;
 
-    float skill_Time = 0.0f;
+    float skill_Time = 5.0f;
     float skill_Delay = 0.0f;
 
 
@@ -122,7 +122,16 @@ public class Hero : MonoBehaviour
         //    IsSkill = true;
         //    yasuo = YasuoState.skill;
         //}
-
+        GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
+        skill_Delay -= Time.deltaTime;
+        GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
+        GameMgr.Inst.SkillInfoText.text = skill_Delay.ToString("N0");
+        if (skill_Delay <= 0.0f)
+        {            
+            GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.SkillInfoText.text = "Q";
+        }
+        
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {
@@ -138,6 +147,9 @@ public class Hero : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Q))
             {
+                if (skill_Delay > 0.0f)
+                    return;
+                skill_Delay = skill_Time;
                 //if(GameObject.FindGameObjectWithTag("Enemy") !=null)
                 //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
                 //if(Taget == null)
@@ -153,6 +165,8 @@ public class Hero : MonoBehaviour
             {
                 if (yasuo != YasuoState.skill)
                     return;
+
+                
                 yasuo = YasuoState.skillend;
             }
         }
@@ -213,9 +227,6 @@ public class Hero : MonoBehaviour
             case YasuoState.skill:
                 {
                     //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;              
-                    GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
-                    skill_Time -= Time.deltaTime;
-                    GameMgr.Inst.SkillCoolimg.fillAmount = skill_Time / skill_Delay;
 
                     //if (skill_Time <= 0.0f)
                     //    Destroy(gameObject);
@@ -486,7 +497,8 @@ public class Hero : MonoBehaviour
     {
         IsDie = true;
         Debug.Log("Player Die !!");
-        AnimType("IsDie");        
+        AnimType("IsDie");
+   
 
     }
 

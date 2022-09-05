@@ -159,8 +159,9 @@ public class MonCtrl : MonoBehaviour
                     Quaternion a_TargetRot =
                                 Quaternion.LookRotation(a_CacVLen.normalized);
                     transform.rotation = Quaternion.Slerp(transform.rotation,
-                                              a_TargetRot, Time.deltaTime * m_RotSpeed);                    
+                                              a_TargetRot, Time.deltaTime * m_RotSpeed);
                     //---몬스터가 주인공을 공격하면서 바라 보도록 해야 한다. 
+                    OnPlayerDie();
                 }
                 break;
         }
@@ -200,19 +201,19 @@ public class MonCtrl : MonoBehaviour
             isDie = true;
             monsterState = MonsterState.die;
             animator.SetTrigger("IsDie");
-            Destroy(gameObject,0.7f);
+            Destroy(gameObject,2.0f);
             
         }        
     }
 
 
-    void OnPlayerDie()
+    public void OnPlayerDie()
     {
         if (isDie == true)
             return;
         //추적을 정지하고 애니메이션을 수행
         //nvAgent.isStopped = true;
-        animator.SetTrigger("IsPlayerDie");
+        animator.SetTrigger("PlayerDie");
     }
 
     public void WolfAttack()
