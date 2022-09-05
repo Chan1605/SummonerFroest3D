@@ -52,6 +52,8 @@ public class Hero : MonoBehaviour
 
     ColorCorrectionCurves colorCorrection;
 
+    float skill_Time = 0.0f;
+    float skill_Delay = 0.0f;
 
 
     void Awake()
@@ -67,7 +69,7 @@ public class Hero : MonoBehaviour
         colorCorrection = FindObjectOfType<ColorCorrectionCurves>();
         
 
-        GameMgr.Inst.m_refHero = this;
+        GameMgr.Inst.Yasuo = this;
 
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
         m_layerMask |= 1 << LayerMask.NameToLayer("MyUnit"); //Unit 도 피킹
@@ -127,6 +129,9 @@ public class Hero : MonoBehaviour
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
             if (Taget == null)
             {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                Debug.Log(GameMgr.Inst.GuideText);                
+                GameMgr.Inst.GuideText.text = "대상이 존재하지 않습니다.";
                 yasuo = YasuoState.idle;
                 return;
             }
@@ -151,7 +156,10 @@ public class Hero : MonoBehaviour
                 yasuo = YasuoState.skillend;
             }
         }
-            MousePickUpdate();
+
+
+
+        MousePickUpdate();
             YasuoActionUpdate();
             if (m_isPickMvOnOff == false && IsSkill == false)
                 yasuo = YasuoState.idle;
@@ -205,6 +213,12 @@ public class Hero : MonoBehaviour
             case YasuoState.skill:
                 {
                     //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;              
+                    GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
+                    skill_Time -= Time.deltaTime;
+                    GameMgr.Inst.SkillCoolimg.fillAmount = skill_Time / skill_Delay;
+
+                    //if (skill_Time <= 0.0f)
+                    //    Destroy(gameObject);
                     AnimType("IsSkill");
                 
                     colorCorrection.enabled = true;

@@ -11,7 +11,13 @@ public class GameMgr : MonoBehaviour
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
 
-    [HideInInspector] public Hero m_refHero = null;
+    [HideInInspector] public Hero Yasuo = null;
+
+    public Text GuideText; //UI 텍스트
+    public Image Skillicon; //스킬 이미지
+    public Image SkillCoolimg;
+    public Text SkillInfoText; //스킬 가이드 텍스트
+   
     void Awake()
     {
         //GameMgr 클래스를 인스턴스에 대입
@@ -49,16 +55,19 @@ public class GameMgr : MonoBehaviour
         if (m_CursorMark.activeSelf == false)
             return;
 
-        if (m_refHero == null) //주인공이 죽었다면...
+        if (Yasuo == null) //주인공이 죽었다면...
             return;
 
-        a_CacVLen = m_refHero.transform.position -
+        a_CacVLen = Yasuo.transform.position -
                             m_CursorMark.transform.position;
         a_CacVLen.y = 0.0f;
         if (a_CacVLen.magnitude < 1.0f)
             m_CursorMark.SetActive(false);
 
     }//void CursorMarkOn(Vector3 a_PickPos)
+
+
+
 
     public static bool IsPointerOverUIObject() //UGUI의 UI들이 먼저 피킹되는지 확인하는 함수
     {
