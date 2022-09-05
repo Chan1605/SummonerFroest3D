@@ -121,31 +121,41 @@ public class Hero : MonoBehaviour
         //    yasuo = YasuoState.skill;
         //}
 
-        if(Input.GetKey(KeyCode.Q))
+
+        if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {
-            if(GameObject.FindGameObjectWithTag("Enemy") !=null)
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
-            if(Taget == null)
+            if (Taget == null)
             {
                 yasuo = YasuoState.idle;
                 return;
             }
-            IsSkill = true;
-            yasuo = YasuoState.skill;
 
+            if (Input.GetKey(KeyCode.Q))
+            {
+                //if(GameObject.FindGameObjectWithTag("Enemy") !=null)
+                //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+                //if(Taget == null)
+                //{
+                //    yasuo = YasuoState.idle;
+                //    return;
+                //}
+                IsSkill = true;
+                yasuo = YasuoState.skill;
+
+            }
+            if (Input.GetKeyUp(KeyCode.Q))
+            {
+                if (yasuo != YasuoState.skill)
+                    return;
+                yasuo = YasuoState.skillend;
+            }
         }
-        if(Input.GetKeyUp(KeyCode.Q))
-        {
-            if (yasuo != YasuoState.skill)
-                return;
-            yasuo = YasuoState.skillend;
-        }
-
-        MousePickUpdate();
-        YasuoActionUpdate();
-        if (m_isPickMvOnOff == false && IsSkill == false)
-            yasuo = YasuoState.idle;
-
+            MousePickUpdate();
+            YasuoActionUpdate();
+            if (m_isPickMvOnOff == false && IsSkill == false)
+                yasuo = YasuoState.idle;
+        
 
     }
 
