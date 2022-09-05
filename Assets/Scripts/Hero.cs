@@ -93,6 +93,7 @@ public class Hero : MonoBehaviour
         {
             if (yasuo == YasuoState.skill)
                 return;
+
             a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
             {
@@ -149,7 +150,9 @@ public class Hero : MonoBehaviour
             {
                 if (skill_Delay > 0.0f)
                     return;
-                skill_Delay = skill_Time;
+
+                IsSkill = true;
+                
                 //if(GameObject.FindGameObjectWithTag("Enemy") !=null)
                 //Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
                 //if(Taget == null)
@@ -157,25 +160,30 @@ public class Hero : MonoBehaviour
                 //    yasuo = YasuoState.idle;
                 //    return;
                 //}
-                IsSkill = true;
                 yasuo = YasuoState.skill;
+     
 
             }
             if (Input.GetKeyUp(KeyCode.Q))
             {
+ 
+
                 if (yasuo != YasuoState.skill)
                     return;
 
-                
+                skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
+
+                ;
+
             }
         }
 
 
 
-        MousePickUpdate();
+            MousePickUpdate();
             YasuoActionUpdate();
-            if (m_isPickMvOnOff == false && IsSkill == false)
+            if (m_isPickMvOnOff == false && IsSkill == false &&  yasuo != YasuoState.skillend && yasuo != YasuoState.skill)
                 yasuo = YasuoState.idle;
         
 
@@ -250,6 +258,7 @@ public class Hero : MonoBehaviour
                     this.gameObject.transform.position = tagetpos;
                     IsSkill = false;
                     colorCorrection.enabled = false;
+                    yasuo = YasuoState.idle;
 
                 }
                 break;
@@ -339,7 +348,7 @@ public class Hero : MonoBehaviour
             if (m_MoveDurTime <= m_AddTimeCount) //목표점에 도착한 것으로 판정한다.
             {
                 m_isPickMvOnOff = false;
-                yasuo = YasuoState.idle;
+                
             }
             else
             {
@@ -353,13 +362,19 @@ public class Hero : MonoBehaviour
                 m_isPickMvOnOff = true;
                 a_CacTgVec = m_TargetUnit.transform.position -
                                                 this.transform.position;
-                if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
+                if (a_CacTgVec.magnitude <= m_AttackDist &&
+                IsSkill == false) //공격거리
+                {
+
                     yasuo = YasuoState.attack;
+                }
 
             }
             //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
         } //if (m_isPickMvOnOff == true)
     }// void MousePickUpdate() 
+
+
 
 
     void ClearMsPickPath() //마우스 픽킹이동 취소 함수
@@ -588,10 +603,10 @@ public class Hero : MonoBehaviour
     void Event_AttFinish()
     { //공격애니메이션 끝났는지? 판단하는 이벤트 함수
         SwordCol.enabled = false;
-        if (m_isPickMvOnOff == true)      
-        {            
-            yasuo = YasuoState.idle;
-        }
+        //if (m_isPickMvOnOff == true)      
+        //{            
+        //    yasuo = YasuoState.idle;
+        //}
 
 
     }
