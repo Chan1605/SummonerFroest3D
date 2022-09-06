@@ -28,6 +28,9 @@ public class MonCtrl : MonoBehaviour
     [SerializeField]float m_MoveVelocity = 5.0f;
     public GameObject Attackpos;
     BoxCollider MonCol;
+    public GameObject bloodEffect;
+    public GameObject bloodDecal;
+    
     void Awake()
     {
         //traceDist = 18.0f; 
@@ -175,7 +178,7 @@ public class MonCtrl : MonoBehaviour
     //    isDie = true;
     //    monsterState = MonsterState.die;        
     //    animator.SetTrigger("IsDie");
-        
+
     //    //---- 보상으로 아이템 드롭 
     //    //if (GameMgr.m_CoinItem != null)
     //    //{
@@ -186,7 +189,37 @@ public class MonCtrl : MonoBehaviour
     //    //---- 보상으로 아이템 드롭 
     //}
 
+    void CreateBloodEffect(Vector3 pos)
+    {
+        //혈흔 효과 생성
+        GameObject blood1 =
+         (GameObject)Instantiate(bloodEffect, pos, Quaternion.identity);
 
+        blood1.GetComponent<ParticleSystem>().Play();
+
+        Destroy(blood1, 3.0f);
+
+        //데칼 생성 위치 - 바닥에서 조금 올린 위치 산출
+        Vector3 decalPos = monsterTr.position + (Vector3.up * 0.05f);
+
+        //데칼의 회전값을 무작위로 설정
+
+        Quaternion decalRot = Quaternion.Euler(90, 0, Random.Range(0, 360));
+
+        //데칼 프리팹 생성
+
+        GameObject blood2 = (GameObject)Instantiate(bloodDecal, decalPos, decalRot);
+        //데칼의 크기도 불규칙적으로 나타나게끔 스케일 조정
+
+        float scale = Random.Range(1.5f, 3.5f);
+
+        blood2.transform.localScale = Vector3.one * scale;
+
+        //5초 후에 혈흔효과 프리팹을 삭제
+
+       Destroy(blood2, 3.0f);
+
+    }
 
 
     public void TakeDamage(int a_Value)
@@ -194,7 +227,8 @@ public class MonCtrl : MonoBehaviour
         if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
             return;
         
-        hp -= a_Value;
+        hp -= a_Value;   
+        CreateBloodEffect(this.transform.position);
         if (hp <= 0)
         {
             hp = 0;

@@ -116,7 +116,7 @@ public class Hero : MonoBehaviour
         GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
         skill_Delay -= Time.deltaTime;
         GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
-        GameMgr.Inst.SkillInfoText.text = skill_Delay.ToString("N0");
+        GameMgr.Inst.SkillInfoText.text = skill_Delay.ToString("N1");
 
         if (skill_Delay <= 0.0f)
         {

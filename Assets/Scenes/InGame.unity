@@ -2786,7 +2786,7 @@ Transform:
   m_LocalScale: {x: 2.8255877, y: 2.8255868, z: 2.8255868}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &176324072
 GameObject:
@@ -11017,6 +11017,8 @@ MonoBehaviour:
   hp: 100
   m_MoveVelocity: 7
   Attackpos: {fileID: 1438110972}
+  bloodEffect: {fileID: 0}
+  bloodDecal: {fileID: 0}
 --- !u!95 &840124644
 Animator:
   serializedVersion: 3
@@ -16730,6 +16732,8 @@ MonoBehaviour:
   hp: 50
   m_MoveVelocity: 5
   Attackpos: {fileID: 8103067124932880003}
+  bloodEffect: {fileID: 197121971965432688, guid: 19d244521af2bb24797ddf00cf4da5da, type: 3}
+  bloodDecal: {fileID: 834762459111095730, guid: 7e8c64fe3b8ef2544acf5776b1f04160, type: 3}
 --- !u!4 &1178548883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442488, guid: ec78ebca7517fb745a45a931cb06d2bd, type: 3}
@@ -18347,6 +18351,8 @@ MonoBehaviour:
   hp: 100
   m_MoveVelocity: 7
   Attackpos: {fileID: 1002638828}
+  bloodEffect: {fileID: 0}
+  bloodDecal: {fileID: 0}
 --- !u!95 &1246393961
 Animator:
   serializedVersion: 3
@@ -19703,6 +19709,8 @@ MonoBehaviour:
   hp: 100
   m_MoveVelocity: 7
   Attackpos: {fileID: 848426116}
+  bloodEffect: {fileID: 0}
+  bloodDecal: {fileID: 0}
 --- !u!95 &1378788677
 Animator:
   serializedVersion: 3
@@ -23365,6 +23373,8 @@ MonoBehaviour:
   hp: 100
   m_MoveVelocity: 7
   Attackpos: {fileID: 1145692410}
+  bloodEffect: {fileID: 0}
+  bloodDecal: {fileID: 0}
 --- !u!95 &1695243213
 Animator:
   serializedVersion: 3
@@ -26369,7 +26379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4963178004393498, guid: 2fe772b7cffd1364f8af838d7d6fd721, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4963178004393498, guid: 2fe772b7cffd1364f8af838d7d6fd721, type: 3}
       propertyPath: m_LocalScale.x
@@ -34624,6 +34634,8 @@ MonoBehaviour:
   hp: 100
   m_MoveVelocity: 7
   Attackpos: {fileID: 8487965804193869716}
+  bloodEffect: {fileID: 197121971965432688, guid: 19d244521af2bb24797ddf00cf4da5da, type: 3}
+  bloodDecal: {fileID: 834762459111095730, guid: 7e8c64fe3b8ef2544acf5776b1f04160, type: 3}
 --- !u!4 &8487965805915932689
 Transform:
   m_ObjectHideFlags: 0
