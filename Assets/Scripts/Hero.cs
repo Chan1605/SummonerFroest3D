@@ -55,7 +55,9 @@ public class Hero : MonoBehaviour
     float skill_Time = 5.0f;
     float skill_Delay = 0.0f;
     float GuideTimer = 0.0f;
-    
+
+    public GameObject SkillEffect;
+    GameObject Skill1;
 
 
     void Awake()
@@ -81,6 +83,7 @@ public class Hero : MonoBehaviour
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
 
+        
 
     }
 
@@ -123,10 +126,7 @@ public class Hero : MonoBehaviour
             GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
             GameMgr.Inst.SkillInfoText.text = "Q";
             
-        }
-
-
-
+        }        
 
 
 
@@ -149,18 +149,29 @@ public class Hero : MonoBehaviour
                    return;
                 }
 
-
-
+                
                 IsSkill = true;
                 yasuo = YasuoState.skill;
             }
+            if(Input.GetKeyDown(KeyCode.Q))
+            {
+                //Skill1 = (GameObject)Instantiate(SkillEffect, this.transform.position, Quaternion.identity);
+
+                //Skill1.GetComponent<ParticleSystem>().Play();
+                SkillEffect.SetActive(true);
+                SkillEffect.GetComponent<ParticleSystem>().Play();
+                
+                                
+            }
+
             if (Input.GetKeyUp(KeyCode.Q))
             {
                 if (yasuo != YasuoState.skill)
                     return;                
                 skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
-
+                SkillEffect.SetActive(false);
+                //Destroy(Skill1);
 
             }
         }
@@ -229,6 +240,7 @@ public class Hero : MonoBehaviour
 
                     colorCorrection.enabled = true;
 
+
                 }
                 break;
             case YasuoState.skillend:
@@ -246,6 +258,7 @@ public class Hero : MonoBehaviour
                     IsSkill = false;
                     colorCorrection.enabled = false;
                     yasuo = YasuoState.idle;
+                   
 
                 }
                 break;
