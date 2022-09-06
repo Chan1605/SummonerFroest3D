@@ -133,9 +133,11 @@ public class Hero : MonoBehaviour
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+            
             if (Taget == null)
             {
                 yasuo = YasuoState.idle;
+
                 return;
             }
 
@@ -158,6 +160,7 @@ public class Hero : MonoBehaviour
                 //Skill1 = (GameObject)Instantiate(SkillEffect, this.transform.position, Quaternion.identity);
 
                 //Skill1.GetComponent<ParticleSystem>().Play();
+                SwordCol.enabled = true;
                 SkillEffect.SetActive(true);
                 SkillEffect.GetComponent<ParticleSystem>().Play();
                 
@@ -171,6 +174,7 @@ public class Hero : MonoBehaviour
                 skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
                 SkillEffect.SetActive(false);
+                
                 //Destroy(Skill1);
 
             }
@@ -257,6 +261,7 @@ public class Hero : MonoBehaviour
                     this.gameObject.transform.position = tagetpos;
                     IsSkill = false;
                     colorCorrection.enabled = false;
+                    SwordCol.enabled = false;
                     yasuo = YasuoState.idle;
                    
 
