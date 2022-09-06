@@ -22,7 +22,7 @@ public class MonCtrl : MonoBehaviour
     //공격 사정거리
     public float attackDist = 2.0f;
 
-    public bool isDie = false;
+    [HideInInspector]public bool isDie = false;
 
     public int hp = 100;
     [SerializeField]float m_MoveVelocity = 5.0f;
@@ -56,7 +56,7 @@ public class MonCtrl : MonoBehaviour
     void Update()
     {
         CheckMonStateUpdate();
-        MonActionUpdate();
+        MonActionUpdate();        
     }
 
     //일정한 간격으로 몬스터의 행동 상태를 체크하고 monsterState 값 변경
@@ -101,9 +101,7 @@ public class MonCtrl : MonoBehaviour
         {
             //idle 상태
             case MonsterState.idle:
-                //추적 중지
-                //nvAgent.isStopped = true; //nvAgent.Stop();
-                //Animator의 IsTrace 변수를 false 로 설정
+
                 animator.SetBool("IsTrace", false);
                 break;
 
@@ -163,8 +161,7 @@ public class MonCtrl : MonoBehaviour
                                 Quaternion.LookRotation(a_CacVLen.normalized);
                     transform.rotation = Quaternion.Slerp(transform.rotation,
                                               a_TargetRot, Time.deltaTime * m_RotSpeed);
-                    //---몬스터가 주인공을 공격하면서 바라 보도록 해야 한다. 
-                    OnPlayerDie();
+                    //---몬스터가 주인공을 공격하면서 바라 보도록 해야 한다.                     
                 }
                 break;
         }
@@ -172,22 +169,6 @@ public class MonCtrl : MonoBehaviour
  
     }//void MonActionUpdate()
 
-    //void MonsterDie()
-    //{
-    //    Debug.Log("늑대주겅");
-    //    isDie = true;
-    //    monsterState = MonsterState.die;        
-    //    animator.SetTrigger("IsDie");
-
-    //    //---- 보상으로 아이템 드롭 
-    //    //if (GameMgr.m_CoinItem != null)
-    //    //{
-    //    //    GameObject a_CoinObj = (GameObject)Instantiate(GameMgr.m_CoinItem);
-    //    //    a_CoinObj.transform.position = this.transform.position;
-    //    //    Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
-    //    //}
-    //    //---- 보상으로 아이템 드롭 
-    //}
 
     void CreateBloodEffect(Vector3 pos)
     {
@@ -196,14 +177,12 @@ public class MonCtrl : MonoBehaviour
          (GameObject)Instantiate(bloodEffect, pos, Quaternion.identity);
 
         blood1.GetComponent<ParticleSystem>().Play();
-
         Destroy(blood1, 3.0f);
 
         //데칼 생성 위치 - 바닥에서 조금 올린 위치 산출
         Vector3 decalPos = monsterTr.position + (Vector3.up * 0.05f);
 
         //데칼의 회전값을 무작위로 설정
-
         Quaternion decalRot = Quaternion.Euler(90, 0, Random.Range(0, 360));
 
         //데칼 프리팹 생성
@@ -215,8 +194,6 @@ public class MonCtrl : MonoBehaviour
 
         blood2.transform.localScale = Vector3.one * scale;
 
-        //5초 후에 혈흔효과 프리팹을 삭제
-
        Destroy(blood2, 3.0f);
 
     }
@@ -224,7 +201,7 @@ public class MonCtrl : MonoBehaviour
 
     public void TakeDamage(int a_Value)
     {
-        if (hp <= 0.0f) //이렇게 하면 사망처리는 한번만 될 것이다.
+        if (hp <= 0.0f) 
             return;
         
         hp -= a_Value;   
@@ -235,19 +212,20 @@ public class MonCtrl : MonoBehaviour
             isDie = true;
             monsterState = MonsterState.die;
             animator.SetTrigger("IsDie");
-            Destroy(gameObject,2.0f);
+            Destroy(gameObject,2.5f);
             
         }        
     }
 
 
-    public void OnPlayerDie()
+     public void OnPlayerDie()
     {
         if (isDie == true)
-            return;
-        //추적을 정지하고 애니메이션을 수행
-        //nvAgent.isStopped = true;
+            return;        
         animator.SetTrigger("PlayerDie");
+        monsterState = MonsterState.idle;
+        
+        
     }
 
     public void WolfAttack()

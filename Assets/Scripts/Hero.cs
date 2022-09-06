@@ -45,7 +45,7 @@ public class Hero : MonoBehaviour
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
 
     bool IsSkill = false;
-    bool IsDie = false;
+    [HideInInspector] public bool IsDie = false;
     BoxCollider SwordCol;
     public GameObject Sword;
     Transform Taget;
@@ -501,6 +501,16 @@ public class Hero : MonoBehaviour
         Debug.Log("Player Die !!");
         AnimType("IsDie");
 
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
+        
+        //모든 몬스터의 OnPlayerDie 함수를 순차적으로 호출
+        foreach (GameObject monster in monsters)
+        {
+            //monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+            monster.GetComponent<MonCtrl>().OnPlayerDie();            
+            
+        }
+        
 
     }
 
