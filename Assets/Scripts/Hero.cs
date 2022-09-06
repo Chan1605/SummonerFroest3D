@@ -179,6 +179,25 @@ public class Hero : MonoBehaviour
 
             }
         }
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
+            {
+                //if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyTerrain"))
+                {
+                    Vector3 dir = hit.point - this.transform.position;
+                    dir.y = 0.0f;
+                    dir.Normalize();
+
+                    float MaxMove = 5.0f;
+                    this.transform.position += dir * MaxMove;
+                    
+                }
+            }
+        }
+
 
         GuideTimer -= Time.deltaTime;
         if (GuideTimer <= 0.0f)
