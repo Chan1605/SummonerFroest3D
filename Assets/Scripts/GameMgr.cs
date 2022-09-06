@@ -14,9 +14,15 @@ public class GameMgr : MonoBehaviour
     [HideInInspector] public Hero Yasuo = null;
 
     public Text GuideText; //UI 텍스트
-    public Image Skillicon; //스킬 이미지
+    public Image QSkillicon; //스킬 이미지
+    public Image DSkillicon; //스킬 이미지
+    public Image FSkillicon; //스킬 이미지
     public Image SkillCoolimg;
-    public Text SkillInfoText; //스킬 가이드 텍스트
+    public Image DSkillCoolimg;
+    public Image FSkillCoolimg;
+    public Text QSkillInfoText; //스킬 가이드 텍스트
+    public Text DSkillInfoText; //스킬 가이드 텍스트
+    public Text FSkillInfoText; //스킬 가이드 텍스트
     public Text HpInfo;
    
     void Awake()

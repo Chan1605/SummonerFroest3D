@@ -53,11 +53,17 @@ public class Hero : MonoBehaviour
     ColorCorrectionCurves colorCorrection;
 
     float skill_Time = 5.0f;
+    float Dskill_Time = 5.0f;
+    float Fskill_Time = 10.0f;
+
     float skill_Delay = 0.0f;
+    float Dskill_Delay = 0.0f;
+    float Fskill_Delay = 0.0f;
+
     float GuideTimer = 0.0f;
 
     public GameObject SkillEffect;
-    GameObject Skill1;
+  
 
 
     void Awake()
@@ -117,16 +123,38 @@ public class Hero : MonoBehaviour
         }//if (Input.GetMouseButtonDown(0))
 
         GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
+        GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(true);
+        GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(true);
         skill_Delay -= Time.deltaTime;
+        Dskill_Delay -= Time.deltaTime;
+        Fskill_Delay -= Time.deltaTime;
+
         GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
-        GameMgr.Inst.SkillInfoText.text = skill_Delay.ToString("N1");
+        GameMgr.Inst.QSkillInfoText.text = skill_Delay.ToString("N1");
+      
+        GameMgr.Inst.FSkillCoolimg.fillAmount = Fskill_Delay / Fskill_Time;
+        GameMgr.Inst.FSkillInfoText.text = Fskill_Delay.ToString("N1");
+
+        GameMgr.Inst.DSkillCoolimg.fillAmount = Dskill_Delay / Dskill_Time;
+        GameMgr.Inst.DSkillInfoText.text = Dskill_Delay.ToString("N1");
 
         if (skill_Delay <= 0.0f)
         {
             GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
-            GameMgr.Inst.SkillInfoText.text = "Q";
-            
-        }        
+            GameMgr.Inst.QSkillInfoText.text = "Q";
+        }
+
+        if (Dskill_Delay <= 0.0f)
+        {
+            GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.DSkillInfoText.text = "D";
+        }
+
+        if (Fskill_Delay <= 0.0f)
+        {
+            GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.FSkillInfoText.text = "F";
+        }
 
 
 
@@ -179,21 +207,44 @@ public class Hero : MonoBehaviour
 
             }
         }
-        if(Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.D))
         {
+            //if (m_CurHp > 100.0f)
+            //    return;
+
+            if (Dskill_Delay > 0.0f)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GuideTimer = 1.0f;
+                return;
+            }
+
+            m_CurHp += 30.0f;
+            Dskill_Delay = Dskill_Time;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (Fskill_Delay > 0.0f)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GuideTimer = 1.0f;
+                return;
+            }
+            Fskill_Delay = Fskill_Time;
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
             {
-                //if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyTerrain"))
                 {
                     Vector3 dir = hit.point - this.transform.position;
                     dir.y = 0.0f;
                     dir.Normalize();
 
                     float MaxMove = 5.0f;
-                    this.transform.position += dir * MaxMove;
-                    
+                    this.transform.position += dir * MaxMove;                    
+
                 }
             }
         }
