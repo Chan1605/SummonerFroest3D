@@ -17,6 +17,7 @@ public class GameMgr : MonoBehaviour
     public Image Skillicon; //스킬 이미지
     public Image SkillCoolimg;
     public Text SkillInfoText; //스킬 가이드 텍스트
+    public Text HpInfo;
    
     void Awake()
     {

@@ -487,6 +487,7 @@ public class Hero : MonoBehaviour
         m_CurHp -= a_Val;
 
         hpbar.fillAmount = m_CurHp / m_MaxHp;
+        GameMgr.Inst.HpInfo.text = m_CurHp + " / " + m_MaxHp;
 
         if (m_CurHp <= 0.0f)
         {
