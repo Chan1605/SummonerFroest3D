@@ -52,7 +52,7 @@ public class Hero : MonoBehaviour
 
     ColorCorrectionCurves colorCorrection;
 
-    float skill_Time = 5.0f;
+    float skill_Time = 3.0f;
     float Dskill_Time = 5.0f;
     float Fskill_Time = 10.0f;
 
@@ -209,8 +209,6 @@ public class Hero : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-            //if (m_CurHp > 100.0f)
-            //    return;
 
             if (Dskill_Delay > 0.0f)
             {
@@ -231,8 +229,7 @@ public class Hero : MonoBehaviour
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
                 GuideTimer = 1.0f;
                 return;
-            }
-            Fskill_Delay = Fskill_Time;
+            }            
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
@@ -242,9 +239,9 @@ public class Hero : MonoBehaviour
                     dir.y = 0.0f;
                     dir.Normalize();
 
-                    float MaxMove = 5.0f;
-                    this.transform.position += dir * MaxMove;                    
-
+                    float MaxMove = 10.0f;
+                    this.transform.position += dir * MaxMove;
+                    Fskill_Delay = Fskill_Time;
                 }
             }
         }
