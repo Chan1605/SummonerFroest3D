@@ -14,7 +14,7 @@ public class Hero : MonoBehaviour
 
     public Image hpbar;
 
-    float m_MoveVelocity = 8.0f;     //평면 초당 이동 속도...    
+    float m_MoveVelocity = 8.0f;   
     //------ Picking 관련 변수 
     Ray a_MousePos;
     RaycastHit hitInfo;
@@ -284,8 +284,7 @@ public class Hero : MonoBehaviour
         {
             a_CacTgVec = a_PickMon.transform.position - transform.position;
 
-            //공격가시거리... 타겟이 있고  +1.0f면 어차피 몬스터도 다가올꺼고 
-            //좀 일찍 공격애니에 들어가야 잠시라도 move 애니가 끼어 들지 못한다.
+   
             float a_AttDist = m_AttackDist;
             //if (a_PickMon.GetComponent<MonsterCtrl>().m_AggroTarget
             //                                         == this.gameObject)
@@ -370,9 +369,9 @@ public class Hero : MonoBehaviour
                 }
 
             }
-            //m_isPickMvOnOff = MoveToPath(); //도착한 경우 false 리턴함
-        } //if (m_isPickMvOnOff == true)
-    }// void MousePickUpdate() 
+            
+        } 
+    }
 
 
 
@@ -381,14 +380,6 @@ public class Hero : MonoBehaviour
     {
         m_isPickMvOnOff = false;
 
-        ////----피킹을 위한 동기화 부분
-        //m_PathEndPos = transform.position;
-        //if (0 < movePath.corners.Length)
-        //{
-        //    movePath.ClearCorners();  //경로 모두 제거 
-        //}
-        //m_CurPathIndex = 1;       //진행 인덱스 초기화
-        //----피킹을 위한 동기화 부분
 
         if (GameMgr.Inst.m_CursorMark != null)
             GameMgr.Inst.m_CursorMark.SetActive(false);
@@ -400,7 +391,7 @@ public class Hero : MonoBehaviour
     public void AttackRotUpdate()
     { //공격애니메이션 중일 때 타겟을 향해 회전하게 하는 함수
 
-        if (m_TargetUnit == null)//타겟이 존재하지 않으면...
+        if (m_TargetUnit == null)
             return;
 
         a_CacTgVec = m_TargetUnit.transform.position - transform.position;
@@ -418,9 +409,9 @@ public class Hero : MonoBehaviour
                                         a_TargetRot,
                                         Time.deltaTime * a_CacRotSpeed);
             }
-        }//if (a_CacTgVec.magnitude <= m_AttackDist) //공격거리
+        }
 
-    }//public void AttackRotUpdate()
+    }
 
     bool IsTargetEnemyActive(float a_ExtLen = 0.0f)
     {
@@ -455,16 +446,11 @@ public class Hero : MonoBehaviour
 
     void EnemyMonitor()
     {
-        //마우스 피킹을 시도했고 이동 중이면 타겟을 다시 잡지 않는다.
+        
         if (m_isPickMvOnOff == true)
             return;
 
-        //보간 때문에 정확히 정밀한 공격 애니메이션만 하고 있을 때만...
-        //if (ISAttack() == false) //공격 애니메이션이 아니면...
-        //    return;
-
-        //공격 애니메이션 중이고 타겟이 무효화 되었다면... 타겟을 새로 잡아준다.
-        //타겟의 교체는 공격거리보다는 조금 더 여유(0.5f)를 두고 바꾸게 한다.
+    
         if (IsTargetEnemyActive(0.5f) == false)
             FindEnemyTarget();
     }
@@ -517,10 +503,10 @@ public class Hero : MonoBehaviour
 
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
         
-        //모든 몬스터의 OnPlayerDie 함수를 순차적으로 호출
+      
         foreach (GameObject monster in monsters)
         {
-            //monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+
             monster.GetComponent<MonCtrl>().OnPlayerDie();            
             
         }
