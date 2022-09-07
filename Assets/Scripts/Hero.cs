@@ -79,6 +79,7 @@ public class Hero : MonoBehaviour
     {
         colorCorrection = FindObjectOfType<ColorCorrectionCurves>();
 
+        m_CurHp = m_MaxHp;
 
         GameMgr.Inst.Yasuo = this;
 
@@ -187,6 +188,7 @@ public class Hero : MonoBehaviour
                 if (skill_Delay > 0.0f)
                 {
                     GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
                     GuideTimer = 1.0f;
                     return;
                 }
@@ -236,14 +238,31 @@ public class Hero : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             ClearMsPickPath();
+
+            if(m_CurHp > 99.0f)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);          
+                GameMgr.Inst.GuideText.text = "최대 체력입니다.";
+                GuideTimer = 1.0f;
+                return;
+                        
+            }
+
             if (Dskill_Delay > 0.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
                 GuideTimer = 1.0f;
                 return;
             }
-
+            
             m_CurHp += 30.0f;
+            if(m_CurHp > 100)
+            {
+                m_CurHp = 100.0f;
+            }
+            GameMgr.Inst.HpInfo.text = m_CurHp + " / " + m_MaxHp;
+            hpbar.fillAmount = m_CurHp / m_MaxHp;
             Dskill_Delay = Dskill_Time;
         }
 
@@ -254,6 +273,7 @@ public class Hero : MonoBehaviour
             if (Fskill_Delay > 0.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
                 GuideTimer = 1.0f;
                 return;
             }            
@@ -280,6 +300,7 @@ public class Hero : MonoBehaviour
         {
             GameMgr.Inst.GuideText.gameObject.SetActive(false);
             GuideTimer = 0.0f;
+            GameMgr.Inst.GuideText.text = "";
         }
 
         MousePickUpdate();
