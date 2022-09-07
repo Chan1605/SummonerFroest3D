@@ -202,9 +202,11 @@ public class Hero : MonoBehaviour
                         }
 
                     }
-
+                    Time.timeScale = 0.3f;
                     IsSkill = true;
                     yasuo = YasuoState.skill;
+                    
+
                 }
             }
             if(Input.GetKeyDown(KeyCode.Q))
@@ -215,6 +217,7 @@ public class Hero : MonoBehaviour
                 SwordCol.enabled = true;
                 SkillEffect.SetActive(true);
                 SkillEffect.GetComponent<ParticleSystem>().Play();
+                
 
             }
 
@@ -333,13 +336,14 @@ public class Hero : MonoBehaviour
             case YasuoState.skill:
                 {
                     AnimType("IsSkill");
-
+                    
                     colorCorrection.enabled = true;
                     
                 }
                 break;
             case YasuoState.skillend:
                 {
+                    Time.timeScale = 0.2f;
                     Vector3 dir = Taget.position - this.gameObject.transform.position;
                     dir.y = 0;
                     dir.Normalize();
@@ -353,7 +357,8 @@ public class Hero : MonoBehaviour
                     IsSkill = false;
                     colorCorrection.enabled = false;
                     SwordCol.enabled = false;
-                    yasuo = YasuoState.idle;                   
+                    yasuo = YasuoState.idle;
+                    Time.timeScale = 1.0f;
 
                 }
                 break;
