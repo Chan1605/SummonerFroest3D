@@ -62,11 +62,14 @@ public class Hero : MonoBehaviour
 
     float GuideTimer = 0.0f;
 
-    public GameObject SkillEffect;
-    public GameObject SkillEnd;
-    public GameObject FlashEffect;
-    GameObject Skill1;
-    GameObject FlashInst;
+    public GameObject SkillEffect; //Q »¶µÂ Ω∫≈≥¿Ã∆Â∆Æ
+    public GameObject SkillEnd;    //Q ø£µÂ ¿Ã∆Â∆Æ
+    public GameObject HealEffect;  //D Ω∫≈≥ ¿Ã∆Â∆Æ
+    public GameObject FlashEffect; //F Ω∫≈≥¿Ã∆Â∆Æ
+    
+    GameObject Skill1;             //Q InstantiateøÎ
+    GameObject HealInst;           //F InstantiateøÎ
+    GameObject FlashInst;          //F InstantiateøÎ
 
 
     void Awake()
@@ -266,7 +269,12 @@ public class Hero : MonoBehaviour
                 GuideTimer = 1.0f;
                 return;
             }
-            
+
+            Vector3 effectpos = this.transform.position;
+            effectpos.y += 1.5f;
+            HealInst = (GameObject)Instantiate(HealEffect, effectpos, Quaternion.identity);
+            HealInst.GetComponent<ParticleSystem>().Play();
+            Destroy(HealInst, 2.0f);
             m_CurHp += 30.0f;
             if(m_CurHp > 100)
             {
