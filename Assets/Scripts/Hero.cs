@@ -232,7 +232,7 @@ public class Hero : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-
+            ClearMsPickPath();
             if (Dskill_Delay > 0.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
@@ -247,12 +247,14 @@ public class Hero : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
+            ClearMsPickPath();
             if (Fskill_Delay > 0.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
                 GuideTimer = 1.0f;
                 return;
             }            
+
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
