@@ -64,7 +64,9 @@ public class Hero : MonoBehaviour
 
     public GameObject SkillEffect;
     public GameObject SkillEnd;
+    public GameObject FlashEffect;
     GameObject Skill1;
+    GameObject FlashInst;
 
 
     void Awake()
@@ -301,12 +303,19 @@ public class Hero : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
             {
                 {
+                    Vector3 effectpos = this.transform.position;
+                    effectpos.y += 1.5f;
+                    FlashInst = (GameObject)Instantiate(FlashEffect, effectpos, Quaternion.identity);
+                    FlashInst.GetComponent<ParticleSystem>().Play();
+                                  
                     Vector3 dir = hit.point - this.transform.position;
                     dir.y = 0.0f;
                     dir.Normalize();
-
                     float MaxMove = 10.0f;
                     this.transform.position += dir * MaxMove;
+                   
+                    
+                    Destroy(FlashInst, 2.0f);
                     Fskill_Delay = Fskill_Time;
                 }
             }
