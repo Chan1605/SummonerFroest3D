@@ -141,7 +141,7 @@ public class Hero : MonoBehaviour
         if (skill_Delay <= 0.0f)
         {
             GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
-            GameMgr.Inst.QSkillInfoText.text = "Q";
+            GameMgr.Inst.QSkillInfoText.text = "Q\n"+ "(Hold)";
         }
 
         if (Dskill_Delay <= 0.0f)
