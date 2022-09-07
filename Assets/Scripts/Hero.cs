@@ -237,9 +237,18 @@ public class Hero : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-            ClearMsPickPath();
+            if (m_isPickMvOnOff == true)
+            {
+                {
+                    this.transform.position = this.transform.position +
+                                             (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                    yasuo = YasuoState.trace;
+                    ClearMsPickPath();
+                }
 
-            if(m_CurHp > 99.0f)
+            }
+
+            if (m_CurHp > 99.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);          
                 GameMgr.Inst.GuideText.text = "최대 체력입니다.";
@@ -269,7 +278,16 @@ public class Hero : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            ClearMsPickPath();
+            if (m_isPickMvOnOff == true)
+            {
+                {
+                    this.transform.position = this.transform.position +
+                                             (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                    yasuo = YasuoState.trace;
+                    ClearMsPickPath();
+                }
+
+            }
             if (Fskill_Delay > 0.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
