@@ -13,6 +13,7 @@ public class Hero : MonoBehaviour
     [SerializeField] float m_MaxHp = 100.0f;
 
     public Image hpbar;
+    public RectTransform Aim;
 
     float m_MoveVelocity = 8.0f;   
     //------ Picking 관련 변수 
@@ -167,6 +168,7 @@ public class Hero : MonoBehaviour
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {
+            if(yasuo != YasuoState.skill && yasuo != YasuoState.skillend)
             Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
             
             if (Taget == null)
@@ -178,18 +180,6 @@ public class Hero : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Q))
             {
-                //if (yasuo == YasuoState.trace)
-                //    return;
-                //if (m_isPickMvOnOff == true)
-                //{
-                //    {
-                //        this.transform.position = this.transform.position +
-                //                                 (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                //        yasuo = YasuoState.trace;
-                //        m_isPickMvOnOff = false;
-                //    }
- 
-                //}
                 if (skill_Delay > 0.0f)
                 {
                     GameMgr.Inst.GuideText.gameObject.SetActive(true);
@@ -204,17 +194,31 @@ public class Hero : MonoBehaviour
                     {
                         {
                             this.transform.position = this.transform.position +
-                                                     (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                                                     (m_MoveDir * Time.deltaTime *  m_MoveVelocity);
                             yasuo = YasuoState.trace;
                             ClearMsPickPath();
                         }
 
                     }
+                    //Aim.transform.position = a_MousePos;
                     Time.timeScale = 0.3f;
                     IsSkill = true;
+                    Aim.gameObject.SetActive(true);
+                    //Ray ray = new Ray(Aim.transform.position, transform.forward);
+                    //ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     yasuo = YasuoState.skill;
-                    
+                    Update_MousePosition();
+                    a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
+                    {
+                       
+                        if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
+                        {
+                            Taget = hitInfo.collider.gameObject.transform;
+                            
 
+                        }
+                    }
                 }
             }
             if(Input.GetKeyDown(KeyCode.Q))
@@ -226,6 +230,7 @@ public class Hero : MonoBehaviour
                 SkillEffect.SetActive(true);
                 SkillEffect.GetComponent<ParticleSystem>().Play();
                 
+                
 
             }
 
@@ -236,6 +241,7 @@ public class Hero : MonoBehaviour
                 skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
                 SkillEffect.SetActive(false);
+                Aim.gameObject.SetActive(false);
 
 
             }
@@ -346,6 +352,17 @@ public class Hero : MonoBehaviour
 
     }
 
+    private void Update_MousePosition()
+    {
+        
+        Vector2 mousePos = Input.mousePosition;
+        
+        float w = Aim.rect.width;
+        float h = Aim.rect.height;
+        Aim.position = Input.mousePosition;
+
+    }
+
     private void AnimType(string anim)
     {
         m_RefAnimator.SetBool("Idle", false);
@@ -399,7 +416,7 @@ public class Hero : MonoBehaviour
                 break;
             case YasuoState.skillend:
                 {                    
-                    Vector3 dir = Taget.position - this.gameObject.transform.position;
+                    Vector3 dir = Taget.position - this.gameObject.transform.position;                   
                     dir.y = 0;
                     dir.Normalize();
 
