@@ -63,7 +63,8 @@ public class Hero : MonoBehaviour
     float GuideTimer = 0.0f;
 
     public GameObject SkillEffect;
-  
+    public GameObject SkillEnd;
+    GameObject Skill1;
 
 
     void Awake()
@@ -228,8 +229,7 @@ public class Hero : MonoBehaviour
                 skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
                 SkillEffect.SetActive(false);
-                
-                //Destroy(Skill1);
+
 
             }
         }
@@ -335,15 +335,14 @@ public class Hero : MonoBehaviour
 
             case YasuoState.skill:
                 {
-                    AnimType("IsSkill");
-                    
+                    AnimType("IsSkill");                    
                     colorCorrection.enabled = true;
+
                     
                 }
                 break;
             case YasuoState.skillend:
-                {
-                    Time.timeScale = 0.2f;
+                {                    
                     Vector3 dir = Taget.position - this.gameObject.transform.position;
                     dir.y = 0;
                     dir.Normalize();
@@ -351,10 +350,15 @@ public class Hero : MonoBehaviour
                     Vector3 tagetpos = Taget.position + (dir * 2.0f);
                     this.gameObject.transform.forward = dir;
                     AnimType("SkillEnd");
-                    Taget.GetComponent<MonCtrl>().TakeDamage(100);
-                    //Taget.GetComponent<Animator>().SetTrigger("IsDie");
+                    Taget.GetComponent<MonCtrl>().TakeDamage(100);                   
                     this.gameObject.transform.position = tagetpos;
-                    IsSkill = false;
+                    Vector3 effectpos = tagetpos;
+                    effectpos.y += 2.0f;
+       
+                    Skill1 = (GameObject)Instantiate(SkillEnd, effectpos, Quaternion.identity);
+                    Skill1.GetComponent<ParticleSystem>().Play();
+                    Destroy(Skill1, 1.0f);
+                    IsSkill = false;                 
                     colorCorrection.enabled = false;
                     SwordCol.enabled = false;
                     yasuo = YasuoState.idle;
