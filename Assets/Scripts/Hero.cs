@@ -171,17 +171,41 @@ public class Hero : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Q))
             {
-
+                //if (yasuo == YasuoState.trace)
+                //    return;
+                //if (m_isPickMvOnOff == true)
+                //{
+                //    {
+                //        this.transform.position = this.transform.position +
+                //                                 (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                //        yasuo = YasuoState.trace;
+                //        m_isPickMvOnOff = false;
+                //    }
+ 
+                //}
                 if (skill_Delay > 0.0f)
                 {
-                  GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                  GuideTimer = 1.0f;
-                   return;
+                    GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                    GuideTimer = 1.0f;
+                    return;
                 }
 
-                
-                IsSkill = true;
-                yasuo = YasuoState.skill;
+                if (skill_Delay <= 0.0f)
+                {
+                    if (m_isPickMvOnOff == true)
+                    {
+                        {
+                            this.transform.position = this.transform.position +
+                                                     (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                            yasuo = YasuoState.trace;
+                            ClearMsPickPath();
+                        }
+
+                    }
+
+                    IsSkill = true;
+                    yasuo = YasuoState.skill;
+                }
             }
             if(Input.GetKeyDown(KeyCode.Q))
             {
@@ -191,8 +215,7 @@ public class Hero : MonoBehaviour
                 SwordCol.enabled = true;
                 SkillEffect.SetActive(true);
                 SkillEffect.GetComponent<ParticleSystem>().Play();
-                
-                                
+
             }
 
             if (Input.GetKeyUp(KeyCode.Q))
@@ -310,8 +333,7 @@ public class Hero : MonoBehaviour
                     AnimType("IsSkill");
 
                     colorCorrection.enabled = true;
-
-
+                    
                 }
                 break;
             case YasuoState.skillend:
@@ -329,8 +351,7 @@ public class Hero : MonoBehaviour
                     IsSkill = false;
                     colorCorrection.enabled = false;
                     SwordCol.enabled = false;
-                    yasuo = YasuoState.idle;
-                   
+                    yasuo = YasuoState.idle;                   
 
                 }
                 break;
@@ -572,7 +593,7 @@ public class Hero : MonoBehaviour
         IsDie = true;
         Debug.Log("Player Die !!");
         AnimType("IsDie");
-
+        colorCorrection.enabled = true;
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
         
       
