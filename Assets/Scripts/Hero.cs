@@ -14,8 +14,9 @@ public class Hero : MonoBehaviour
 
     public Image hpbar;
     public RectTransform Aim;
+    public Image AimF;
 
-    float m_MoveVelocity = 8.0f;   
+    float m_MoveVelocity = 8.0f;
     //------ Picking 관련 변수 
     Ray a_MousePos;
     RaycastHit hitInfo;
@@ -67,7 +68,7 @@ public class Hero : MonoBehaviour
     public GameObject SkillEnd;    //Q 엔드 이펙트
     public GameObject HealEffect;  //D 스킬 이펙트
     public GameObject FlashEffect; //F 스킬이펙트
-    
+
     GameObject Skill1;             //Q Instantiate용
     GameObject HealInst;           //F Instantiate용
     GameObject FlashInst;          //F Instantiate용
@@ -97,7 +98,8 @@ public class Hero : MonoBehaviour
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
 
-        
+        int cnt = GameObject.FindGameObjectsWithTag("Enemy").Length;
+        Debug.Log(cnt);
 
     }
 
@@ -139,7 +141,7 @@ public class Hero : MonoBehaviour
 
         GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
         GameMgr.Inst.QSkillInfoText.text = skill_Delay.ToString("N1");
-      
+
         GameMgr.Inst.FSkillCoolimg.fillAmount = Fskill_Delay / Fskill_Time;
         GameMgr.Inst.FSkillInfoText.text = Fskill_Delay.ToString("N1");
 
@@ -149,7 +151,7 @@ public class Hero : MonoBehaviour
         if (skill_Delay <= 0.0f)
         {
             GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
-            GameMgr.Inst.QSkillInfoText.text = "Q\n"+ "(Hold)";
+            GameMgr.Inst.QSkillInfoText.text = "Q\n" + "(Hold)";
         }
 
         if (Dskill_Delay <= 0.0f)
@@ -168,9 +170,9 @@ public class Hero : MonoBehaviour
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {
-            if(yasuo != YasuoState.skill && yasuo != YasuoState.skillend)
-            Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
-            
+            if (yasuo != YasuoState.skill && yasuo != YasuoState.skillend)
+                Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
+
             if (Taget == null)
             {
                 yasuo = YasuoState.idle;
@@ -194,34 +196,34 @@ public class Hero : MonoBehaviour
                     {
                         {
                             this.transform.position = this.transform.position +
-                                                     (m_MoveDir * Time.deltaTime *  m_MoveVelocity);
+                                                     (m_MoveDir * Time.deltaTime * m_MoveVelocity);
                             yasuo = YasuoState.trace;
                             ClearMsPickPath();
                         }
 
                     }
-                    //Aim.transform.position = a_MousePos;
-                    Time.timeScale = 0.3f;
+
                     IsSkill = true;
                     Aim.gameObject.SetActive(true);
-                    //Ray ray = new Ray(Aim.transform.position, transform.forward);
-                    //ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    AimF.gameObject.SetActive(true);
                     yasuo = YasuoState.skill;
                     Update_MousePosition();
                     a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
                     if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
                     {
-                       
+
                         if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
                         {
                             Taget = hitInfo.collider.gameObject.transform;
-                            
+
 
                         }
                     }
+
+
                 }
             }
-            if(Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
             {
                 //Skill1 = (GameObject)Instantiate(SkillEffect, this.transform.position, Quaternion.identity);
 
@@ -229,19 +231,20 @@ public class Hero : MonoBehaviour
                 SwordCol.enabled = true;
                 SkillEffect.SetActive(true);
                 SkillEffect.GetComponent<ParticleSystem>().Play();
-                
-                
+
+
 
             }
 
             if (Input.GetKeyUp(KeyCode.Q))
             {
                 if (yasuo != YasuoState.skill)
-                    return;                
+                    return;
                 skill_Delay = skill_Time;
                 yasuo = YasuoState.skillend;
                 SkillEffect.SetActive(false);
                 Aim.gameObject.SetActive(false);
+                AimF.gameObject.SetActive(false);
 
 
             }
@@ -261,11 +264,11 @@ public class Hero : MonoBehaviour
 
             if (m_CurHp > 99.0f)
             {
-                GameMgr.Inst.GuideText.gameObject.SetActive(true);          
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
                 GameMgr.Inst.GuideText.text = "최대 체력입니다.";
                 GuideTimer = 1.0f;
                 return;
-                        
+
             }
 
             if (Dskill_Delay > 0.0f)
@@ -282,7 +285,7 @@ public class Hero : MonoBehaviour
             HealInst.GetComponent<ParticleSystem>().Play();
             Destroy(HealInst, 2.0f);
             m_CurHp += 30.0f;
-            if(m_CurHp > 100)
+            if (m_CurHp > 100)
             {
                 m_CurHp = 100.0f;
             }
@@ -310,7 +313,7 @@ public class Hero : MonoBehaviour
                 GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
                 GuideTimer = 1.0f;
                 return;
-            }            
+            }
 
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -321,14 +324,14 @@ public class Hero : MonoBehaviour
                     effectpos.y += 1.5f;
                     FlashInst = (GameObject)Instantiate(FlashEffect, effectpos, Quaternion.identity);
                     FlashInst.GetComponent<ParticleSystem>().Play();
-                                  
+
                     Vector3 dir = hit.point - this.transform.position;
                     dir.y = 0.0f;
                     dir.Normalize();
                     float MaxMove = 10.0f;
                     this.transform.position += dir * MaxMove;
-                   
-                    
+
+
                     Destroy(FlashInst, 2.0f);
                     Fskill_Delay = Fskill_Time;
                 }
@@ -354,9 +357,9 @@ public class Hero : MonoBehaviour
 
     private void Update_MousePosition()
     {
-        
+
         Vector2 mousePos = Input.mousePosition;
-        
+
         float w = Aim.rect.width;
         float h = Aim.rect.height;
         Aim.position = Input.mousePosition;
@@ -408,30 +411,30 @@ public class Hero : MonoBehaviour
 
             case YasuoState.skill:
                 {
-                    AnimType("IsSkill");                    
+                    AnimType("IsSkill");
                     colorCorrection.enabled = true;
 
-                    
+
                 }
                 break;
             case YasuoState.skillend:
-                {                    
-                    Vector3 dir = Taget.position - this.gameObject.transform.position;                   
+                {
+                    Vector3 dir = Taget.position - this.gameObject.transform.position;
                     dir.y = 0;
                     dir.Normalize();
 
                     Vector3 tagetpos = Taget.position + (dir * 2.0f);
                     this.gameObject.transform.forward = dir;
                     AnimType("SkillEnd");
-                    Taget.GetComponent<MonCtrl>().TakeDamage(100);                   
+                    Taget.GetComponent<MonCtrl>().TakeDamage(100);
                     this.gameObject.transform.position = tagetpos;
                     Vector3 effectpos = tagetpos;
                     effectpos.y += 2.0f;
-       
+
                     Skill1 = (GameObject)Instantiate(SkillEnd, effectpos, Quaternion.identity);
                     Skill1.GetComponent<ParticleSystem>().Play();
                     Destroy(Skill1, 1.0f);
-                    IsSkill = false;                 
+                    IsSkill = false;
                     colorCorrection.enabled = false;
                     SwordCol.enabled = false;
                     yasuo = YasuoState.idle;
@@ -461,7 +464,7 @@ public class Hero : MonoBehaviour
         {
             a_CacTgVec = a_PickMon.transform.position - transform.position;
 
-   
+
             float a_AttDist = m_AttackDist;
             //if (a_PickMon.GetComponent<MonsterCtrl>().m_AggroTarget
             //                                         == this.gameObject)
@@ -546,8 +549,8 @@ public class Hero : MonoBehaviour
                 }
 
             }
-            
-        } 
+
+        }
     }
 
 
@@ -623,11 +626,11 @@ public class Hero : MonoBehaviour
 
     void EnemyMonitor()
     {
-        
+
         if (m_isPickMvOnOff == true)
             return;
 
-    
+
         if (IsTargetEnemyActive(0.5f) == false)
             FindEnemyTarget();
     }
@@ -679,15 +682,15 @@ public class Hero : MonoBehaviour
         AnimType("IsDie");
         colorCorrection.enabled = true;
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
-        
-      
+
+
         foreach (GameObject monster in monsters)
         {
 
-            monster.GetComponent<MonCtrl>().OnPlayerDie();            
-            
+            monster.GetComponent<MonCtrl>().OnPlayerDie();
+
         }
-        
+
 
     }
 
@@ -738,10 +741,37 @@ public class Hero : MonoBehaviour
     }
 
     void Event_AttFinish()
-    { 
+    {
         SwordCol.enabled = false;
 
     }
+
+    //IEnumerator Detecting()
+    //{
+    //    int cnt = GameObject.FindGameObjectsWithTag("Enemy").Length;
+    //    int nowCnt = 0;
+    //    while (cnt > nowCnt)
+    //    {
+    //        while (AimF.fillAmount < 1)
+    //        {
+
+    //            var center = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
+    //            Ray ray = Camera.main.ScreenPointToRay(center);
+    //            RaycastHit hit;
+    //            if (Physics.Raycast(ray, out hit, 100f, 1 << LayerMask.NameToLayer("MyUnit")))
+    //            {
+    //                {
+    //                    Taget = hit.transform;
+    //                    AimF.fillAmount += (0.001f * Time.unscaledTime);
+    //                    if (AimF.fillAmount >= 1f)
+    //                    {
+    //                        Taget.gameObject.layer = 0;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
 }
 
