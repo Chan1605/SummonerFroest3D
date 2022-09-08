@@ -2030,6 +2030,7 @@ MonoBehaviour:
   SkillEnd: {fileID: 1179809721236326, guid: 6e81ad7b6d010274ca07c5c894fe9e6b, type: 3}
   HealEffect: {fileID: 8502048175382029045, guid: a5e93869cd9f71743a373e292609735f, type: 3}
   FlashEffect: {fileID: 635025882997352444, guid: 52fb23804c1dfcb43a3f5bf08f5a9375, type: 3}
+  Skcnt: 1
 --- !u!4 &165136622 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442488, guid: ec78ebca7517fb745a45a931cb06d2bd, type: 3}
@@ -2354,7 +2355,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &209209374
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2364,10 +2365,10 @@ RectTransform:
   m_GameObject: {fileID: 209209373}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 909812652}
-  m_RootOrder: 9
+  m_Father: {fileID: 742424302}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7558,7 +7559,8 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_Children: []
+  m_Children:
+  - {fileID: 209209374}
   m_Father: {fileID: 909812652}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10323,7 +10325,6 @@ RectTransform:
   - {fileID: 1836611594}
   - {fileID: 876833050}
   - {fileID: 742424302}
-  - {fileID: 209209374}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12228,6 +12229,10 @@ PrefabInstance:
     - target: {fileID: 8923242122144981788, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
       propertyPath: m_Name
       value: Wolf (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8923242122144981788, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8923242122145220022, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
       propertyPath: m_RootOrder
@@ -15569,6 +15574,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zombie (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8977988713713128664, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
 --- !u!4 &1303599214 stripped
@@ -18170,7 +18179,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.2, y: -6.3}
+  m_AnchoredPosition: {x: 0, y: -30.3}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1599785507
@@ -18225,7 +18234,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 22
+    m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -18236,7 +18245,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "Q \n(Hold)"
+  m_Text: 'Q '
 --- !u!222 &1599785510
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18997,6 +19006,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Zombie (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8977988713713128664, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
 --- !u!4 &1669254837 stripped
@@ -19219,6 +19232,10 @@ PrefabInstance:
     - target: {fileID: 8977988713713128664, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
       propertyPath: m_Name
       value: Zombie (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8977988713713128664, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
