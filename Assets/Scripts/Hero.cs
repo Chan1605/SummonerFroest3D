@@ -50,14 +50,13 @@ public class Hero : MonoBehaviour
     [HideInInspector] public bool IsDie = false;
     BoxCollider SwordCol;
     public GameObject Sword;
-    Transform Taget;
+    private Transform Taget;
 
     ColorCorrectionCurves colorCorrection;
 
     float skill_Time = 3.0f;
     float Dskill_Time = 5.0f;
     float Fskill_Time = 10.0f;
-
     float skill_Delay = 0.0f;
     float Dskill_Delay = 0.0f;
     float Fskill_Delay = 0.0f;
@@ -73,7 +72,8 @@ public class Hero : MonoBehaviour
     GameObject HealInst;           //F Instantiate용
     GameObject FlashInst;          //F Instantiate용
 
-    int Skcnt = 0;
+    public int damage = 10;
+    public int Skcnt = 0;
     int cnt;
 
     void Awake()
@@ -99,7 +99,7 @@ public class Hero : MonoBehaviour
         SwordCol = Sword.GetComponent<BoxCollider>();
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
-        
+        Skcnt = 1;
     }
 
 
@@ -114,13 +114,21 @@ public class Hero : MonoBehaviour
             yasuo = YasuoState.idle;
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
-        {    
-
+        {
+            
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                if (yasuo == YasuoState.attack)
-                    return;
+                //if (yasuo == YasuoState.attack)
+                //    return;
                 ClearMsPickPath();
+                //if (skill_Delay > 0.0f)
+                //{
+                //    GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                //    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+                //    GuideTimer = 1.0f;
+                //    return;
+                //}
+
                 if (skill_Delay > 0.0f)
                 {
                     GameMgr.Inst.GuideText.gameObject.SetActive(true);
@@ -128,7 +136,6 @@ public class Hero : MonoBehaviour
                     GuideTimer = 1.0f;
                     return;
                 }
-                
 
                 SwordCol.enabled = true;
                 SkillEffect.SetActive(true);
@@ -396,69 +403,6 @@ public class Hero : MonoBehaviour
 
     }
 
-    bool IsTargetEnemyActive(float a_ExtLen = 0.0f)
-    {
-        if (m_TargetUnit == null)//타겟이 존재하지 않으면...
-            return false;
-
-        if (m_TargetUnit.activeSelf == false)
-        {
-            m_TargetUnit = null;
-            return false;
-        }
-
-        //isDie 죽어 있어도
-        MonCtrl a_Unit = m_TargetUnit.GetComponent<MonCtrl>();
-        if (a_Unit.monsterState == MonCtrl.MonsterState.die)
-        {
-            m_TargetUnit = null;
-            return false;
-        }
-
-        a_CacTgVec = m_TargetUnit.transform.position - transform.position;
-        a_CacTgVec.y = 0.0f;
-        if (m_AttackDist + a_ExtLen < a_CacTgVec.magnitude)
-        {   //공격거리 바깥쪽에 있을 경우도 타겟을 무효화 해 버린다
-
-            m_TargetUnit = null; //원거리라도 타겟을 공격할 수 있으니까...
-            return false;
-        }
-
-        return true; //타겟이 아직 유효 하다는 의미
-    }// bool IsTargetEnemyActive(float a_ExtLen = 0.0f)
-
-    void EnemyMonitor()
-    {
-
-        if (m_isPickMvOnOff == true)
-            return;
-
-
-        if (IsTargetEnemyActive(0.5f) == false)
-            FindEnemyTarget();
-    }
-    int a_iCount = 0;
-    void FindEnemyTarget()
-    {
-        m_EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
-
-        float a_MinLen = float.MaxValue;
-        a_iCount = m_EnemyList.Length;
-        m_TargetUnit = null;  //우선 타겟 무효화
-        for (int i = 0; i < a_iCount; ++i)
-        {
-            a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
-            a_CacTgVec.y = 0.0f;
-            if (a_CacTgVec.magnitude <= m_AttackDist)
-            {   //공격거리 안쪽에 있을 경우만 타겟으로 잡는다.
-                if (a_CacTgVec.magnitude < a_MinLen)
-                {
-                    a_MinLen = a_CacTgVec.magnitude;
-                    m_TargetUnit = m_EnemyList[i];
-                }
-            }//if (a_CacTgVec.magnitude < a_MinLen)
-        }//for (int i = 0; i < iCount; ++i)
-    }
 
 
     public void TakeDamage(float a_Val)
@@ -478,6 +422,15 @@ public class Hero : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == ("Enemy"))
+        {
+            TakeDamage(10);
+        }
+    }
+
+
     void PlayerDie()
     {
         IsDie = true;
@@ -486,67 +439,23 @@ public class Hero : MonoBehaviour
         colorCorrection.enabled = true;
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
 
-
         foreach (GameObject monster in monsters)
         {
-
             monster.GetComponent<MonCtrl>().OnPlayerDie();
-
         }
-
-
     }
 
 
-    public void AttackStart()
+
+    void AttDamage()
     {
         SwordCol.enabled = true;
-        MonCtrl mon = GetComponent<MonCtrl>();
-        mon.TakeDamage(10);
 
     }
 
-
-    public void AttackEnd()
+    void AttFinish()
     {
         SwordCol.enabled = false;
-    }
-
-
-    void Event_AttDamage()
-    {
-        SwordCol.enabled = true;
-        m_EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
-        a_iCount = m_EnemyList.Length;
-        float a_fCacLen = 0.0f;
-
-        for (int i = 0; i < a_iCount; ++i)
-        {
-            a_CacTgVec = m_EnemyList[i].transform.position - transform.position;
-            a_fCacLen = a_CacTgVec.magnitude;
-            a_CacTgVec.y = 0.0f;
-
-            //공격각도 안에 있는 경우
-            //70도 정도 //-0.7f) //-45도를 넘는 범위에 있다는 뜻
-            if (Vector3.Dot(transform.forward, a_CacTgVec.normalized) < 0.45f)
-                continue;
-
-            //공격 범위 밖에 있는 경우
-            if (m_AttackDist + 0.1f < a_fCacLen)
-                continue;
-
-
-            m_EnemyList[i].GetComponent<MonCtrl>().TakeDamage(10);
-
-        }
-
-
-    }
-
-    void Event_AttFinish()
-    {
-        SwordCol.enabled = false;
-
     }
 
     void MousePick()
@@ -731,7 +640,7 @@ public class Hero : MonoBehaviour
                         if (AimF.fillAmount >= 1f)
                         {
                             nowCnt++;
-                            Skcnt++;
+                            //Skcnt++;                            
                             Taget.gameObject.layer = 0;                            
                             AimF.fillAmount = 0.0f;                            
                             yasuo = YasuoState.skilling;
@@ -739,16 +648,17 @@ public class Hero : MonoBehaviour
                     }
                     else
                     {
-                        AimF.fillAmount = 0.0f;
-
+                        AimF.fillAmount = 0.0f;                        
                     }
                     
  
                 }
                 yield return null;
-               if( nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
+               if(Skcnt == nowCnt || nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
                 {
-                    AnimType("SkillEnd");
+                    if (yasuo != YasuoState.skill)
+                        yield break;
+                    //AnimType("SkillEnd");
                     yasuo = YasuoState.skillend;
                     yield break;                    
                 }

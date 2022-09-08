@@ -2030,6 +2030,7 @@ MonoBehaviour:
   SkillEnd: {fileID: 1179809721236326, guid: 6e81ad7b6d010274ca07c5c894fe9e6b, type: 3}
   HealEffect: {fileID: 8502048175382029045, guid: a5e93869cd9f71743a373e292609735f, type: 3}
   FlashEffect: {fileID: 635025882997352444, guid: 52fb23804c1dfcb43a3f5bf08f5a9375, type: 3}
+  Skcnt: 0
 --- !u!4 &165136622 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442488, guid: ec78ebca7517fb745a45a931cb06d2bd, type: 3}
@@ -24756,6 +24757,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wolf
       objectReference: {fileID: 0}
+    - target: {fileID: 8923242122144981788, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8923242122145220022, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -24799,6 +24804,14 @@ PrefabInstance:
     - target: {fileID: 8923242122145220022, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8923242122702841642, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
+      propertyPath: hp
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8923242122702841642, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}
+      propertyPath: monsterState
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7c26d08faeefc3459c14998c923f96c, type: 3}

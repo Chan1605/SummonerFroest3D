@@ -58,7 +58,7 @@ public class MonCtrl : MonoBehaviour
     {
         CheckMonStateUpdate();
         MonActionUpdate();        
-        if(monsterState != MonsterState.die && mask != LayerMask.NameToLayer("MyUnit"))
+        if(monsterState != MonsterState.die) //&& mask != LayerMask.NameToLayer("MyUnit"))
         {
             mask = LayerMask.NameToLayer("MyUnit");
         }
@@ -169,6 +169,7 @@ public class MonCtrl : MonoBehaviour
                     //---몬스터가 주인공을 공격하면서 바라 보도록 해야 한다.                     
                 }
                 break;
+
         }
 
  
@@ -217,8 +218,8 @@ public class MonCtrl : MonoBehaviour
             isDie = true;
             monsterState = MonsterState.die;
             animator.SetTrigger("IsDie");
-            Destroy(gameObject,2.5f);
-            
+            Destroy(gameObject, 2.0f);
+
         }        
     }
 
@@ -240,7 +241,6 @@ public class MonCtrl : MonoBehaviour
         if (monType == MonType.Zombie)
             return;
 
-        playerTr.GetComponent<Hero>().TakeDamage(10);
         MonCol.enabled = true;
     }
 
@@ -262,7 +262,6 @@ public class MonCtrl : MonoBehaviour
         if (monType == MonType.Wolf)
             return;
 
-        playerTr.GetComponent<Hero>().TakeDamage(10);
         MonCol.enabled = true;
     }
 
@@ -274,6 +273,15 @@ public class MonCtrl : MonoBehaviour
             return;
 
         MonCol.enabled = false;
+    }
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Sword")
+        {
+            TakeDamage(10);
+        }
     }
 
 }
