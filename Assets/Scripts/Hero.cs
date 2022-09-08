@@ -363,7 +363,7 @@ public class Hero : MonoBehaviour
 
                     Vector3 tagetpos = Taget.position + (dir * 2.0f);
                     this.gameObject.transform.forward = dir;
-                    AnimType("SkillEnd");
+                    
                     Taget.GetComponent<MonCtrl>().TakeDamage(100);
                     this.gameObject.transform.position = tagetpos;
                     Vector3 effectpos = tagetpos;
@@ -372,6 +372,7 @@ public class Hero : MonoBehaviour
                     Skill1 = (GameObject)Instantiate(SkillEnd, effectpos, Quaternion.identity);
                     Skill1.GetComponent<ParticleSystem>().Play();
                     Destroy(Skill1, 1.0f);
+                    
                     yasuo = YasuoState.skill;
                 }
                 break;
@@ -727,6 +728,7 @@ public class Hero : MonoBehaviour
                 yield return null;
                if(nowCnt >= Skcnt || nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
                 {
+                    AnimType("SkillEnd");
                     yasuo = YasuoState.skillend;
                     yield break;                    
                 }
