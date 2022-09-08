@@ -74,6 +74,7 @@ public class Hero : MonoBehaviour
     GameObject FlashInst;          //F Instantiate용
 
     public int Skcnt = 0;
+    int cnt;
 
     void Awake()
     {
@@ -98,7 +99,7 @@ public class Hero : MonoBehaviour
         SwordCol = Sword.GetComponent<BoxCollider>();
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
-
+        
     }
 
 
@@ -167,67 +168,10 @@ public class Hero : MonoBehaviour
 
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
-        {
-            //if (yasuo != YasuoState.skill && yasuo != YasuoState.skillend)
-            //    Taget = GameObject.FindGameObjectWithTag("Enemy").transform;
-
-            //if (Taget == null)
-            //{
-            //    yasuo = YasuoState.idle;
-
-            //    return;
-            //}
-
-            //if (Input.GetKey(KeyCode.Q))
-            //{
-            //    if (skill_Delay > 0.0f)
-            //    {
-            //        GameMgr.Inst.GuideText.gameObject.SetActive(true);
-            //        GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-            //        GuideTimer = 1.0f;
-            //        return;
-            //    }
-
-            //    if (skill_Delay <= 0.0f)
-            //    {
-            //        if (m_isPickMvOnOff == true)
-            //        {
-            //            {
-            //                this.transform.position = this.transform.position +
-            //                                         (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-            //                yasuo = YasuoState.trace;
-            //                ClearMsPickPath();
-            //            }
-
-            //        }
-
-            //        IsSkill = true;
-            //        Aim.gameObject.SetActive(true);
-            //        AimF.gameObject.SetActive(true);
-            //        //yasuo = YasuoState.skill;
-            //        Update_MousePosition();
-                    
-            //        //a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //        //if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
-            //        //{
-
-            //        //    if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-            //        //    {
-            //        //        Taget = hitInfo.collider.gameObject.transform;
-
-
-            //        //    }
-            //        //}
-
-
-            //    }
-            //}
+        {    
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                //Skill1 = (GameObject)Instantiate(SkillEffect, this.transform.position, Quaternion.identity);
-
-                //Skill1.GetComponent<ParticleSystem>().Play();
-
+                ClearMsPickPath();
                 if (skill_Delay > 0.0f)
                 {
                     GameMgr.Inst.GuideText.gameObject.SetActive(true);
@@ -241,24 +185,11 @@ public class Hero : MonoBehaviour
                 SkillEffect.GetComponent<ParticleSystem>().Play();
                 IsSkill = true;
                 yasuo = YasuoState.skill;
-                Aim.gameObject.SetActive(true);
-                
+                Aim.gameObject.SetActive(true);                
                 StartCoroutine(Detecting());
 
             }
 
-            //if (Input.GetKeyUp(KeyCode.Q))
-            //{
-            //    //if (yasuo != YasuoState.skill)
-            //    //    return;
-            //    skill_Delay = skill_Time;
-            //    //yasuo = YasuoState.skillend;
-            //    //SkillEffect.SetActive(false);
-            //    //Aim.gameObject.SetActive(false);
-            //    //AimF.gameObject.SetActive(false);
-
-
-            //}
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
@@ -410,11 +341,8 @@ public class Hero : MonoBehaviour
 
             case YasuoState.attack:
                 {
-
                     AttackRotUpdate();
                     AnimType("IsAttack");
-
-
                 }
                 break;
 
@@ -428,8 +356,7 @@ public class Hero : MonoBehaviour
                 }
                 break;
             case YasuoState.skilling:
-                {
-                    Debug.Log("스킬중입니다");
+                {                   
                     Vector3 dir = Taget.position - this.gameObject.transform.position;
                     dir.y = 0;
                     dir.Normalize();
@@ -450,21 +377,6 @@ public class Hero : MonoBehaviour
                 break;
             case YasuoState.skillend:
                 {
-                    //Vector3 dir = Taget.position - this.gameObject.transform.position;
-                    //dir.y = 0;
-                    //dir.Normalize();
-
-                    //Vector3 tagetpos = Taget.position + (dir * 2.0f);
-                    //this.gameObject.transform.forward = dir;
-                    //AnimType("SkillEnd");
-                    //Taget.GetComponent<MonCtrl>().TakeDamage(100);
-                    //this.gameObject.transform.position = tagetpos;
-                    //Vector3 effectpos = tagetpos;
-                    //effectpos.y += 2.0f;
-
-                    //Skill1 = (GameObject)Instantiate(SkillEnd, effectpos, Quaternion.identity);
-                    //Skill1.GetComponent<ParticleSystem>().Play();
-                    //Destroy(Skill1, 1.0f);
                     IsSkill = false;
                     colorCorrection.enabled = false;
                     SwordCol.enabled = false;
@@ -781,10 +693,10 @@ public class Hero : MonoBehaviour
     }
 
     IEnumerator Detecting()
-    {        
-        int cnt = GameObject.FindGameObjectsWithTag("Enemy").Length;
+    {
+        cnt = GameObject.FindGameObjectsWithTag("Enemy").Length;
         int nowCnt = 0;
-        while (cnt > nowCnt)//nowCnt <= 6)
+        while (cnt > nowCnt)
         {
             while (AimF.fillAmount < 1)
             {
@@ -798,6 +710,7 @@ public class Hero : MonoBehaviour
                         if (AimF.fillAmount >= 1f)
                         {
                             nowCnt++;
+                            Skcnt++;
                             Taget.gameObject.layer = 0;                            
                             AimF.fillAmount = 0.0f;                            
                             yasuo = YasuoState.skilling;
@@ -812,7 +725,7 @@ public class Hero : MonoBehaviour
  
                 }
                 yield return null;
-               if(nowCnt >= Skcnt || nowCnt == cnt)
+               if(nowCnt >= Skcnt || nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
                 {
                     yasuo = YasuoState.skillend;
                     yield break;                    
