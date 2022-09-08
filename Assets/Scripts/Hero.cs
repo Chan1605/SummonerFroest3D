@@ -73,7 +73,7 @@ public class Hero : MonoBehaviour
     GameObject HealInst;           //F Instantiate용
     GameObject FlashInst;          //F Instantiate용
 
-    public int Skcnt = 0;
+    int Skcnt = 0;
     int cnt;
 
     void Awake()
@@ -109,68 +109,17 @@ public class Hero : MonoBehaviour
     {
         if (IsDie == true)
             return;
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (yasuo == YasuoState.skill)
-                return;
 
-            a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
-            {
-                if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-                { //몬스터 픽킹일 때                     
-                    MousePicking(hitInfo.point, hitInfo.collider.gameObject);
-                    if (GameMgr.Inst.m_CursorMark != null)
-                        GameMgr.Inst.m_CursorMark.SetActive(false);
-                }
-                else  //지형 바닥 픽킹일 때 
-                {
-                    MousePicking(hitInfo.point);
-                    GameMgr.Inst.CursorMarkOn(hitInfo.point);
-                }//else  //지형 바닥 픽킹일 때
-            }
-        }//if (Input.GetMouseButtonDown(0))
-
-        GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
-        GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(true);
-        GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(true);
-        skill_Delay -= Time.deltaTime;
-        Dskill_Delay -= Time.deltaTime;
-        Fskill_Delay -= Time.deltaTime;
-
-        GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
-        GameMgr.Inst.QSkillInfoText.text = skill_Delay.ToString("N1");
-
-        GameMgr.Inst.FSkillCoolimg.fillAmount = Fskill_Delay / Fskill_Time;
-        GameMgr.Inst.FSkillInfoText.text = Fskill_Delay.ToString("N1");
-
-        GameMgr.Inst.DSkillCoolimg.fillAmount = Dskill_Delay / Dskill_Time;
-        GameMgr.Inst.DSkillInfoText.text = Dskill_Delay.ToString("N1");
-
-        if (skill_Delay <= 0.0f)
-        {
-            GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
-            GameMgr.Inst.QSkillInfoText.text = "Q";
-        }
-
-        if (Dskill_Delay <= 0.0f)
-        {
-            GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(false);
-            GameMgr.Inst.DSkillInfoText.text = "D";
-        }
-
-        if (Fskill_Delay <= 0.0f)
-        {
-            GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(false);
-            GameMgr.Inst.FSkillInfoText.text = "F";
-        }
-
-
+        if (m_isPickMvOnOff == false && IsSkill == false)
+            yasuo = YasuoState.idle;
 
         if (GameObject.FindGameObjectWithTag("Enemy") != null)
         {    
+
             if (Input.GetKeyDown(KeyCode.Q))
             {
+                if (yasuo == YasuoState.attack)
+                    return;
                 ClearMsPickPath();
                 if (skill_Delay > 0.0f)
                 {
@@ -179,6 +128,7 @@ public class Hero : MonoBehaviour
                     GuideTimer = 1.0f;
                     return;
                 }
+                
 
                 SwordCol.enabled = true;
                 SkillEffect.SetActive(true);
@@ -191,108 +141,14 @@ public class Hero : MonoBehaviour
             }
 
         }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (m_isPickMvOnOff == true)
-            {
-                {
-                    this.transform.position = this.transform.position +
-                                             (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                    yasuo = YasuoState.trace;
-                    ClearMsPickPath();
-                }
-
-            }
-
-            if (m_CurHp > 99.0f)
-            {
-                GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                GameMgr.Inst.GuideText.text = "최대 체력입니다.";
-                GuideTimer = 1.0f;
-                return;
-
-            }
-
-            if (Dskill_Delay > 0.0f)
-            {
-                GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-                GuideTimer = 1.0f;
-                return;
-            }
-
-            Vector3 effectpos = this.transform.position;
-            effectpos.y += 1.5f;
-            HealInst = (GameObject)Instantiate(HealEffect, effectpos, Quaternion.identity);
-            HealInst.GetComponent<ParticleSystem>().Play();
-            Destroy(HealInst, 2.0f);
-            m_CurHp += 30.0f;
-            if (m_CurHp > 100)
-            {
-                m_CurHp = 100.0f;
-            }
-            GameMgr.Inst.HpInfo.text = m_CurHp + " / " + m_MaxHp;
-            hpbar.fillAmount = m_CurHp / m_MaxHp;
-            Dskill_Delay = Dskill_Time;
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (m_isPickMvOnOff == true)
-            {
-                {
-                    this.transform.position = this.transform.position +
-                                             (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                    yasuo = YasuoState.trace;
-                    ClearMsPickPath();
-                }
-
-            }
-            if (Fskill_Delay > 0.0f)
-            {
-                GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-                GuideTimer = 1.0f;
-                return;
-            }
-
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
-            {
-                {
-                    Vector3 effectpos = this.transform.position;
-                    effectpos.y += 1.5f;
-                    FlashInst = (GameObject)Instantiate(FlashEffect, effectpos, Quaternion.identity);
-                    FlashInst.GetComponent<ParticleSystem>().Play();
-
-                    Vector3 dir = hit.point - this.transform.position;
-                    dir.y = 0.0f;
-                    dir.Normalize();
-                    float MaxMove = 10.0f;
-                    this.transform.position += dir * MaxMove;
-
-
-                    Destroy(FlashInst, 2.0f);
-                    Fskill_Delay = Fskill_Time;
-                }
-            }
-        }
-
-
-        GuideTimer -= Time.deltaTime;
-        if (GuideTimer <= 0.0f)
-        {
-            GameMgr.Inst.GuideText.gameObject.SetActive(false);
-            GuideTimer = 0.0f;
-            GameMgr.Inst.GuideText.text = "";
-        }
-
+            
+        MousePick();
         MousePickUpdate();
         YasuoActionUpdate();
-        if (m_isPickMvOnOff == false && IsSkill == false && yasuo != YasuoState.skillend && yasuo != YasuoState.skill)
-            yasuo = YasuoState.idle;
+        UseFlash();
+        UseHeal();
+        UiInfo();
+
 
 
     }
@@ -693,6 +549,170 @@ public class Hero : MonoBehaviour
 
     }
 
+    void MousePick()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (yasuo == YasuoState.skill)
+                return;
+
+            a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
+            {
+                if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
+                { //몬스터 픽킹일 때                     
+                    MousePicking(hitInfo.point, hitInfo.collider.gameObject);
+                    if (GameMgr.Inst.m_CursorMark != null)
+                        GameMgr.Inst.m_CursorMark.SetActive(false);
+                }
+                else  //지형 바닥 픽킹일 때 
+                {
+                    MousePicking(hitInfo.point);
+                    GameMgr.Inst.CursorMarkOn(hitInfo.point);
+                }//else  //지형 바닥 픽킹일 때
+            }
+        }//if (Input.GetMouseButtonDown(0))
+    }
+
+    void UseFlash()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (m_isPickMvOnOff == true)
+            {
+                {
+                    this.transform.position = this.transform.position +
+                                             (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                    yasuo = YasuoState.trace;
+                    ClearMsPickPath();
+                }
+
+            }
+            if (Fskill_Delay > 0.0f)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+                GuideTimer = 1.0f;
+                return;
+            }
+
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("MyTerrain")))
+            {
+                {
+                    Vector3 effectpos = this.transform.position;
+                    effectpos.y += 1.5f;
+                    FlashInst = (GameObject)Instantiate(FlashEffect, effectpos, Quaternion.identity);
+                    FlashInst.GetComponent<ParticleSystem>().Play();
+
+                    Vector3 dir = hit.point - this.transform.position;
+                    dir.y = 0.0f;
+                    dir.Normalize();
+                    float MaxMove = 10.0f;
+                    this.transform.position += dir * MaxMove;
+
+
+                    Destroy(FlashInst, 2.0f);
+                    Fskill_Delay = Fskill_Time;
+                }
+            }
+        }
+    }
+
+    void UseHeal()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            if (m_isPickMvOnOff == true)
+            {
+                {
+                    this.transform.position = this.transform.position +
+                                             (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                    yasuo = YasuoState.trace;
+                    //ClearMsPickPath();
+                }
+
+            }
+
+            if (m_CurHp > 99.0f)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "최대 체력입니다.";
+                GuideTimer = 1.0f;
+                return;
+
+            }
+
+            if (Dskill_Delay > 0.0f)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+                GuideTimer = 1.0f;
+                return;
+            }
+
+            Vector3 effectpos = this.transform.position;
+            effectpos.y += 1.5f;
+            HealInst = (GameObject)Instantiate(HealEffect, effectpos, Quaternion.identity);
+            HealInst.GetComponent<ParticleSystem>().Play();
+            Destroy(HealInst, 2.0f);
+            m_CurHp += 30.0f;
+            if (m_CurHp > 100)
+            {
+                m_CurHp = 100.0f;
+            }
+            GameMgr.Inst.HpInfo.text = m_CurHp + " / " + m_MaxHp;
+            hpbar.fillAmount = m_CurHp / m_MaxHp;
+            Dskill_Delay = Dskill_Time;
+        }
+    }
+
+    void UiInfo()
+    {
+        GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
+        GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(true);
+        GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(true);
+        skill_Delay -= Time.deltaTime;
+        Dskill_Delay -= Time.deltaTime;
+        Fskill_Delay -= Time.deltaTime;
+
+        GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
+        GameMgr.Inst.QSkillInfoText.text = skill_Delay.ToString("N1");
+
+        GameMgr.Inst.FSkillCoolimg.fillAmount = Fskill_Delay / Fskill_Time;
+        GameMgr.Inst.FSkillInfoText.text = Fskill_Delay.ToString("N1");
+
+        GameMgr.Inst.DSkillCoolimg.fillAmount = Dskill_Delay / Dskill_Time;
+        GameMgr.Inst.DSkillInfoText.text = Dskill_Delay.ToString("N1");
+
+        if (skill_Delay <= 0.0f)
+        {
+            GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.QSkillInfoText.text = "Q";
+        }
+
+        if (Dskill_Delay <= 0.0f)
+        {
+            GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.DSkillInfoText.text = "D";
+        }
+
+        if (Fskill_Delay <= 0.0f)
+        {
+            GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.FSkillInfoText.text = "F";
+        }
+
+        GuideTimer -= Time.deltaTime;
+        if (GuideTimer <= 0.0f)
+        {
+            GameMgr.Inst.GuideText.gameObject.SetActive(false);
+            GuideTimer = 0.0f;
+            GameMgr.Inst.GuideText.text = "";
+        }
+    }
+
     IEnumerator Detecting()
     {
         cnt = GameObject.FindGameObjectsWithTag("Enemy").Length;
@@ -726,7 +746,7 @@ public class Hero : MonoBehaviour
  
                 }
                 yield return null;
-               if(nowCnt >= Skcnt || nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
+               if( nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
                 {
                     AnimType("SkillEnd");
                     yasuo = YasuoState.skillend;

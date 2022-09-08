@@ -2030,7 +2030,6 @@ MonoBehaviour:
   SkillEnd: {fileID: 1179809721236326, guid: 6e81ad7b6d010274ca07c5c894fe9e6b, type: 3}
   HealEffect: {fileID: 8502048175382029045, guid: a5e93869cd9f71743a373e292609735f, type: 3}
   FlashEffect: {fileID: 635025882997352444, guid: 52fb23804c1dfcb43a3f5bf08f5a9375, type: 3}
-  Skcnt: 1
 --- !u!4 &165136622 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442488, guid: ec78ebca7517fb745a45a931cb06d2bd, type: 3}
@@ -26225,6 +26224,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1652927116}
     m_Modifications:
+    - target: {fileID: 4811443791557546491, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
+      propertyPath: mask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 5387256171793000139, guid: 735962b31b501e44981fbc7b5b3f21dc, type: 3}
       propertyPath: m_RootOrder
       value: 1

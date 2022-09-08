@@ -336,6 +336,9 @@ MonoBehaviour:
   traceDist: 20
   attackDist: 2
   isDie: 0
+  mask:
+    serializedVersion: 2
+    m_Bits: 128
   hp: 100
   m_MoveVelocity: 7
   Attackpos: {fileID: 8923242121497923327}

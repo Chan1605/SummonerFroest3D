@@ -24,6 +24,7 @@ public class MonCtrl : MonoBehaviour
 
     [HideInInspector]public bool isDie = false;
 
+    public LayerMask mask;
     public int hp = 100;
     [SerializeField]float m_MoveVelocity = 5.0f;
     public GameObject Attackpos;
@@ -57,6 +58,10 @@ public class MonCtrl : MonoBehaviour
     {
         CheckMonStateUpdate();
         MonActionUpdate();        
+        if(monsterState != MonsterState.die && mask != LayerMask.NameToLayer("MyUnit"))
+        {
+            mask = LayerMask.NameToLayer("MyUnit");
+        }
     }
 
     //일정한 간격으로 몬스터의 행동 상태를 체크하고 monsterState 값 변경
