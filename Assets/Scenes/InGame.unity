@@ -2030,7 +2030,8 @@ MonoBehaviour:
   SkillEnd: {fileID: 1179809721236326, guid: 6e81ad7b6d010274ca07c5c894fe9e6b, type: 3}
   HealEffect: {fileID: 8502048175382029045, guid: a5e93869cd9f71743a373e292609735f, type: 3}
   FlashEffect: {fileID: 635025882997352444, guid: 52fb23804c1dfcb43a3f5bf08f5a9375, type: 3}
-  Skcnt: 0
+  damage: 10
+  Skcnt: 8
 --- !u!4 &165136622 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442488, guid: ec78ebca7517fb745a45a931cb06d2bd, type: 3}

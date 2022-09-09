@@ -99,7 +99,7 @@ public class Hero : MonoBehaviour
         SwordCol = Sword.GetComponent<BoxCollider>();
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
-        Skcnt = 1;
+        //Skcnt = 1;
     }
 
 
@@ -110,51 +110,55 @@ public class Hero : MonoBehaviour
         if (IsDie == true)
             return;
 
-        if (m_isPickMvOnOff == false && IsSkill == false)
-            yasuo = YasuoState.idle;
+        //if (m_isPickMvOnOff == false && IsSkill == false)
+        //    yasuo = YasuoState.idle;
 
-        if (GameObject.FindGameObjectWithTag("Enemy") != null)
-        {
+        //if (GameObject.FindGameObjectWithTag("Enemy") != null)
+        //{
             
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                //if (yasuo == YasuoState.attack)
-                //    return;
-                ClearMsPickPath();
-                //if (skill_Delay > 0.0f)
-                //{
-                //    GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                //    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-                //    GuideTimer = 1.0f;
-                //    return;
-                //}
+        //    if (Input.GetKeyDown(KeyCode.Q))
+        //    {
+        //        if (m_isPickMvOnOff == true)
+        //        {
+        //            {
+        //                this.transform.position = this.transform.position +
+        //                                         (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+        //                yasuo = YasuoState.trace;
+        //                ClearMsPickPath();
+        //            }
 
-                if (skill_Delay > 0.0f)
-                {
-                    GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-                    GuideTimer = 1.0f;
-                    return;
-                }
+        //        }
 
-                SwordCol.enabled = true;
-                SkillEffect.SetActive(true);
-                SkillEffect.GetComponent<ParticleSystem>().Play();
-                IsSkill = true;
-                yasuo = YasuoState.skill;
-                Aim.gameObject.SetActive(true);                
-                StartCoroutine(Detecting());
+        //        if (skill_Delay > 0.0f)
+        //        {
+        //            GameMgr.Inst.GuideText.gameObject.SetActive(true);
+        //            GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+        //            GuideTimer = 1.0f;
+        //            return;
+        //        }
 
-            }
+        //        SwordCol.enabled = true;
+        //        SkillEffect.SetActive(true);
+        //        SkillEffect.GetComponent<ParticleSystem>().Play();
+        //        IsSkill = true;
+        //        yasuo = YasuoState.skill;
+        //        Aim.gameObject.SetActive(true);                
+        //        StartCoroutine(Detecting());
 
-        }
+        //    }
+
+        //}
             
         MousePick();
         MousePickUpdate();
         YasuoActionUpdate();
+        UseSkill();
         UseFlash();
         UseHeal();
         UiInfo();
+
+        if (m_isPickMvOnOff == false && IsSkill == false)
+            yasuo = YasuoState.idle;
 
 
 
@@ -481,6 +485,45 @@ public class Hero : MonoBehaviour
                 }//else  //지형 바닥 픽킹일 때
             }
         }//if (Input.GetMouseButtonDown(0))
+    }
+
+    void UseSkill()
+    {
+        if (GameObject.FindGameObjectWithTag("Enemy") != null)
+        {
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                if (m_isPickMvOnOff == true)
+                {
+                    {
+                        this.transform.position = this.transform.position +
+                                                 (m_MoveDir * Time.deltaTime * m_MoveVelocity);
+                        yasuo = YasuoState.trace;
+                        ClearMsPickPath();
+                    }
+
+                }
+
+                if (skill_Delay > 0.0f)
+                {
+                    GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+                    GuideTimer = 1.0f;
+                    return;
+                }
+
+                SwordCol.enabled = true;
+                SkillEffect.SetActive(true);
+                SkillEffect.GetComponent<ParticleSystem>().Play();
+                IsSkill = true;
+                yasuo = YasuoState.skill;
+                Aim.gameObject.SetActive(true);
+                StartCoroutine(Detecting());
+
+            }
+
+        }
     }
 
     void UseFlash()
