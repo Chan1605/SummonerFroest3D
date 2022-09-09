@@ -109,45 +109,6 @@ public class Hero : MonoBehaviour
     {
         if (IsDie == true)
             return;
-
-        //if (m_isPickMvOnOff == false && IsSkill == false)
-        //    yasuo = YasuoState.idle;
-
-        //if (GameObject.FindGameObjectWithTag("Enemy") != null)
-        //{
-            
-        //    if (Input.GetKeyDown(KeyCode.Q))
-        //    {
-        //        if (m_isPickMvOnOff == true)
-        //        {
-        //            {
-        //                this.transform.position = this.transform.position +
-        //                                         (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-        //                yasuo = YasuoState.trace;
-        //                ClearMsPickPath();
-        //            }
-
-        //        }
-
-        //        if (skill_Delay > 0.0f)
-        //        {
-        //            GameMgr.Inst.GuideText.gameObject.SetActive(true);
-        //            GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-        //            GuideTimer = 1.0f;
-        //            return;
-        //        }
-
-        //        SwordCol.enabled = true;
-        //        SkillEffect.SetActive(true);
-        //        SkillEffect.GetComponent<ParticleSystem>().Play();
-        //        IsSkill = true;
-        //        yasuo = YasuoState.skill;
-        //        Aim.gameObject.SetActive(true);                
-        //        StartCoroutine(Detecting());
-
-        //    }
-
-        //}
             
         MousePick();
         MousePickUpdate();
