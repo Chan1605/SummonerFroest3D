@@ -16,7 +16,7 @@ public class Hero : MonoBehaviour
     public RectTransform Aim;
     public Image AimF;
 
-    float m_MoveVelocity = 8.0f;
+    public float m_MoveVelocity = 8.0f;
     //------ Picking 관련 변수 
     Ray a_MousePos;
     RaycastHit hitInfo;
@@ -47,6 +47,7 @@ public class Hero : MonoBehaviour
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
 
     bool IsSkill = false;
+    bool IsBuff = false;
     [HideInInspector] public bool IsDie = false;
     BoxCollider SwordCol;
     public GameObject Sword;
@@ -55,6 +56,8 @@ public class Hero : MonoBehaviour
     ColorCorrectionCurves colorCorrection;
 
     float skill_Time = 3.0f;
+    float Wskill_Time = 0.0f; //쿨타임
+    float WDuration = 0.0f;   //버프 지속시간
     float Dskill_Time = 5.0f;
     float Fskill_Time = 10.0f;
     float skill_Delay = 0.0f;
@@ -68,11 +71,10 @@ public class Hero : MonoBehaviour
     public GameObject HealEffect;  //D 스킬 이펙트
     public GameObject FlashEffect; //F 스킬이펙트
 
-    GameObject Skill1;             //Q Instantiate용
+    GameObject Skill1;             //W Instantiate용
     GameObject HealInst;           //F Instantiate용
     GameObject FlashInst;          //F Instantiate용
-
-    public int damage = 10;
+    
     public int Skcnt = 0;
     int cnt;
 
@@ -114,6 +116,7 @@ public class Hero : MonoBehaviour
         MousePickUpdate();
         YasuoActionUpdate();
         UseSkill();
+        UseWSkill();
         UseFlash();
         UseHeal();
         UiInfo();
@@ -489,8 +492,8 @@ public class Hero : MonoBehaviour
                 }
 
                 SwordCol.enabled = true;
-                SkillEffect.SetActive(true);
-                SkillEffect.GetComponent<ParticleSystem>().Play();
+                //SkillEffect.SetActive(true);
+                //SkillEffect.GetComponent<ParticleSystem>().Play();
                 IsSkill = true;
                 yasuo = YasuoState.skill;
                 Aim.gameObject.SetActive(true);
@@ -498,6 +501,25 @@ public class Hero : MonoBehaviour
 
             }
 
+        }
+    }
+
+    void UseWSkill()
+    {
+        
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            if (IsBuff)
+                return;
+                if (Wskill_Time > 0.0f)
+                {
+                    GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+                    GuideTimer = 1.0f;
+                    return;
+                }            
+            WDuration = 10.0f;            
+            IsBuff = true;            
         }
     }
 
@@ -562,14 +584,14 @@ public class Hero : MonoBehaviour
 
             }
 
-            if (m_CurHp > 100.0f)
-            {
-                GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                GameMgr.Inst.GuideText.text = "최대 체력입니다.";
-                GuideTimer = 1.0f;
-                return;
+            //if (m_CurHp > 100.0f)
+            //{
+            //    GameMgr.Inst.GuideText.gameObject.SetActive(true);
+            //    GameMgr.Inst.GuideText.text = "최대 체력입니다.";
+            //    GuideTimer = 1.0f;
+            //    return;
 
-            }
+            //}
 
             if (Dskill_Delay > 0.0f)
             {
@@ -598,14 +620,49 @@ public class Hero : MonoBehaviour
     void UiInfo()
     {
         GameMgr.Inst.SkillCoolimg.gameObject.SetActive(true);
+        GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(true);
         GameMgr.Inst.FSkillCoolimg.gameObject.SetActive(true);
         GameMgr.Inst.DSkillCoolimg.gameObject.SetActive(true);
-        skill_Delay -= Time.deltaTime;
+        skill_Delay -= Time.deltaTime;        
         Dskill_Delay -= Time.deltaTime;
         Fskill_Delay -= Time.deltaTime;
+        if (IsBuff == true)
+        {
+            WDuration -= Time.deltaTime;
+            if (WDuration > 0.0f)
+            {
+                GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
+                SkillEffect.GetComponent<ParticleSystem>().Play();
+                SkillEffect.SetActive(true);                
+                IsBuff = true;
+                m_MoveVelocity = 10.0f;
+                Skcnt = 8;
+                GameMgr.Inst.WSkillInfoText.text = WDuration.ToString("N1");
+            }
+            if (WDuration <= 0.0f)
+            {
+                SkillEffect.SetActive(false);                
+                Skcnt = 1;
+                m_MoveVelocity = 8.0f;
+                WDuration = 0.0f;
+                Wskill_Time = 20.0f;
+                IsBuff = false;
+            }
+
+        }
+        else
+        {
+            Wskill_Time -= Time.deltaTime;
+        }
 
         GameMgr.Inst.SkillCoolimg.fillAmount = skill_Delay / skill_Time;
         GameMgr.Inst.QSkillInfoText.text = skill_Delay.ToString("N1");
+
+        if (Wskill_Time > 0.0f)
+        {            
+            GameMgr.Inst.WSkillCoolimg.fillAmount = Wskill_Time / 20.0f;
+            GameMgr.Inst.WSkillInfoText.text = Wskill_Time.ToString("N1");
+        }
 
         GameMgr.Inst.FSkillCoolimg.fillAmount = Fskill_Delay / Fskill_Time;
         GameMgr.Inst.FSkillInfoText.text = Fskill_Delay.ToString("N1");
@@ -617,6 +674,13 @@ public class Hero : MonoBehaviour
         {
             GameMgr.Inst.SkillCoolimg.gameObject.SetActive(false);
             GameMgr.Inst.QSkillInfoText.text = "Q";
+        }
+
+
+        if (Wskill_Time <= 0.0f && WDuration <= 0.0f)
+        {
+            GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.WSkillInfoText.text = "W";
         }
 
         if (Dskill_Delay <= 0.0f)

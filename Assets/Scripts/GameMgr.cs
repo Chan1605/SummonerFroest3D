@@ -15,12 +15,15 @@ public class GameMgr : MonoBehaviour
 
     public Text GuideText; //UI 텍스트
     public Image QSkillicon; //스킬 이미지
+    public Image WSkillicon; //스킬 이미지
     public Image DSkillicon; //스킬 이미지
     public Image FSkillicon; //스킬 이미지
     public Image SkillCoolimg;
+    public Image WSkillCoolimg;
     public Image DSkillCoolimg;
     public Image FSkillCoolimg;
     public Text QSkillInfoText; //스킬 가이드 텍스트
+    public Text WSkillInfoText; //스킬 가이드 텍스트
     public Text DSkillInfoText; //스킬 가이드 텍스트
     public Text FSkillInfoText; //스킬 가이드 텍스트
     public Text HpInfo;
