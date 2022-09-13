@@ -117,6 +117,7 @@ public class Hero : MonoBehaviour
         UseFlash();
         UseHeal();
         UiInfo();
+        DefAttack();
 
         if (m_isPickMvOnOff == false && IsSkill == false)
             yasuo = YasuoState.idle;
@@ -372,25 +373,27 @@ public class Hero : MonoBehaviour
 
     public void TakeDamage(float a_Val)
     {
-        if (m_CurHp == 0.0f)
+        if (m_CurHp <= 0.0f)
             return;
 
         m_CurHp -= a_Val;
+
+        if (m_CurHp < 0.0f)
+            m_CurHp = 0.0f;
 
         hpbar.fillAmount = m_CurHp / m_MaxHp;
         GameMgr.Inst.HpInfo.text = m_CurHp + " / " + m_MaxHp;
 
         if (m_CurHp <= 0.0f)
-        {
-            m_CurHp = 0.0f;
+        {            
             PlayerDie();
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == ("Enemy"))
-        {
+        if (other.tag == "attackpos")
+        {           
             TakeDamage(10);
         }
     }
@@ -446,6 +449,17 @@ public class Hero : MonoBehaviour
                 }//else  //지형 바닥 픽킹일 때
             }
         }//if (Input.GetMouseButtonDown(0))
+    }
+
+    void DefAttack()
+    {        
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            AttackRotUpdate();
+            yasuo = YasuoState.attack;
+            Debug.Log("공격중");
+
+        }
     }
 
     void UseSkill()
@@ -548,7 +562,7 @@ public class Hero : MonoBehaviour
 
             }
 
-            if (m_CurHp > 99.0f)
+            if (m_CurHp > 100.0f)
             {
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
                 GameMgr.Inst.GuideText.text = "최대 체력입니다.";
