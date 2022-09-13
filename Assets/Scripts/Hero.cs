@@ -399,6 +399,10 @@ public class Hero : MonoBehaviour
         {           
             TakeDamage(10);
         }
+        if (other.gameObject.name.Contains("CoinPrefab") == true)
+        {
+            Destroy(other.gameObject);
+        }
     }
 
 

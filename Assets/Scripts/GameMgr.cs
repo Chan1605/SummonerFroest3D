@@ -8,6 +8,8 @@ public class GameMgr : MonoBehaviour
 {
     public static GameMgr Inst = null;
 
+    public GameObject m_CoinItem;
+
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
 

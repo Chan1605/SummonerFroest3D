@@ -5912,6 +5912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b97bc8edb7e3d12498c1c5b7cb8ffb61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CoinItem: {fileID: 7975343104425508632, guid: ef363df6563240f4fa0ed8e16f5d1b9b, type: 3}
   m_CursorMark: {fileID: 12802413}
   Yasuo: {fileID: 0}
   GuideText: {fileID: 876833046}
@@ -24975,6 +24976,7 @@ GameObject:
   - component: {fileID: 161216359}
   - component: {fileID: 919132149173588262}
   - component: {fileID: 919132149173588263}
+  - component: {fileID: 919132149173588264}
   m_Layer: 0
   m_Name: Yasuo
   m_TagString: Player
@@ -25018,6 +25020,22 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!54 &919132149173588264
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149173588261}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1017521608871158123
 PrefabInstance:
   m_ObjectHideFlags: 0

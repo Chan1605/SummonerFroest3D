@@ -220,6 +220,13 @@ public class MonCtrl : MonoBehaviour
             animator.SetTrigger("IsDie");
             Destroy(gameObject, 2.0f);
 
+            if (GameMgr.Inst.m_CoinItem != null)
+            {
+                GameObject a_CoinObj = (GameObject)Instantiate(GameMgr.Inst.m_CoinItem);
+                a_CoinObj.transform.position = this.transform.position;
+                Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
+            }
+
         }        
     }
 
