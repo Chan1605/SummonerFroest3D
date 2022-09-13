@@ -639,7 +639,7 @@ public class Hero : MonoBehaviour
                 SkillEffect.GetComponent<ParticleSystem>().Play();
                 SkillEffect.SetActive(true);                
                 IsBuff = true;
-                m_MoveVelocity = 10.0f;
+                m_MoveVelocity = 20.0f;
                 Skcnt = 8;
                 GameMgr.Inst.WSkillInfoText.text = WDuration.ToString("N1");
             }
