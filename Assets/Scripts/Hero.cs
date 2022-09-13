@@ -679,7 +679,7 @@ public class Hero : MonoBehaviour
 
         if (Wskill_Time <= 0.0f && WDuration <= 0.0f)
         {
-            GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
+            //GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
             GameMgr.Inst.WSkillInfoText.text = "W";
         }
 
