@@ -23,13 +23,15 @@ public class GameMgr : MonoBehaviour
     public Image SkillCoolimg;
     public Image WSkillCoolimg;
     public Image DSkillCoolimg;
-    public Image FSkillCoolimg;
+    public Image FSkillCoolimg;    
+    public Text SkCntTxt;  //스킬 텍스트
     public Text QSkillInfoText; //스킬 가이드 텍스트
     public Text WSkillInfoText; //스킬 가이드 텍스트
     public Text DSkillInfoText; //스킬 가이드 텍스트
     public Text FSkillInfoText; //스킬 가이드 텍스트
     public Text HpInfo;
-   
+    public Text EnemyTxt;
+
     void Awake()
     {
         //GameMgr 클래스를 인스턴스에 대입
@@ -45,7 +47,7 @@ public class GameMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CursorOffObserver();
+        CursorOffObserver();        
     }
 
     public void CursorMarkOn(Vector3 a_PickPos)
@@ -77,6 +79,8 @@ public class GameMgr : MonoBehaviour
             m_CursorMark.SetActive(false);
 
     }//void CursorMarkOn(Vector3 a_PickPos)
+
+
 
 
 

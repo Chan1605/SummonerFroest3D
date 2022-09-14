@@ -75,8 +75,9 @@ public class Hero : MonoBehaviour
     GameObject HealInst;           //F Instantiate용
     GameObject FlashInst;          //F Instantiate용
     
-    public int Skcnt = 0;
-    int cnt;
+    public int Skcnt = 1; //다이아를 먹으면 증가
+    int Ncnt = 1;         //일반 q 스킬
+    int cnt;              //현재 남은 몹 카운트
 
     void Awake()
     {
@@ -101,7 +102,7 @@ public class Hero : MonoBehaviour
         SwordCol = Sword.GetComponent<BoxCollider>();
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
-        //Skcnt = 1;
+        EnemyCheck();
     }
 
 
@@ -120,13 +121,28 @@ public class Hero : MonoBehaviour
         UseFlash();
         UseHeal();
         UiInfo();
-        DefAttack();
+        DefAttack();        
 
         if (m_isPickMvOnOff == false && IsSkill == false)
             yasuo = YasuoState.idle;
 
 
 
+    }
+
+    void EnemyCheck()
+    {
+        MonCtrl[] mon = FindObjectsOfType<MonCtrl>();
+
+        int count = 0;
+
+        for (int i = 0; i < mon.Length; i++)
+        {
+            if (0 < mon[i].hp)
+                count++;
+        }        
+
+        GameMgr.Inst.EnemyTxt.text = "남은 적 : " + count;
     }
 
     private void Update_MousePosition()
@@ -197,6 +213,9 @@ public class Hero : MonoBehaviour
                     this.gameObject.transform.forward = dir;
                     
                     Taget.GetComponent<MonCtrl>().TakeDamage(100);
+                    //Ncnt--;
+                    DiaCheck();
+                    EnemyCheck();
                     this.gameObject.transform.position = tagetpos;
                     Vector3 effectpos = tagetpos;
                     effectpos.y += 2.0f;
@@ -401,8 +420,19 @@ public class Hero : MonoBehaviour
         }
         if (other.gameObject.name.Contains("CoinPrefab") == true)
         {
+            Ncnt++;            
+            DiaCheck();
             Destroy(other.gameObject);
         }
+    }
+
+    void DiaCheck()
+    {
+        if(Ncnt < 1)
+        {
+            Ncnt = 1;
+        }
+        GameMgr.Inst.SkCntTxt.text = "x " + Ncnt;
     }
 
 
@@ -476,6 +506,7 @@ public class Hero : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Q))
             {
+
                 if (m_isPickMvOnOff == true)
                 {
                     {
@@ -503,6 +534,7 @@ public class Hero : MonoBehaviour
                 Aim.gameObject.SetActive(true);
                 StartCoroutine(Detecting());
 
+
             }
 
         }
@@ -512,15 +544,28 @@ public class Hero : MonoBehaviour
     {
         
         if(Input.GetKeyDown(KeyCode.W))
-        {
-            if (IsBuff)
+        {          
+            if(Ncnt <= 1)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "최소 2개의 다이아가 필요합니다.";
+                GuideTimer = 1.0f;
                 return;
-                if (Wskill_Time > 0.0f)
+            }
+            if (IsBuff)
+            {
+                GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                GameMgr.Inst.GuideText.text = "버프 지속 중 입니다.";
+                GuideTimer = 1.0f;
+                return;
+            }            
+
+            if (Wskill_Time > 0.0f)
                 {
-                    GameMgr.Inst.GuideText.gameObject.SetActive(true);
-                    GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
-                    GuideTimer = 1.0f;
-                    return;
+                  GameMgr.Inst.GuideText.gameObject.SetActive(true);
+                  GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
+                  GuideTimer = 1.0f;
+                  return;
                 }            
             WDuration = 10.0f;            
             IsBuff = true;            
@@ -630,6 +675,8 @@ public class Hero : MonoBehaviour
         skill_Delay -= Time.deltaTime;        
         Dskill_Delay -= Time.deltaTime;
         Fskill_Delay -= Time.deltaTime;
+
+
         if (IsBuff == true)
         {
             WDuration -= Time.deltaTime;
@@ -640,13 +687,16 @@ public class Hero : MonoBehaviour
                 SkillEffect.SetActive(true);                
                 IsBuff = true;
                 m_MoveVelocity = 20.0f;
-                Skcnt = 8;
+                Skcnt = Ncnt;
+                DiaCheck();
                 GameMgr.Inst.WSkillInfoText.text = WDuration.ToString("N1");
             }
             if (WDuration <= 0.0f)
             {
-                SkillEffect.SetActive(false);                
-                Skcnt = 1;
+                SkillEffect.SetActive(false);
+                Ncnt = 1;
+                Skcnt = Ncnt;
+                DiaCheck();
                 m_MoveVelocity = 8.0f;
                 WDuration = 0.0f;
                 Wskill_Time = 20.0f;
@@ -725,8 +775,7 @@ public class Hero : MonoBehaviour
                         AimF.fillAmount += (0.002f * Time.unscaledTime);
                         if (AimF.fillAmount >= 1f)
                         {
-                            nowCnt++;
-                            //Skcnt++;                            
+                            nowCnt++;           
                             Taget.gameObject.layer = 0;                            
                             AimF.fillAmount = 0.0f;                            
                             yasuo = YasuoState.skilling;
@@ -740,7 +789,7 @@ public class Hero : MonoBehaviour
  
                 }
                 yield return null;
-               if(Skcnt == nowCnt || nowCnt == cnt || Input.GetKeyDown(KeyCode.Q))
+               if(Skcnt == nowCnt || nowCnt == cnt ||Input.GetKeyDown(KeyCode.Q))
                 {
                     if (yasuo != YasuoState.skill)
                         yield break;
