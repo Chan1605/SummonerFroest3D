@@ -6,9 +6,14 @@ using UnityEngine.UI;
 
 public class GameMgr : MonoBehaviour
 {
+
+
     public static GameMgr Inst = null;
 
     public GameObject m_CoinItem;
+    public GameObject HelpBox;
+    public Text Qskname;
+    public Text QInfo;
 
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
@@ -47,7 +52,34 @@ public class GameMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CursorOffObserver();        
+        CursorOffObserver(); 
+        
+        if( IsCollSlot(QSkillicon.gameObject)== true)
+        {
+            Showtooltip("질풍검", "적을 향해 돌진합니다.\n(낭인의 길 사용 시 보유한 다이아만큼 연속으로 적을 처치합니다.)\n (재사용 대기시간 : 3초)",QSkillicon.transform.position);
+        }
+        else if (IsCollSlot(WSkillicon.gameObject) == true)
+        {
+            Showtooltip("낭인의 길","사용 시 10초 동안 플레이어가 강화됩니다.\n(질풍 검(연속사용),야스오 이동속도 증가\n(재사용 대기시간 : 20초)", WSkillicon.transform.position);
+                                
+        }
+        else if (IsCollSlot(DSkillicon.gameObject) == true)
+        {
+            Showtooltip("회복", "HP를 30회복 합니다.\n(재사용 대기시간 : 10초)", DSkillicon.transform.position);
+        }
+        else if (IsCollSlot(FSkillicon.gameObject) == true)
+        {
+            Showtooltip("점멸", "마우스 커서 위치로 짧은거리를 순간이동\n(재사용 대기시간 : 20초)", FSkillicon.transform.position);
+        }
+        else
+        {
+            HelpBox.gameObject.SetActive(false);
+        }
+
+
+
+
+
     }
 
     public void CursorMarkOn(Vector3 a_PickPos)
@@ -81,8 +113,29 @@ public class GameMgr : MonoBehaviour
     }//void CursorMarkOn(Vector3 a_PickPos)
 
 
+    bool IsCollSlot(GameObject a_CkObj)  //마우스가 UI 슬롯 오브젝트 위에 있느냐? 판단하는 함수
+    {
+        Vector3[] v = new Vector3[4];
+        a_CkObj.GetComponent<RectTransform>().GetWorldCorners(v);
+        if (v[0].x <= Input.mousePosition.x && Input.mousePosition.x <= v[2].x &&
+           v[0].y <= Input.mousePosition.y && Input.mousePosition.y <= v[2].y)
+        {
+            return true;
+        }
 
+        return false;
+    }
 
+    void Showtooltip(string a_name, string a_Info, Vector3 a_pos)
+    {
+        HelpBox.gameObject.SetActive(true);
+        Vector3 pos = a_pos;
+        pos += new Vector3(HelpBox.GetComponent<RectTransform>().rect.width * 0.5f,
+                        -HelpBox.GetComponent<RectTransform>().rect.height * 0.4f, 0);
+        HelpBox.transform.position = pos;
+        Qskname.text = a_name;
+        QInfo.text = a_Info;
+    }
 
 
     public static bool IsPointerOverUIObject() //UGUI의 UI들이 먼저 피킹되는지 확인하는 함수

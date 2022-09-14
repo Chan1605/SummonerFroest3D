@@ -58,8 +58,8 @@ public class Hero : MonoBehaviour
     float skill_Time = 3.0f;
     float Wskill_Time = 0.0f; //쿨타임
     float WDuration = 0.0f;   //버프 지속시간
-    float Dskill_Time = 5.0f;
-    float Fskill_Time = 10.0f;
+    float Dskill_Time = 10.0f;
+    float Fskill_Time = 20.0f;
     float skill_Delay = 0.0f;
     float Dskill_Delay = 0.0f;
     float Fskill_Delay = 0.0f;
@@ -607,7 +607,7 @@ public class Hero : MonoBehaviour
                     Vector3 dir = hit.point - this.transform.position;
                     dir.y = 0.0f;
                     dir.Normalize();
-                    float MaxMove = 10.0f;
+                    float MaxMove = 8.0f;
                     this.transform.position += dir * MaxMove;
 
 
@@ -714,7 +714,7 @@ public class Hero : MonoBehaviour
 
         if (Wskill_Time > 0.0f)
         {            
-            GameMgr.Inst.WSkillCoolimg.fillAmount = Wskill_Time / 20.0f;
+            GameMgr.Inst.WSkillCoolimg.fillAmount = Wskill_Time / 30.0f;
             GameMgr.Inst.WSkillInfoText.text = Wskill_Time.ToString("N1");
         }
 
@@ -733,7 +733,7 @@ public class Hero : MonoBehaviour
 
         if (Wskill_Time <= 0.0f && WDuration <= 0.0f)
         {
-            //GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
+            GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
             GameMgr.Inst.WSkillInfoText.text = "W";
         }
 
