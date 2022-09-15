@@ -3,27 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class TitleMgr : MonoBehaviour
+public class TitleAnimCtrl : MonoBehaviour
 {
-    public Button ReAnimBtn;
-    public GameObject TitleAnim;
+    public Image BgImage;
+    public Animator BGanim;
+
     // Start is called before the first frame update
     void Start()
     {
-        if (ReAnimBtn != null)
-            ReAnimBtn.onClick.AddListener(AnimStart);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    void AnimStart()
+    void AnimExit()
     {
-        TitleAnim.gameObject.SetActive(true);
+        BgImage.gameObject.SetActive(false);
     }
-
 }
