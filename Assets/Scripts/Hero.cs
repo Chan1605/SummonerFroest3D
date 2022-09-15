@@ -70,12 +70,13 @@ public class Hero : MonoBehaviour
     public GameObject SkillEnd;    //Q 엔드 이펙트
     public GameObject HealEffect;  //D 스킬 이펙트
     public GameObject FlashEffect; //F 스킬이펙트
-
+    public GameObject Trail;
     GameObject Skill1;             //W Instantiate용
     GameObject HealInst;           //F Instantiate용
     GameObject FlashInst;          //F Instantiate용
     
-    public int Skcnt = 1; //다이아를 먹으면 증가
+    
+    int Skcnt = 1; //다이아를 먹으면 증가
     int Ncnt = 1;         //일반 q 스킬
     int cnt;              //현재 남은 몹 카운트
 
@@ -198,7 +199,9 @@ public class Hero : MonoBehaviour
                 {
                     AnimType("IsSkill");
                     colorCorrection.enabled = true;
-                    Time.timeScale = 0.3f;
+                    Time.timeScale = 0.3f;                   
+
+
                     Update_MousePosition();
 
                 }
@@ -234,6 +237,8 @@ public class Hero : MonoBehaviour
                     SwordCol.enabled = false;
                     Aim.gameObject.SetActive(false);
                     SkillEffect.SetActive(false);
+                    //SkillEffect.GetComponent<ParticleSystem>().Stop();
+
                     Time.timeScale = 1.0f;                    
                     skill_Delay = skill_Time;
                     yasuo = YasuoState.idle;
@@ -532,6 +537,8 @@ public class Hero : MonoBehaviour
                 IsSkill = true;
                 yasuo = YasuoState.skill;
                 Aim.gameObject.SetActive(true);
+                SkillEffect.SetActive(true);
+                SkillEffect.GetComponent<ParticleSystem>().Play();
                 StartCoroutine(Detecting());
 
 
@@ -683,8 +690,9 @@ public class Hero : MonoBehaviour
             if (WDuration > 0.0f)
             {
                 GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
-                SkillEffect.GetComponent<ParticleSystem>().Play();
-                SkillEffect.SetActive(true);                
+                //SkillEffect.GetComponent<ParticleSystem>().Play();
+                //SkillEffect.SetActive(true);                
+                Trail.gameObject.SetActive(true);
                 IsBuff = true;
                 m_MoveVelocity = 20.0f;
                 Skcnt = Ncnt;
@@ -693,7 +701,8 @@ public class Hero : MonoBehaviour
             }
             if (WDuration <= 0.0f)
             {
-                SkillEffect.SetActive(false);
+                //SkillEffect.SetActive(false);
+                Trail.gameObject.SetActive(false);
                 Ncnt = 1;
                 Skcnt = Ncnt;
                 DiaCheck();
