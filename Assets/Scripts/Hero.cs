@@ -785,8 +785,8 @@ public class Hero : MonoBehaviour
                 {
                     if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
                     {
-                        Taget = hitInfo.transform;                        
-                        AimF.fillAmount += (0.002f * Time.unscaledTime);
+                        Taget = hitInfo.transform;
+                        AimF.fillAmount += (0.001f * Time.unscaledTime);
                         if (AimF.fillAmount >= 1f)
                         {
                             nowCnt++;           

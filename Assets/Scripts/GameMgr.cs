@@ -91,32 +91,49 @@ public class GameMgr : MonoBehaviour
 
         if(GuideText != null)
         {
-            if(PlayTimer > 0.0f)
+            if(PlayTimer > 1.0f)
             {
                 GuideText.gameObject.SetActive(true);
-                GuideText.text = "소환사의 숲에 오신것을 환영합니다.\n 이 곳에서 야스오의 강함을 느껴보세요!";
+                GuideText.text = "소환사의 숲에 오신것을 환영합니다.\n" +
+                    "잠시후 튜토리얼이 시작됩니다.";
+                    
             }
-            if(PlayTimer > 10.0f)
+            if(PlayTimer > 3.0f)
             {
-                GuideText.gameObject.SetActive(false);
                 InfoBox.gameObject.SetActive(true);
             }
+            if(PlayTimer > 7.0f)
+            {
+                GuideText.gameObject.SetActive(false);                
+            }
+            if(PlayTimer > 15.0f)
+            {
+                EnemyTxt.gameObject.SetActive(true);
+                InfoText.text = "마우스 좌클릭으로 적을 공격합니다.\n적을 처치 시 다이아를 획득합니다.";
+            }
+
             if(PlayTimer > 30.0f)
             {
                 GuideText.gameObject.SetActive(true);
-                GuideText.text = "30초 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
-                InfoText.text = "적을 잡으면 다이아를 획득합니다.";
+                GuideText.text = "20초 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
+                InfoText.text = "마우스 커서로 스킬의 정보를\n 확인할 수 있습니다.";
             }
-            if(PlayTimer > 40.0f)
+            if(PlayTimer > 35.0f)
             {
                 GuideText.gameObject.SetActive(false);
                 GuideText.text = "";
-                InfoText.text = "공격과 스킬로 적들을 처치하십시오.";
+                InfoText.text = "공격과 스킬들로 적들을 처치하십시오.";
             }
-            if(PlayTimer > 60.0f)
+            if(PlayTimer > 50.0f)
             {
-                InfoBox.gameObject.SetActive(false);
-                EnemyTxt.gameObject.SetActive(true);
+                GuideText.gameObject.SetActive(true);
+                GuideText.text = "적들이 생성되었습니다.";
+                InfoBox.gameObject.SetActive(false);                
+            }
+            if (PlayTimer > 53.0f)
+            {
+                GuideText.gameObject.SetActive(false);           
+
             }
         }
 
