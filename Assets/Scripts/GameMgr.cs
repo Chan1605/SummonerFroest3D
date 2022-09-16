@@ -92,7 +92,7 @@ public class GameMgr : MonoBehaviour
 
         if(TutoGuideText != null)
         {
-            if(PlayTimer > 1.0f)
+            if(PlayTimer > 2.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
                 TutoGuideText.text = "소환사의 숲에 오신것을 환영합니다.\n" +
@@ -108,10 +108,6 @@ public class GameMgr : MonoBehaviour
             {
                 EnemyTxt.gameObject.SetActive(true);
                 InfoText.text = "마우스 좌클릭으로 적을 공격합니다.\n적을 처치 시 다이아가 드랍됩니다.";
-            }
-            if (PlayTimer > 22.0f)
-            {                
-                InfoText.text = "마우스 커서로 스킬의 정보를\n 확인할 수 있습니다.";
             }
 
             if (PlayTimer > 30.0f)
