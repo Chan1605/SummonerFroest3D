@@ -124,7 +124,7 @@ public class Hero : MonoBehaviour
         UiInfo();
         DefAttack();        
 
-        if (m_isPickMvOnOff == false && IsSkill == false)
+        if (m_isPickMvOnOff == false && IsSkill == false && m_TargetUnit == null)
             yasuo = YasuoState.idle;
 
 
@@ -192,6 +192,7 @@ public class Hero : MonoBehaviour
                 {
                     AttackRotUpdate();
                     AnimType("IsAttack");
+                    EnemyCheck();
                 }
                 break;
 
@@ -479,7 +480,8 @@ public class Hero : MonoBehaviour
             if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
             {
                 if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-                { //몬스터 픽킹일 때                     
+                { //몬스터 픽킹일 때          
+                    yasuo = YasuoState.attack;
                     MousePicking(hitInfo.point, hitInfo.collider.gameObject);
                     if (GameMgr.Inst.m_CursorMark != null)
                         GameMgr.Inst.m_CursorMark.SetActive(false);
