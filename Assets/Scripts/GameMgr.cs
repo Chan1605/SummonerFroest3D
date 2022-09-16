@@ -14,6 +14,8 @@ public class GameMgr : MonoBehaviour
     public GameObject HelpBox;
     public Text Qskname;
     public Text QInfo;
+    public Text PlayTimeTxt;
+    float PlayTimer = 0.0f;
 
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
@@ -77,7 +79,14 @@ public class GameMgr : MonoBehaviour
         }
 
 
-
+        if (PlayTimeTxt != null)
+        {
+            PlayTimer = Time.unscaledTime; //진행시간은 슬로우효과를 받지않게
+            PlayTimer += Time.deltaTime;
+            PlayTimeTxt.text = ((int)PlayTimer / 60 % 60).ToString("00") + " : " +
+            ((int)PlayTimer % 60).ToString("00");//+ Mathf.Round(m_Timer) + "초";
+            
+        }
 
 
     }

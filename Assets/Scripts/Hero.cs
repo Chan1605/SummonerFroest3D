@@ -767,6 +767,7 @@ public class Hero : MonoBehaviour
             GuideTimer = 0.0f;
             GameMgr.Inst.GuideText.text = "";
         }
+
     }
 
     IEnumerator Detecting()
