@@ -107,7 +107,7 @@ public class GameMgr : MonoBehaviour
             if(PlayTimer > 15.0f)
             {
                 EnemyTxt.gameObject.SetActive(true);
-                InfoText.text = "마우스 좌클릭으로 적을 공격합니다.\n적을 처치 시 다이아를 획득합니다.";
+                InfoText.text = "마우스 좌클릭으로 적을 공격합니다.\n적을 처치 시 다이아가 드랍됩니다.";
             }
 
             if(PlayTimer > 30.0f)
