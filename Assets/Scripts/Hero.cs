@@ -79,6 +79,7 @@ public class Hero : MonoBehaviour
     int Skcnt = 1; //다이아를 먹으면 증가
     int Ncnt = 1;         //일반 q 스킬
     int cnt;              //현재 남은 몹 카운트
+    public int Killcount = 0; //킬 카운트
 
     void Awake()
     {
@@ -104,6 +105,7 @@ public class Hero : MonoBehaviour
         SwordCol.enabled = false;
         yasuo = YasuoState.idle;
         EnemyCheck();
+        
     }
 
 
@@ -135,15 +137,15 @@ public class Hero : MonoBehaviour
     {
         MonCtrl[] mon = FindObjectsOfType<MonCtrl>();
 
-        int count = 0;
+        
 
-        for (int i = 0; i < mon.Length; i++)
-        {
-            if (0 < mon[i].hp)
-                count++;
-        }        
+        //for (int i = 0; i < mon.Length; i++)
+        //{
+        //    if (0 > mon[i].hp)
+        //        count++;
+        //}        
 
-        GameMgr.Inst.EnemyTxt.text = "남은 적 : " + count;
+        GameMgr.Inst.EnemyTxt.text = "Kill Count : " +  Killcount;         
     }
 
     private void Update_MousePosition()

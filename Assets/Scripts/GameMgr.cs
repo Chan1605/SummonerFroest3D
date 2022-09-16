@@ -12,10 +12,11 @@ public class GameMgr : MonoBehaviour
 
     public GameObject m_CoinItem;
     public GameObject HelpBox;
+    public GameObject InfoBox;
     public Text Qskname;
     public Text QInfo;
     public Text PlayTimeTxt;
-    float PlayTimer = 0.0f;
+    float PlayTimer = 0.0f;    
 
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
@@ -38,6 +39,7 @@ public class GameMgr : MonoBehaviour
     public Text FSkillInfoText; //스킬 가이드 텍스트
     public Text HpInfo;
     public Text EnemyTxt;
+    public Text InfoText;
 
     void Awake()
     {
@@ -48,7 +50,7 @@ public class GameMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -86,6 +88,37 @@ public class GameMgr : MonoBehaviour
             PlayTimeTxt.text = ((int)PlayTimer / 60 % 60).ToString("00") + " : " +
             ((int)PlayTimer % 60).ToString("00");//+ Mathf.Round(m_Timer) + "초";
             
+        }
+
+        if(GuideText != null)
+        {
+            if(PlayTimer > 0.0f)
+            {
+                GuideText.gameObject.SetActive(true);
+                GuideText.text = "소환사의 숲에 오신것을 환영합니다.\n 이 곳에서 야스오의 강함을 느껴보세요!";
+            }
+            if(PlayTimer > 10.0f)
+            {
+                GuideText.gameObject.SetActive(false);
+                InfoBox.gameObject.SetActive(true);
+            }
+            if(PlayTimer > 30.0f)
+            {
+                GuideText.gameObject.SetActive(true);
+                GuideText.text = "30초 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
+                InfoText.text = "적을 잡으면 다이아를 획득합니다.";
+            }
+            if(PlayTimer > 40.0f)
+            {
+                GuideText.gameObject.SetActive(false);
+                GuideText.text = "";
+                InfoText.text = "공격과 스킬로 적들을 처치하십시오.";
+            }
+            if(PlayTimer > 60.0f)
+            {
+                InfoBox.gameObject.SetActive(false);
+                EnemyTxt.gameObject.SetActive(true);
+            }
         }
 
 

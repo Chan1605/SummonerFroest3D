@@ -215,13 +215,15 @@ public class MonCtrl : MonoBehaviour
         if (hp <= 0)
         {
             hp = 0;
-            isDie = true;
+            isDie = true;            
             monsterState = MonsterState.die;
             animator.SetTrigger("IsDie");
             Destroy(gameObject, 2.0f);
 
             if (GameMgr.Inst.m_CoinItem != null)
             {
+                Hero a_hero = GameObject.Find("Yasuo").GetComponent<Hero>();
+                a_hero.Killcount++;
                 GameObject a_CoinObj = (GameObject)Instantiate(GameMgr.Inst.m_CoinItem);
                 a_CoinObj.transform.position = this.transform.position;
                 Destroy(a_CoinObj, 10.0f);  //10초내에 먹어야 한다.
