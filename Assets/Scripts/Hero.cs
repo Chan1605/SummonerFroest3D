@@ -202,7 +202,7 @@ public class Hero : MonoBehaviour
                 {
                     AnimType("IsSkill");
                     colorCorrection.enabled = true;
-                    Time.timeScale = 0.3f;                   
+                    Time.timeScale = 0.5f;                    
 
 
                     Update_MousePosition();
