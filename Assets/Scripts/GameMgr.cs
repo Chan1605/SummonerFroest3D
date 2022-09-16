@@ -24,6 +24,7 @@ public class GameMgr : MonoBehaviour
     [HideInInspector] public Hero Yasuo = null;
 
     public Text GuideText; //UI 텍스트
+    public Text TutoGuideText; //UI 텍스트
     public Image QSkillicon; //스킬 이미지
     public Image WSkillicon; //스킬 이미지
     public Image DSkillicon; //스킬 이미지
@@ -89,22 +90,19 @@ public class GameMgr : MonoBehaviour
             
         }
 
-        if(GuideText != null)
+        if(TutoGuideText != null)
         {
             if(PlayTimer > 1.0f)
             {
-                GuideText.gameObject.SetActive(true);
-                GuideText.text = "소환사의 숲에 오신것을 환영합니다.\n" +
-                    "잠시후 튜토리얼이 시작됩니다.";
+                TutoGuideText.gameObject.SetActive(true);
+                TutoGuideText.text = "소환사의 숲에 오신것을 환영합니다.\n" +
+                    "잠시후 튜토리얼 적들이 생성됩니다.";
                     
             }
-            if(PlayTimer > 3.0f)
+            if(PlayTimer > 5.0f)
             {
+                TutoGuideText.gameObject.SetActive(false);
                 InfoBox.gameObject.SetActive(true);
-            }
-            if(PlayTimer > 7.0f)
-            {
-                GuideText.gameObject.SetActive(false);                
             }
             if(PlayTimer > 15.0f)
             {
@@ -114,25 +112,25 @@ public class GameMgr : MonoBehaviour
 
             if(PlayTimer > 30.0f)
             {
-                GuideText.gameObject.SetActive(true);
-                GuideText.text = "20초 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
+                TutoGuideText.gameObject.SetActive(true);
+                TutoGuideText.text = "20초 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
                 InfoText.text = "마우스 커서로 스킬의 정보를\n 확인할 수 있습니다.";
             }
             if(PlayTimer > 35.0f)
             {
-                GuideText.gameObject.SetActive(false);
-                GuideText.text = "";
+                TutoGuideText.gameObject.SetActive(false);
+                TutoGuideText.text = "";
                 InfoText.text = "공격과 스킬들로 적들을 처치하십시오.";
             }
             if(PlayTimer > 50.0f)
             {
-                GuideText.gameObject.SetActive(true);
-                GuideText.text = "적들이 생성되었습니다.";
+                TutoGuideText.gameObject.SetActive(true);
+                TutoGuideText.text = "적들이 생성되었습니다.";
                 InfoBox.gameObject.SetActive(false);                
             }
             if (PlayTimer > 53.0f)
             {
-                GuideText.gameObject.SetActive(false);           
+                TutoGuideText.gameObject.SetActive(false);           
 
             }
         }
