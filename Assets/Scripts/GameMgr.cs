@@ -109,12 +109,15 @@ public class GameMgr : MonoBehaviour
                 EnemyTxt.gameObject.SetActive(true);
                 InfoText.text = "마우스 좌클릭으로 적을 공격합니다.\n적을 처치 시 다이아가 드랍됩니다.";
             }
+            if (PlayTimer > 22.0f)
+            {                
+                InfoText.text = "마우스 커서로 스킬의 정보를\n 확인할 수 있습니다.";
+            }
 
-            if(PlayTimer > 30.0f)
+            if (PlayTimer > 30.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
-                TutoGuideText.text = "20초 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
-                InfoText.text = "마우스 커서로 스킬의 정보를\n 확인할 수 있습니다.";
+                TutoGuideText.text = "잠시 후 적들이 생성됩니다.\n 전투에 대비하십시오.";                
             }
             if(PlayTimer > 35.0f)
             {
@@ -122,13 +125,13 @@ public class GameMgr : MonoBehaviour
                 TutoGuideText.text = "";
                 InfoText.text = "공격과 스킬들로 적들을 처치하십시오.";
             }
-            if(PlayTimer > 50.0f)
+            if(PlayTimer > 45.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
                 TutoGuideText.text = "적들이 생성되었습니다.";
                 InfoBox.gameObject.SetActive(false);                
             }
-            if (PlayTimer > 53.0f)
+            if (PlayTimer > 48.0f)
             {
                 TutoGuideText.gameObject.SetActive(false);           
 

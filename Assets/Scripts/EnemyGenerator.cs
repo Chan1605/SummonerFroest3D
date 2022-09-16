@@ -19,7 +19,7 @@ public class EnemyGenerator : MonoBehaviour
         {
             TutorialGroup.gameObject.SetActive(true);
         }
-        if(GameMgr.Inst.PlayTimer > 50.0f)
+        if(GameMgr.Inst.PlayTimer > 45.0f)
         {
             EnemyGroup.gameObject.SetActive(true);
         }
