@@ -15,7 +15,7 @@ public class Hero : MonoBehaviour
     public Image hpbar;
     public RectTransform Aim;
     public Image AimF;
-    public GameObject TrEff;
+    public GameObject TrEff;    
 
     public float m_MoveVelocity = 8.0f;
     //------ Picking 관련 변수 
@@ -49,6 +49,7 @@ public class Hero : MonoBehaviour
 
     bool IsSkill = false;
     bool IsBuff = false;    
+
     [HideInInspector] public bool IsDie = false;
     BoxCollider SwordCol;
     public GameObject Sword;
@@ -66,7 +67,7 @@ public class Hero : MonoBehaviour
     float Fskill_Delay = 0.0f;
 
     float GuideTimer = 0.0f;
-
+    
     public GameObject SkillEffect; //Q 홀드 스킬이펙트
     public GameObject SkillEnd;    //Q 엔드 이펙트
     public GameObject HealEffect;  //D 스킬 이펙트
@@ -124,9 +125,8 @@ public class Hero : MonoBehaviour
         UseWSkill();
         UseFlash();
         UseHeal();
-        UiInfo();
-        DefAttack();        
-
+        UiInfo();    
+        
         if (m_isPickMvOnOff == false && IsSkill == false && m_TargetUnit == null)
             yasuo = YasuoState.idle;
 
@@ -203,8 +203,8 @@ public class Hero : MonoBehaviour
                 {
                     AnimType("IsSkill");
                     colorCorrection.enabled = true;
-                    Time.timeScale = 0.5f;                    
-
+                    Time.timeScale = 0.5f;
+                    TrEff.GetComponent<TrailRenderer>().emitting = true;
 
                     Update_MousePosition();
 
@@ -229,8 +229,7 @@ public class Hero : MonoBehaviour
 
                     Skill1 = (GameObject)Instantiate(SkillEnd, effectpos, Quaternion.identity);
                     Skill1.GetComponent<ParticleSystem>().Play();
-                    Destroy(Skill1, 1.0f);
-                    
+                    Destroy(Skill1, 1.0f);                    
                     yasuo = YasuoState.skill;
                 }
                 break;
@@ -241,11 +240,15 @@ public class Hero : MonoBehaviour
                     SwordCol.enabled = false;
                     Aim.gameObject.SetActive(false);
                     SkillEffect.SetActive(false);
-                    //SkillEffect.GetComponent<ParticleSystem>().Stop();
-
+                   
                     Time.timeScale = 1.0f;                    
                     skill_Delay = skill_Time;
+                    TrEff.GetComponent<TrailRenderer>().emitting = false;
+                   
+            
                     yasuo = YasuoState.idle;
+                    
+
 
                 }
                 break;
@@ -447,7 +450,7 @@ public class Hero : MonoBehaviour
 
     void PlayerDie()
     {
-        IsDie = true;        
+        IsDie = true;
         AnimType("IsDie");
         colorCorrection.enabled = true;
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
@@ -498,16 +501,6 @@ public class Hero : MonoBehaviour
         }//if (Input.GetMouseButtonDown(0))
     }
 
-    void DefAttack()
-    {        
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            AttackRotUpdate();
-            yasuo = YasuoState.attack;
-            Debug.Log("공격중");
-
-        }
-    }
 
     void UseSkill()
     {
@@ -693,7 +686,7 @@ public class Hero : MonoBehaviour
             if (WDuration > 0.0f)
             {
                 Trail.gameObject.SetActive(true);
-                TrEff.gameObject.SetActive(true);
+                TrEff.GetComponent<TrailRenderer>().emitting = true;
                 GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);            
                 IsBuff = true;
                 m_MoveVelocity = 20.0f;
@@ -704,7 +697,7 @@ public class Hero : MonoBehaviour
             if (WDuration <= 0.0f)
             {              
                 Trail.gameObject.SetActive(false);
-                TrEff.gameObject.SetActive(false);
+                TrEff.GetComponent<TrailRenderer>().emitting = false;
                 Ncnt = 1;
                 Skcnt = Ncnt;
                 DiaCheck();
