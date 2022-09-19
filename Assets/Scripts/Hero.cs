@@ -15,6 +15,7 @@ public class Hero : MonoBehaviour
     public Image hpbar;
     public RectTransform Aim;
     public Image AimF;
+    public GameObject TrEff;
 
     public float m_MoveVelocity = 8.0f;
     //------ Picking 관련 변수 
@@ -47,7 +48,7 @@ public class Hero : MonoBehaviour
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
 
     bool IsSkill = false;
-    bool IsBuff = false;
+    bool IsBuff = false;    
     [HideInInspector] public bool IsDie = false;
     BoxCollider SwordCol;
     public GameObject Sword;
@@ -79,7 +80,7 @@ public class Hero : MonoBehaviour
     int Skcnt = 1; //다이아를 먹으면 증가
     int Ncnt = 1;         //일반 q 스킬
     int cnt;              //현재 남은 몹 카운트
-    public int Killcount = 0; //킬 카운트
+    [HideInInspector]public int Killcount = 0; //킬 카운트
 
     void Awake()
     {
@@ -536,8 +537,6 @@ public class Hero : MonoBehaviour
                 }
 
                 SwordCol.enabled = true;
-                //SkillEffect.SetActive(true);
-                //SkillEffect.GetComponent<ParticleSystem>().Play();
                 IsSkill = true;
                 yasuo = YasuoState.skill;
                 Aim.gameObject.SetActive(true);
@@ -693,10 +692,9 @@ public class Hero : MonoBehaviour
             WDuration -= Time.deltaTime;
             if (WDuration > 0.0f)
             {
-                GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);
-                //SkillEffect.GetComponent<ParticleSystem>().Play();
-                //SkillEffect.SetActive(true);                
                 Trail.gameObject.SetActive(true);
+                TrEff.gameObject.SetActive(true);
+                GameMgr.Inst.WSkillCoolimg.gameObject.SetActive(false);            
                 IsBuff = true;
                 m_MoveVelocity = 20.0f;
                 Skcnt = Ncnt;
@@ -704,9 +702,9 @@ public class Hero : MonoBehaviour
                 GameMgr.Inst.WSkillInfoText.text = WDuration.ToString("N1");
             }
             if (WDuration <= 0.0f)
-            {
-                //SkillEffect.SetActive(false);
+            {              
                 Trail.gameObject.SetActive(false);
+                TrEff.gameObject.SetActive(false);
                 Ncnt = 1;
                 Skcnt = Ncnt;
                 DiaCheck();

@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class GameMgr : MonoBehaviour
 {
-
-
     public static GameMgr Inst = null;
 
     public GameObject m_CoinItem;
