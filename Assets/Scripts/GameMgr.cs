@@ -26,7 +26,7 @@ public class GameMgr : MonoBehaviour
     public Text Qskname;
     public Text QInfo;
     public Text PlayTimeTxt;
-    [HideInInspector] public float PlayTimer = 0.0f;    
+    [HideInInspector] public float PlayTimer = 0.0f;
 
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
@@ -42,7 +42,7 @@ public class GameMgr : MonoBehaviour
     public Image SkillCoolimg;
     public Image WSkillCoolimg;
     public Image DSkillCoolimg;
-    public Image FSkillCoolimg;    
+    public Image FSkillCoolimg;
     public Text SkCntTxt;  //스킬 텍스트
     public Text QSkillInfoText; //스킬 가이드 텍스트
     public Text WSkillInfoText; //스킬 가이드 텍스트
@@ -63,7 +63,7 @@ public class GameMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(TitleBtn != null)
+        if (TitleBtn != null)
         {
             TitleBtn.onClick.AddListener(TitleFunc);
         }
@@ -82,28 +82,16 @@ public class GameMgr : MonoBehaviour
     void Update()
     {
         CursorOffObserver();
-        if (Input.GetKeyDown(KeyCode.Escape))
+        EscCtr();
+
+        if (IsCollSlot(QSkillicon.gameObject) == true)
         {
-            if(Isesc)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
-        }
-
-
-
-        if ( IsCollSlot(QSkillicon.gameObject)== true)
-        {
-            Showtooltip("질풍검", "야스오가 기를모아 적을 조준해 피해를 줍니다.\n낭인의 길 사용 시: 보유한 다이아만큼 연속으로 사용\n (재사용 대기시간 : 3초)",QSkillicon.transform.position);
+            Showtooltip("질풍검", "야스오가 기를모아 적을 조준해 피해를 줍니다.\n낭인의 길 사용 시: 보유한 다이아만큼 연속으로 사용\n (재사용 대기시간 : 3초)", QSkillicon.transform.position);
         }
         else if (IsCollSlot(WSkillicon.gameObject) == true)
         {
-            Showtooltip("낭인의 길","사용 시 10초 동안 야스오가 강화됩니다.\n버프가 끝나면 다이아는 1개가 됩니다.\n(재사용 대기시간 : 20초)", WSkillicon.transform.position);
-                                
+            Showtooltip("낭인의 길", "사용 시 10초 동안 야스오가 강화됩니다.\n버프가 끝나면 다이아는 1개가 됩니다.\n(재사용 대기시간 : 20초)", WSkillicon.transform.position);
+
         }
         else if (IsCollSlot(DSkillicon.gameObject) == true)
         {
@@ -120,28 +108,28 @@ public class GameMgr : MonoBehaviour
 
 
         if (PlayTimeTxt != null)
-        {            
+        {
             PlayTimer += Time.deltaTime;
             PlayTimeTxt.text = ((int)PlayTimer / 60 % 60).ToString("00") + " : " +
             ((int)PlayTimer % 60).ToString("00");//+ Mathf.Round(m_Timer) + "초";
-            
+
         }
 
-        if(TutoGuideText != null)
+        if (TutoGuideText != null)
         {
-            if(PlayTimer > 2.0f)
+            if (PlayTimer > 2.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
                 TutoGuideText.text = "소환사의 숲에 오신것을 환영합니다.\n" +
                     "잠시후 튜토리얼 적들이 생성됩니다.";
-                    
+
             }
-            if(PlayTimer > 5.0f)
+            if (PlayTimer > 5.0f)
             {
                 TutoGuideText.gameObject.SetActive(false);
                 InfoBox.gameObject.SetActive(true);
             }
-            if(PlayTimer > 15.0f)
+            if (PlayTimer > 15.0f)
             {
                 EnemyTxt.gameObject.SetActive(true);
                 InfoText.text = "마우스 좌클릭으로 적을 공격합니다.\n적을 처치 시 다이아가 드랍됩니다.";
@@ -150,23 +138,23 @@ public class GameMgr : MonoBehaviour
             if (PlayTimer > 30.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
-                TutoGuideText.text = "잠시 후 적들이 생성됩니다.\n 전투에 대비하십시오.";                
+                TutoGuideText.text = "잠시 후 적들이 생성됩니다.\n 전투에 대비하십시오.";
             }
-            if(PlayTimer > 35.0f)
+            if (PlayTimer > 35.0f)
             {
                 TutoGuideText.gameObject.SetActive(false);
                 TutoGuideText.text = "";
                 InfoText.text = "공격과 스킬들로 적들을 처치하십시오.";
             }
-            if(PlayTimer > 45.0f)
+            if (PlayTimer > 45.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
                 TutoGuideText.text = "적들이 생성되었습니다.";
-                InfoBox.gameObject.SetActive(false);                
+                InfoBox.gameObject.SetActive(false);
             }
             if (PlayTimer > 48.0f)
             {
-                TutoGuideText.gameObject.SetActive(false);           
+                TutoGuideText.gameObject.SetActive(false);
 
             }
         }
@@ -177,10 +165,10 @@ public class GameMgr : MonoBehaviour
     public void CursorMarkOn(Vector3 a_PickPos)
     {
         if (m_CursorMark == null)
-            return;        
+            return;
 
         m_CursorMark.transform.position = new Vector3(a_PickPos.x, a_PickPos.y + 0.2f, a_PickPos.z);
-        
+
         m_CursorMark.SetActive(true);
 
     }//void CursorMarkOn(Vector3 a_PickPos
@@ -227,6 +215,20 @@ public class GameMgr : MonoBehaviour
         HelpBox.transform.position = pos;
         Qskname.text = a_name;
         QInfo.text = a_Info;
+    }
+    void EscCtr()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Isesc)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
+        }
     }
 
     void TitleFunc()
