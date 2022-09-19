@@ -20,6 +20,7 @@ public class GameMgr : MonoBehaviour
     public Button TitleBtn;
     public Button RePlayBtn;
     public Button EscTitleBtn;
+    public Button EscBtn;
 
     public Text Qskname;
     public Text QInfo;
@@ -73,6 +74,10 @@ public class GameMgr : MonoBehaviour
         if (RePlayBtn != null)
         {
             RePlayBtn.onClick.AddListener(ReplayFunc);
+        }
+        if (EscBtn != null)
+        {
+            EscBtn.onClick.AddListener(EscFunc);
         }
     }
 
@@ -218,6 +223,7 @@ public class GameMgr : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            EscBtn.gameObject.SetActive(false);
             if (Isesc)
             {
                 Resume();
@@ -239,11 +245,19 @@ public class GameMgr : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("InGame");
     }
 
+    void EscFunc()
+    {
+        EscPanel.SetActive(true);
+        EscBtn.gameObject.SetActive(false);
+    }
+
     void Resume()
     {
         EscPanel.SetActive(false);
         Time.timeScale = 1f;
         Isesc = false;
+        EscBtn.gameObject.SetActive(true);
+        
     }
 
     void Pause()
