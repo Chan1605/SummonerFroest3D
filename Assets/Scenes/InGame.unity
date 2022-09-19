@@ -597,9 +597,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\uB9C8\uC6B0\uC2A4 \uC88C\uD074\uB9AD\uC73C\uB85C  \uC57C\uC2A4\uC624\uAC00
-    \uC774\uB3D9\uD569\uB2C8\uB2E4.\n\uB9C8\uC6B0\uC2A4 \uCEE4\uC11C\uB85C \uC2A4\uD0AC\uC758
-    \uC815\uBCF4\uB97C \uBCFC \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  m_Text: "\uB9C8\uC6B0\uC2A4 \uC88C\uD074\uB9AD\uC73C\uB85C  \uC774\uB3D9\uD569\uB2C8\uB2E4.
+    \uB9C8\uC6B0\uC2A4 \uCEE4\uC11C\uB85C \n\uC2A4\uD0AC\uC758 \uC815\uBCF4\uB97C
+    \uD655\uC778 \uD560  \uC218 \uC788\uC2B5\uB2C8\uB2E4."
 --- !u!222 &40063774
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12652,7 +12652,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &952335424
 RectTransform:
   m_ObjectHideFlags: 0
