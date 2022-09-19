@@ -53,6 +53,19 @@ public class GameMgr : MonoBehaviour
 
     bool Isesc = false;
 
+    [Header("-------- Monster Spawn --------")]
+    //몬스터가 출현할 위치를 담을 배열
+    public Transform[] points;
+    //몬스터 프리팹을 할당할 변수
+    public GameObject monsterPrefab;
+    //몬스터를 미리 생성해 저장할 리스트 자료형
+    public List<GameObject> monsterPool = new List<GameObject>();
+
+    //몬스터를 발생시킬 주기
+    public float createTime = 2.0f;
+    //몬스터의 최대 발생 개수
+    public int maxMonster = 10;
+
     void Awake()
     {
         //GameMgr 클래스를 인스턴스에 대입
