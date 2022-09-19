@@ -17,6 +17,7 @@ public class TitleMgr : MonoBehaviour
             ReAnimBtn.onClick.AddListener(AnimStart);
         if (PlayBtn != null)
             PlayBtn.onClick.AddListener(GameStart);
+        Time.timeScale = 1.0f;
     }
 
     // Update is called once per frame

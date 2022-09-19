@@ -13,6 +13,16 @@ public class GameMgr : MonoBehaviour
     public GameObject m_CoinItem;
     public GameObject HelpBox;
     public GameObject InfoBox;
+    public GameObject GameOverPanel;
+    public GameObject EscPanel;
+    public Text EndPlayTimeTxt;
+    public Text EndKillTxt;
+    public Text EscPlayTimeTxt;
+    public Text EscKillTxt;
+    public Button TitleBtn;
+    public Button RePlayBtn;
+    public Button EscTitleBtn;
+
     public Text Qskname;
     public Text QInfo;
     public Text PlayTimeTxt;
@@ -42,6 +52,8 @@ public class GameMgr : MonoBehaviour
     public Text EnemyTxt;
     public Text InfoText;
 
+    bool Isesc = false;
+
     void Awake()
     {
         //GameMgr 클래스를 인스턴스에 대입
@@ -51,15 +63,40 @@ public class GameMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(TitleBtn != null)
+        {
+            TitleBtn.onClick.AddListener(TitleFunc);
+        }
+        if (EscTitleBtn != null)
+        {
+            EscTitleBtn.onClick.AddListener(TitleFunc);
+        }
 
+        if (RePlayBtn != null)
+        {
+            RePlayBtn.onClick.AddListener(ReplayFunc);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        CursorOffObserver(); 
-        
-        if( IsCollSlot(QSkillicon.gameObject)== true)
+        CursorOffObserver();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(Isesc)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
+        }
+
+
+
+        if ( IsCollSlot(QSkillicon.gameObject)== true)
         {
             Showtooltip("질풍검", "야스오가 기를모아 적을 조준해 피해를 줍니다.\n낭인의 길 사용 시: 보유한 다이아만큼 연속으로 사용\n (재사용 대기시간 : 3초)",QSkillicon.transform.position);
         }
@@ -192,6 +229,41 @@ public class GameMgr : MonoBehaviour
         QInfo.text = a_Info;
     }
 
+    void TitleFunc()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+    }
+
+    void ReplayFunc()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("InGame");
+    }
+
+    void Resume()
+    {
+        EscPanel.SetActive(false);
+        Time.timeScale = 1f;
+        Isesc = false;
+    }
+
+    void Pause()
+    {
+        EscPanel.SetActive(true);
+        Time.timeScale = 0f;
+        Isesc = true;
+        EscKillTxt.text = "잡은 몬스터 : " + Yasuo.Killcount;
+        EscPlayTimeTxt.text = "게임 시간 : " + ((int)PlayTimer / 60 % 60).ToString("00") + " : " + ((int)PlayTimer % 60).ToString("00");
+    }
+
+
+
+    public void GameOver()
+    {
+        GameOverPanel.SetActive(true);
+        EndKillTxt.text = "잡은 몬스터 : " + Yasuo.Killcount;
+        EndPlayTimeTxt.text = "게임 시간 : " + ((int)PlayTimer / 60 % 60).ToString("00") + " : " + ((int)PlayTimer % 60).ToString("00");
+
+    }
 
     public static bool IsPointerOverUIObject() //UGUI의 UI들이 먼저 피킹되는지 확인하는 함수
     {

@@ -446,8 +446,7 @@ public class Hero : MonoBehaviour
 
     void PlayerDie()
     {
-        IsDie = true;
-        Debug.Log("Player Die !!");
+        IsDie = true;        
         AnimType("IsDie");
         colorCorrection.enabled = true;
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Enemy");
@@ -456,6 +455,7 @@ public class Hero : MonoBehaviour
         {
             monster.GetComponent<MonCtrl>().OnPlayerDie();
         }
+        GameMgr.Inst.GameOver();
     }
 
 
