@@ -7159,6 +7159,11 @@ MonoBehaviour:
   HpInfo: {fileID: 196973442}
   EnemyTxt: {fileID: 1669558147}
   InfoText: {fileID: 40063773}
+  points: []
+  monsterPrefab: {fileID: 0}
+  monsterPool: []
+  createTime: 2
+  maxMonster: 10
 --- !u!4 &572200090
 Transform:
   m_ObjectHideFlags: 0
@@ -12652,7 +12657,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &952335424
 RectTransform:
   m_ObjectHideFlags: 0
