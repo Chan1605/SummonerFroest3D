@@ -61,10 +61,9 @@ public class GameMgr : MonoBehaviour
     //몬스터 프리팹을 할당할 변수
     public GameObject[] monsterPrefab;
     //몬스터를 발생시킬 주기
-    public float createTime = 2.0f;
-    public float waitcreateTime = 5.0f;
+    public float createTime = 1.0f;    
     //몬스터의 최대 발생 개수
-    public int maxMonster = 10;
+    public int maxMonster = 15;
 
     void Awake()
     {
