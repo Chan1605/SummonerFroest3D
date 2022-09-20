@@ -289,7 +289,7 @@ public class MonCtrl : MonoBehaviour
     {
         if(other.tag == "Sword")
         {
-            TakeDamage(30);            
+            TakeDamage(20);            
         }
     }
 
