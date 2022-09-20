@@ -31,6 +31,14 @@ public class GameMgr : MonoBehaviour
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
 
+    public Sprite[] TierImgs;
+    public Image ShowTier;
+    public Text TierTxt;
+
+    public Sprite[] EscTierImgs;
+    public Image EscShowTier;
+    public Text EscTierTxt;
+
     [HideInInspector] public Hero Yasuo = null;
 
     public Text GuideText; //UI 텍스트
@@ -301,6 +309,43 @@ public class GameMgr : MonoBehaviour
         Isesc = true;
         EscKillTxt.text = "잡은 몬스터 : " + Yasuo.Killcount;
         EscPlayTimeTxt.text = "게임 시간 : " + ((int)PlayTimer / 60 % 60).ToString("00") + " : " + ((int)PlayTimer % 60).ToString("00");
+
+        if (Yasuo.Killcount <= 10)
+        {
+            EscShowTier.sprite = EscTierImgs[0];
+            EscTierTxt.color = new Color32(135, 65, 0, 255);
+            EscTierTxt.text = "브론즈";
+        }
+        else if (Yasuo.Killcount <= 20)
+        {
+            EscShowTier.sprite = EscTierImgs[1];
+            EscTierTxt.color = new Color32(255, 255, 255, 157);
+            EscTierTxt.text = "실버";
+        }
+        else if (Yasuo.Killcount <= 30)
+        {
+            EscShowTier.sprite = EscTierImgs[2];
+            EscTierTxt.color = new Color32(255, 234, 0, 255);
+            EscTierTxt.text = "골드";
+        }
+        else if (Yasuo.Killcount <= 40)
+        {
+            EscShowTier.sprite = EscTierImgs[3];
+            EscTierTxt.color = new Color32(0, 255, 0, 255);
+            EscTierTxt.text = "플레티넘";
+        }
+        else if (Yasuo.Killcount <= 50)
+        {
+            EscShowTier.sprite = EscTierImgs[4];
+            EscTierTxt.color = new Color32(0, 0, 255, 255);
+            EscTierTxt.text = "다이아";
+        }
+        else if (Yasuo.Killcount > 60)
+        {
+            EscShowTier.sprite = EscTierImgs[5];
+            EscTierTxt.color = new Color32(255, 255, 0, 255);
+            EscTierTxt.text = "챌린저";
+        }
     }
 
 
@@ -310,6 +355,43 @@ public class GameMgr : MonoBehaviour
         GameOverPanel.SetActive(true);
         EndKillTxt.text = "잡은 몬스터 : " + Yasuo.Killcount;
         EndPlayTimeTxt.text = "게임 시간 : " + ((int)PlayTimer / 60 % 60).ToString("00") + " : " + ((int)PlayTimer % 60).ToString("00");
+        if(Yasuo.Killcount <= 10)
+        {
+            ShowTier.sprite = TierImgs[0];
+            TierTxt.color = new Color32(135, 65, 0, 255);
+            TierTxt.text = "브론즈";
+        }
+        else if (Yasuo.Killcount <= 20)
+        {
+            ShowTier.sprite = TierImgs[1];
+            TierTxt.color = new Color32(255, 255, 255, 157);
+            TierTxt.text = "실버";
+        }
+        else if (Yasuo.Killcount <= 30)
+        {
+            ShowTier.sprite = TierImgs[2];
+            TierTxt.color = new Color32(255, 234, 0, 255);
+            TierTxt.text = "골드";
+        }
+        else if (Yasuo.Killcount <= 40)
+        {
+            ShowTier.sprite = TierImgs[3];
+            TierTxt.color = new Color32(0, 255, 0, 255);
+            TierTxt.text = "플레티넘";
+        }
+        else if (Yasuo.Killcount <= 50)
+        {
+            ShowTier.sprite = TierImgs[4];
+            TierTxt.color = new Color32(0, 0, 255, 255);
+            TierTxt.text = "다이아";
+        }
+        else if (Yasuo.Killcount > 60)
+        {
+            ShowTier.sprite = TierImgs[5];
+            TierTxt.color = new Color32(255, 255, 0, 255);
+            TierTxt.text = "챌린저";
+        }
+
 
     }
 

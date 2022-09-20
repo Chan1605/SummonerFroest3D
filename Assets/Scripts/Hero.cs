@@ -81,7 +81,7 @@ public class Hero : MonoBehaviour
     int Skcnt = 1; //다이아를 먹으면 증가
     int Ncnt = 1;         //일반 q 스킬
     int cnt;              //현재 남은 몹 카운트
-    [HideInInspector]public int Killcount = 0; //킬 카운트
+    public int Killcount = 0; //킬 카운트
 
     void Awake()
     {
