@@ -136,9 +136,7 @@ public class Hero : MonoBehaviour
 
     void EnemyCheck()
     {
-        MonCtrl[] mon = FindObjectsOfType<MonCtrl>();
-
-        
+        MonCtrl[] mon = FindObjectsOfType<MonCtrl>();        
 
         //for (int i = 0; i < mon.Length; i++)
         //{
@@ -479,24 +477,27 @@ public class Hero : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (yasuo == YasuoState.skill)
-                return;
-
-            a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
+            if (GameMgr.IsPointerOverUIObject() == false)
             {
-                if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-                { //몬스터 픽킹일 때          
-                    yasuo = YasuoState.attack;
-                    MousePicking(hitInfo.point, hitInfo.collider.gameObject);
-                    if (GameMgr.Inst.m_CursorMark != null)
-                        GameMgr.Inst.m_CursorMark.SetActive(false);
-                }
-                else  //지형 바닥 픽킹일 때 
+                if (yasuo == YasuoState.skill)
+                    return;
+
+                a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
                 {
-                    MousePicking(hitInfo.point);
-                    GameMgr.Inst.CursorMarkOn(hitInfo.point);
-                }//else  //지형 바닥 픽킹일 때
+                    if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
+                    { //몬스터 픽킹일 때          
+                        yasuo = YasuoState.attack;
+                        MousePicking(hitInfo.point, hitInfo.collider.gameObject);
+                        if (GameMgr.Inst.m_CursorMark != null)
+                            GameMgr.Inst.m_CursorMark.SetActive(false);
+                    }
+                    else  //지형 바닥 픽킹일 때 
+                    {
+                        MousePicking(hitInfo.point);
+                        GameMgr.Inst.CursorMarkOn(hitInfo.point);
+                    }//else  //지형 바닥 픽킹일 때
+                }
             }
         }//if (Input.GetMouseButtonDown(0))
     }
