@@ -475,7 +475,7 @@ public class Hero : MonoBehaviour
 
     void MousePick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && GameMgr.Inst.PlayTimer > 5.0f)
         {
             if (GameMgr.IsPointerOverUIObject() == false)
             {

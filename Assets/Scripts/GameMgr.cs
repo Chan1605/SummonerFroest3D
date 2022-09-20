@@ -28,6 +28,8 @@ public class GameMgr : MonoBehaviour
     [HideInInspector] public float PlayTimer = 0.0f;
 
     public GameObject TutorialGroup;
+    public GameObject DiaTooltip;
+    public Image Dia;
     public GameObject m_CursorMark = null;
     Vector3 a_CacVLen = Vector3.zero;
 
@@ -62,6 +64,7 @@ public class GameMgr : MonoBehaviour
 
     bool Isesc = false;
     bool IsStart = false;
+    
 
     [Header("-------- Monster Spawn --------")]
     //몬스터가 출현할 위치를 담을 배열
@@ -133,6 +136,11 @@ public class GameMgr : MonoBehaviour
         else if (IsCollSlot(FSkillicon.gameObject) == true)
         {
             Showtooltip("점멸", "마우스 커서 위치로 짧은거리를 순간이동\n(재사용 대기시간 : 20초)", FSkillicon.transform.position);
+        }
+        else if (IsCollSlot(Dia.gameObject) == true)
+        {                    
+            Showtooltip("다이아", "낭인의 길(W)을 사용하기 위한 필수 재화이다.\n 적 처치시 드랍가능\n(최소 2개이상)",
+                DiaTooltip.transform.position);
         }
         else
         {
