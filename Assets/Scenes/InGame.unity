@@ -9104,7 +9104,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Go Title
+  m_Text: "\uD0C0\uC774\uD2C0\uB85C"
 --- !u!222 &727740040
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11058,7 +11058,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: RePlay
+  m_Text: "\uB2E4\uC2DC\uD558\uAE30"
 --- !u!222 &826234222
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13068,7 +13068,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Go Title
+  m_Text: "\uD0C0\uC774\uD2C0\uB85C"
 --- !u!222 &966739030
 CanvasRenderer:
   m_ObjectHideFlags: 0
