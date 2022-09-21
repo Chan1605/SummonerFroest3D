@@ -104,14 +104,7 @@ public class GameMgr : MonoBehaviour
         }
 
         points = GameObject.Find("SpawnPoint").GetComponentsInChildren<Transform>();
-        //if (PlayTimer > 45.0f)
-        //{
-        //    if (points.Length > 0)
-        //    {
-        //        //몬스터 생성 코루틴 함수 호출
-        //        StartCoroutine(this.CreateMonster());
-        //    }
-        //}
+
     }
 
     // Update is called once per frame
@@ -131,7 +124,7 @@ public class GameMgr : MonoBehaviour
         }
         else if (IsCollSlot(DSkillicon.gameObject) == true)
         {
-            Showtooltip("회복", "HP를 30회복 합니다.\n(재사용 대기시간 : 10초)", DSkillicon.transform.position);
+            Showtooltip("회복", "HP를 50회복 합니다.\n(재사용 대기시간 : 7초)", DSkillicon.transform.position);
         }
         else if (IsCollSlot(FSkillicon.gameObject) == true)
         {
@@ -158,17 +151,18 @@ public class GameMgr : MonoBehaviour
 
         if (TutoGuideText != null)
         {
-            if (PlayTimer > 2.0f)
+            if (PlayTimer > 1.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
                 TutoGuideText.text = "소환사의 숲에 오신것을 환영합니다.\n" +
                     "잠시후 튜토리얼 적들이 생성됩니다.";
+                InfoBox.gameObject.SetActive(true);
 
             }
             if (PlayTimer > 5.0f)
             {
                 TutoGuideText.gameObject.SetActive(false);
-                InfoBox.gameObject.SetActive(true);
+                InfoText.text = "마우스 우클릭으로 카메라를 조절합니다.\n 휠로 줌아웃을 할 수 있습니다.";
             }
             if (PlayTimer > 15.0f)
             {

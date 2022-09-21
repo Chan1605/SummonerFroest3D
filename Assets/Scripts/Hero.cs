@@ -60,7 +60,7 @@ public class Hero : MonoBehaviour
     float skill_Time = 3.0f;
     float Wskill_Time = 0.0f; //쿨타임
     float WDuration = 0.0f;   //버프 지속시간
-    float Dskill_Time = 10.0f;
+    float Dskill_Time = 7.0f;
     float Fskill_Time = 20.0f;
     float skill_Delay = 0.0f;
     float Dskill_Delay = 0.0f;
@@ -131,7 +131,7 @@ public class Hero : MonoBehaviour
         UseHeal();
         UiInfo();    
         
-        if (m_isPickMvOnOff == false && IsSkill == false && m_TargetUnit == null)
+        if (m_isPickMvOnOff == false && IsSkill == false && m_TargetUnit == null && IsBuff == false)
             yasuo = YasuoState.idle;
 
 
@@ -166,8 +166,7 @@ public class Hero : MonoBehaviour
         m_RefAnimator.SetBool("IsTrace", false);
         m_RefAnimator.SetBool("IsAttack", false);
         m_RefAnimator.SetBool("IsDie", false);
-        m_RefAnimator.SetBool("IsSkill", false);
-        m_RefAnimator.SetBool("SkillEnd", false);
+        m_RefAnimator.SetBool("IsSkill", false);        
 
         m_RefAnimator.SetBool(anim, true);
     }
@@ -353,8 +352,8 @@ public class Hero : MonoBehaviour
                 m_isPickMvOnOff = true;
                 a_CacTgVec = m_TargetUnit.transform.position -
                                                 this.transform.position;
-                if (a_CacTgVec.magnitude <= m_AttackDist &&
-                IsSkill == false) //공격거리
+                if (a_CacTgVec.magnitude <= m_AttackDist
+                && IsSkill == false) //공격거리
                 {
 
                     yasuo = YasuoState.attack;
@@ -479,12 +478,12 @@ public class Hero : MonoBehaviour
 
     void MousePick()
     {
-        if (Input.GetMouseButtonDown(0) && GameMgr.Inst.PlayTimer > 5.0f)
+        if (Input.GetMouseButtonDown(0))
         {
             if (GameMgr.IsPointerOverUIObject() == false)
             {
                 if (yasuo == YasuoState.skill)
-                    return;
+                    return;         
 
                 a_MousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
@@ -663,7 +662,7 @@ public class Hero : MonoBehaviour
             HealInst = (GameObject)Instantiate(HealEffect, effectpos, Quaternion.identity);
             HealInst.GetComponent<ParticleSystem>().Play();
             Destroy(HealInst, 2.0f);
-            m_CurHp += 30.0f;
+            m_CurHp += 50.0f;
             if (m_CurHp > 100)
             {
                 m_CurHp = 100.0f;

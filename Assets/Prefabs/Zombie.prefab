@@ -2986,7 +2986,7 @@ MonoBehaviour:
   monsterState: 0
   monType: 0
   animator: {fileID: 0}
-  traceDist: 15
+  traceDist: 23
   attackDist: 2.5
   isDie: 0
   mask:

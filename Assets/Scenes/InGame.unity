@@ -2482,6 +2482,7 @@ MonoBehaviour:
   TrEff: {fileID: 380831584}
   m_MoveVelocity: 8
   m_CurPathIndex: 1
+  IsBuff: 0
   IsDie: 0
   Sword: {fileID: 1495841422451785918}
   SkillEffect: {fileID: 2601943114106203143}
