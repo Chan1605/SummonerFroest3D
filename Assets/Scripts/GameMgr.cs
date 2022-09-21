@@ -124,7 +124,7 @@ public class GameMgr : MonoBehaviour
         }
         else if (IsCollSlot(DSkillicon.gameObject) == true)
         {
-            Showtooltip("회복", "HP를 50회복 합니다.\n(재사용 대기시간 : 7초)", DSkillicon.transform.position);
+            Showtooltip("회복", "HP를 50회복 합니다.\n(재사용 대기시간 : 15초)", DSkillicon.transform.position);
         }
         else if (IsCollSlot(FSkillicon.gameObject) == true)
         {
@@ -342,7 +342,7 @@ public class GameMgr : MonoBehaviour
             EscTierTxt.color = new Color32(0, 0, 255, 255);
             EscTierTxt.text = "다이아";
         }
-        else if (Yasuo.Killcount > 60)
+        else if (Yasuo.Killcount > 80)
         {
             EscShowTier.sprite = EscTierImgs[5];
             EscTierTxt.color = new Color32(255, 255, 0, 255);
@@ -387,7 +387,7 @@ public class GameMgr : MonoBehaviour
             TierTxt.color = new Color32(0, 0, 255, 255);
             TierTxt.text = "다이아";
         }
-        else if (Yasuo.Killcount > 60)
+        else if (Yasuo.Killcount > 80)
         {
             ShowTier.sprite = TierImgs[5];
             TierTxt.color = new Color32(255, 255, 0, 255);

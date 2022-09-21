@@ -60,7 +60,7 @@ public class Hero : MonoBehaviour
     float skill_Time = 3.0f;
     float Wskill_Time = 0.0f; //쿨타임
     float WDuration = 0.0f;   //버프 지속시간
-    float Dskill_Time = 7.0f;
+    float Dskill_Time = 15.0f;
     float Fskill_Time = 20.0f;
     float skill_Delay = 0.0f;
     float Dskill_Delay = 0.0f;
