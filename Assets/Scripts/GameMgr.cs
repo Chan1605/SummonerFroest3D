@@ -139,7 +139,7 @@ public class GameMgr : MonoBehaviour
         }
         else if (IsCollSlot(Dia.gameObject) == true)
         {                    
-            Showtooltip("다이아", "낭인의 길(W)을 사용하기 위한 필수 재화이다.\n 적 처치시 드랍가능\n(최소 2개이상)",
+            Showtooltip("다이아", "낭인의 길(W)을 사용하기 위한 필수 재화입니다.\n 적 처치시 드랍가능\n(최소 2개이상)",
                 DiaTooltip.transform.position);
         }
         else
