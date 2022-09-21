@@ -2992,8 +2992,8 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 128
-  hp: 50
-  m_MoveVelocity: 5
+  hp: 100
+  m_MoveVelocity: 6
   Attackpos: {fileID: 1195073198375979852}
   bloodEffect: {fileID: 197121971965432688, guid: 19d244521af2bb24797ddf00cf4da5da, type: 3}
   bloodDecal: {fileID: 834762459111095730, guid: 7e8c64fe3b8ef2544acf5776b1f04160, type: 3}

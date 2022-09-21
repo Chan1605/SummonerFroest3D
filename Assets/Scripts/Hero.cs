@@ -48,7 +48,7 @@ public class Hero : MonoBehaviour
     Vector3 a_CacAtDir = Vector3.zero;  //공격시 방향전환용 변수
 
     bool IsSkill = false;
-    bool IsBuff = false;    
+    [HideInInspector]public bool IsBuff = false;    
 
     [HideInInspector] public bool IsDie = false;
     BoxCollider SwordCol;
@@ -83,11 +83,15 @@ public class Hero : MonoBehaviour
     int cnt;              //현재 남은 몹 카운트
     public int Killcount = 0; //킬 카운트
 
+    public static Hero Inst = null;
+
     void Awake()
     {
         Cam a_CamCtrl = Camera.main.GetComponent<Cam>();
         if (a_CamCtrl != null)
             a_CamCtrl.InitCamera(this.gameObject);
+
+        Inst = this;
 
     }
 

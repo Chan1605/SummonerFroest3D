@@ -288,8 +288,15 @@ public class MonCtrl : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Sword")
-        {
-            TakeDamage(20);            
+        {                        
+            if(Hero.Inst.IsBuff)
+            {
+                TakeDamage(50);                
+            }
+            else
+            {
+                TakeDamage(20);                
+            }
         }
     }
 
