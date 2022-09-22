@@ -115,7 +115,7 @@ public class GameMgr : MonoBehaviour
 
         if (IsCollSlot(QSkillicon.gameObject) == true)
         {
-            Showtooltip("질풍검", "조준한 적뒤로 빠르게 이동 후 피해를 줍니다.\n 낭인의 길 사용 시 : 보유한 다이아만큼 연속으로 사용\n(재사용 대기시간 : 3초)", QSkillicon.transform.position);
+            Showtooltip("질풍검", "조준한 적뒤로 빠르게 이동 후 적을 처형 합니다.\n 낭인의 길 사용 시 : 보유한 다이아만큼 연속으로 사용\n(재사용 대기시간 : 3초)", QSkillicon.transform.position);
         }
         else if (IsCollSlot(WSkillicon.gameObject) == true)
         {

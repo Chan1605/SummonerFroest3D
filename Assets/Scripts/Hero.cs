@@ -281,6 +281,7 @@ public class Hero : MonoBehaviour
         //-------Picking Enemy 공격 처리 부분
         if (a_PickMon != null)
         {
+            yasuo = YasuoState.attack;
             a_CacTgVec = a_PickMon.transform.position - transform.position;
 
 
@@ -361,10 +362,9 @@ public class Hero : MonoBehaviour
                 a_CacTgVec = m_TargetUnit.transform.position -
                                                 this.transform.position;
                 if (a_CacTgVec.magnitude <= m_AttackDist
-                && IsSkill == false) //공격거리
+                && IsSkill == false ) //공격거리
                 {
-
-                    yasuo = YasuoState.attack;
+                    yasuo = YasuoState.attack;                    
                 }
 
             }
@@ -497,8 +497,7 @@ public class Hero : MonoBehaviour
                 if (Physics.Raycast(a_MousePos, out hitInfo, Mathf.Infinity, m_layerMask.value))
                 {
                     if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer("MyUnit"))
-                    { //몬스터 픽킹일 때          
-                        yasuo = YasuoState.attack;
+                    { //몬스터 픽킹일 때                                  
                         MousePicking(hitInfo.point, hitInfo.collider.gameObject);
                         if (GameMgr.Inst.m_CursorMark != null)
                             GameMgr.Inst.m_CursorMark.SetActive(false);
