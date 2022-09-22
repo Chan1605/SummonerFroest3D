@@ -281,7 +281,10 @@ public class Hero : MonoBehaviour
         //-------Picking Enemy 공격 처리 부분
         if (a_PickMon != null)
         {
-            yasuo = YasuoState.attack;
+            if (yasuo != YasuoState.attack)
+            {
+                yasuo = YasuoState.attack;
+            }
             a_CacTgVec = a_PickMon.transform.position - transform.position;
 
 
