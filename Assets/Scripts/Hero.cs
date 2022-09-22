@@ -527,7 +527,7 @@ public class Hero : MonoBehaviour
                     {
                         this.transform.position = this.transform.position +
                                                  (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                        yasuo = YasuoState.trace;
+                        yasuo = YasuoState.idle;
                         ClearMsPickPath();
                     }
 
@@ -596,7 +596,7 @@ public class Hero : MonoBehaviour
                 {
                     this.transform.position = this.transform.position +
                                              (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                    yasuo = YasuoState.trace;
+                    yasuo = YasuoState.idle;
                     ClearMsPickPath();
                 }
 
@@ -642,7 +642,7 @@ public class Hero : MonoBehaviour
                 {
                     this.transform.position = this.transform.position +
                                              (m_MoveDir * Time.deltaTime * m_MoveVelocity);
-                    yasuo = YasuoState.trace;
+                    yasuo = YasuoState.idle;
                     //ClearMsPickPath();
                 }
 
