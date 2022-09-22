@@ -82,6 +82,7 @@ public class Hero : MonoBehaviour
     int Ncnt = 1;         //일반 q 스킬
     int cnt;              //현재 남은 몹 카운트
     public int Killcount = 0; //킬 카운트
+    TrailRenderer AttTrEff;
 
     public static Hero Inst = null;
 
@@ -106,6 +107,7 @@ public class Hero : MonoBehaviour
         m_layerMask = 1 << LayerMask.NameToLayer("MyTerrain");
         m_layerMask |= 1 << LayerMask.NameToLayer("MyUnit"); //Unit 도 피킹
 
+        AttTrEff = GameObject.Find("Katana").GetComponent<TrailRenderer>();
         m_RefAnimator = this.gameObject.GetComponent<Animator>();
         SwordCol = Sword.GetComponent<BoxCollider>();
         SwordCol.enabled = false;
@@ -148,7 +150,8 @@ public class Hero : MonoBehaviour
         //        count++;
         //}        
 
-        GameMgr.Inst.EnemyTxt.text = "Kill Count : " +  Killcount;         
+        GameMgr.Inst.EnemyTxt.text = "Kill Count : " +  Killcount;
+        
     }
 
     private void Update_MousePosition()
@@ -162,6 +165,10 @@ public class Hero : MonoBehaviour
 
     private void AnimType(string anim)
     {
+        if (anim != "IsAttack")
+        {
+            AttTrEff.emitting = false;
+        }
         m_RefAnimator.SetBool("Idle", false);
         m_RefAnimator.SetBool("IsTrace", false);
         m_RefAnimator.SetBool("IsAttack", false);
@@ -195,7 +202,8 @@ public class Hero : MonoBehaviour
             case YasuoState.attack:
                 {
                     AttackRotUpdate();
-                    AnimType("IsAttack");
+                    AnimType("IsAttack");                    
+                    AttTrEff.emitting = true;
                     EnemyCheck();
                 }
                 break;
