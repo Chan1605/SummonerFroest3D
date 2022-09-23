@@ -189,7 +189,7 @@ public class GameMgr : MonoBehaviour
             if (PlayTimer > 45.0f)
             {
                 TutoGuideText.gameObject.SetActive(true);
-                TutoGuideText.text = "적들이 생성되었습니다.";
+                TutoGuideText.text = "적들이 생성되었습니다.\n적을 처치해 높은 티어에 도전하세요!";
                 InfoBox.gameObject.SetActive(false);
                
                 if (points.Length > 0)
