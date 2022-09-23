@@ -7,9 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class TitleMgr : MonoBehaviour
 {
+    public Image Fadeimage;
     public Button ReAnimBtn;
     public Button PlayBtn;
     public GameObject TitleAnim;
+    public GameObject FadePanel;
+    float fadeCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,13 +30,26 @@ public class TitleMgr : MonoBehaviour
     }
 
     void GameStart()
-    {
-        SceneManager.LoadScene("InGame");
+    {        
+        StartCoroutine(FadeCoroutine());                
     }
 
     void AnimStart()
     {
         TitleAnim.gameObject.SetActive(true);
+    }
+
+    IEnumerator FadeCoroutine()
+    {
+        FadePanel.SetActive(true);
+        fadeCount = 0;
+        while(fadeCount <1.0f)
+        {
+            fadeCount += 0.01f;
+            yield return new WaitForSeconds(0.01f);
+            Fadeimage.color = new Color(0, 0, 0, fadeCount);
+        }
+        SceneManager.LoadScene("InGame");
     }
 
 }
