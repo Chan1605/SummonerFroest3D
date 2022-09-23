@@ -13,6 +13,9 @@ public class GameMgr : MonoBehaviour
     public GameObject InfoBox;
     public GameObject GameOverPanel;
     public GameObject EscPanel;
+    public GameObject FadeoutPanel;
+
+    public Image Fadeimage;
     public Text EndPlayTimeTxt;
     public Text EndKillTxt;
     public Text EscPlayTimeTxt;
@@ -80,6 +83,7 @@ public class GameMgr : MonoBehaviour
     {
         //GameMgr 클래스를 인스턴스에 대입
         Inst = this;
+        StartCoroutine(FadeCoroutineout());
     }
 
     // Start is called before the first frame update
@@ -450,6 +454,18 @@ public class GameMgr : MonoBehaviour
 
         } //while (!isGameOver)
     } //IEnumerator CreateMonster()
+
+    IEnumerator FadeCoroutineout()
+    {        
+        float fadeCount = 1;
+        while (fadeCount > 0.0f)
+        {
+            fadeCount -= 0.01f;
+            yield return new WaitForSeconds(0.01f);
+            Fadeimage.color = new Color(0, 0, 0, fadeCount);
+        }
+        FadeoutPanel.SetActive(false);
+    }
 
     public static bool IsPointerOverUIObject() //UGUI의 UI들이 먼저 피킹되는지 확인하는 함수
     {
