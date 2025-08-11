@@ -15,7 +15,9 @@
   <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/3bf7274f-d3b9-4943-9f09-f7b141d2b38a"/>
   <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/99a17a7b-a7b7-4142-a6e1-8ce60951250c"/>
 </p>
-<p></p>| 🌳 SummonerFroest  | <a href="https://www.youtube.com/embed/SlehHQ2Nek8">[🔗 YouTube 플레이 소개영상 바로가기]</a> <p>
+<p></p>| 🌳 SummonerFroest  | <a href="https://www.youtube.com/embed/SlehHQ2Nek8">[🔗 YouTube 플레이 소개영상 ]</a> <p>
+<p></p>| 🌳 SummonerFroest 기술개발서  | <a href="https://github.com/user-attachments/files/21710954/3D.pdf">[🔗 pdf 다운로드 ]</a> <p>
+
 
 ## 🧩 Game Features
 
