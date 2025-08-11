@@ -8,7 +8,13 @@
 
 ## 🎬 Preview
 
-> 
+<p align="center">
+  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/5a1284fd-6838-4721-b662-21fcecf63198"/>
+  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/1ae501eb-6972-4bea-9c2f-641542bf1a07"/>
+  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/395f9e6a-1f62-473a-9c60-1c684170fc7b"/>
+  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/3bf7274f-d3b9-4943-9f09-f7b141d2b38a"/>
+  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/99a17a7b-a7b7-4142-a6e1-8ce60951250c"/>
+</p>
 ---
 
 ## 🧩 Game Features
