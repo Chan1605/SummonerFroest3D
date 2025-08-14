@@ -8,12 +8,17 @@
 
 ## 🎬 Preview
 
-<p align="center">
-  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/5a1284fd-6838-4721-b662-21fcecf63198"/>
-  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/1ae501eb-6972-4bea-9c2f-641542bf1a07"/>
-  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/395f9e6a-1f62-473a-9c60-1c684170fc7b"/>
-  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/3bf7274f-d3b9-4943-9f09-f7b141d2b38a"/>
-  <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/99a17a7b-a7b7-4142-a6e1-8ce60951250c"/>
+  <p align="center">
+    <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/1ae501eb-6972-4bea-9c2f-641542bf1a07"/>
+    <p><p align="center"> - 마우스 이동 및 공격 - </p>
+      <p align="center"> <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/3bf7274f-d3b9-4943-9f09-f7b141d2b38a"/>
+    <p><p align="center"> - 스킬 설명 - </p>
+      <p align="center"> <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/5a1284fd-6838-4721-b662-21fcecf63198"/>
+    <p><p align="center"> - Q 스킬 사용 - </p>
+      <p align="center"> <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/395f9e6a-1f62-473a-9c60-1c684170fc7b"/>
+    <p><p align="center"> - W 스킬 사용 - </p>
+      <p align="center"> <Img width ="600" height ="600" src="https://github.com/user-attachments/assets/99a17a7b-a7b7-4142-a6e1-8ce60951250c"/>
+    <p><p align="center"> - 게임 오버 및 일시정지 - </p>
 </p>
 <p></p>| 🌳 SummonerFroest  | <a href="https://www.youtube.com/embed/SlehHQ2Nek8">[🔗 YouTube 플레이 소개영상 ]</a> <p>
 <p></p>| 🌳 SummonerFroest 기술개발서  | <a href="https://github.com/user-attachments/files/21710954/3D.pdf">[🔗 pdf 다운로드 ]</a> <p>
