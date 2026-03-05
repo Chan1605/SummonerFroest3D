@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+// Portfolio maintenance comment (2026)
 public class GameMgr : MonoBehaviour
 {
     public static GameMgr Inst = null;

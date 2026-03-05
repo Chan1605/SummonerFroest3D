@@ -17,7 +17,7 @@ public class Hero : MonoBehaviour
     public Image AimF;
     public GameObject TrEff;    
 
-    public float m_MoveVelocity = 8.0f;
+    [SerializeField ]public float m_MoveVelocity = 8.0f;
     //------ Picking 관련 변수 
     Ray a_MousePos;
     RaycastHit hitInfo;
@@ -664,6 +664,7 @@ public class Hero : MonoBehaviour
                 GameMgr.Inst.GuideText.gameObject.SetActive(true);
                 GameMgr.Inst.GuideText.text = "스킬 쿨타임 입니다.";
                 GuideTimer = 1.0f;
+                m_MoveVelocity = 8.0f;
                 return;
             }
 
@@ -673,6 +674,7 @@ public class Hero : MonoBehaviour
             HealInst.GetComponent<ParticleSystem>().Play();
             Destroy(HealInst, 2.0f);
             m_CurHp += 50.0f;
+            m_MoveVelocity = 15.0f;
             if (m_CurHp > 100)
             {
                 m_CurHp = 100.0f;
