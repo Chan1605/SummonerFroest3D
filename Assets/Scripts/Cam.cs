@@ -5,86 +5,114 @@ using UnityEngine;
 public class Cam : MonoBehaviour
 {
     public GameObject m_Player = null;
+
     private Vector3 m_TargetPos = Vector3.zero;
     private Vector3 StartCamera = Vector3.zero;
-    //---- 카메라 위치 계산용 변수
-    private float m_RotH = 0.0f;    //마우스 좌우 조작값 계산용 변수 
-    private float m_RotV = 0.0f;    //마우스 상하 조작값 계산용 변수 
-    private float hSpeed = 5.0f;    //마우스 좌우 회전에 대한 카메라 회전 스피드 설정값
-    private float vSpeed = 2.4f;    //마우스 상하 회전에 대한 카메라 회전 스피드 설정값
-    private float vMinLimit = -7.0f; //위 아래 각도 제한
-    private float vMaxLimit = 80.0f; //위 아래 각도 제한
-    private float zoomSpeed = 1.0f;  //마우스 휠 조작에 대한 줌인아웃 스피드 설정값
-    private float maxDist = 50.0f;   //마우스 줌 아웃 최대 거리 제한값
-    private float minDist = 3.0f;    //마우스 줌 인 최소 거리 제한값
-    //---- 카메라 위치 계산용 변수
 
-    //---- 주인공을 기준으로 한 상대적인 구좌표계 기준의 초기값
-    private float m_DefaltRotH = 100.0f;   //평면 기준의 회전 각도
-    private float m_DefaltRotV = 17.0f;  //27.0f;  //높이 기준의 회전 각도
-    private float m_DefaltDist = 10.0f;   //타겟에서 카메라까지의 거리
-    //---- 주인공을 기준으로 한 상대적인 구좌표계 기준의 초기값
+    //---- 카메라 회전 / 거리 관련 변수
+    private float m_RotH = 0.0f;
+    private float m_RotV = 0.0f;
+    private float hSpeed = 5.0f;
+    private float vSpeed = 2.4f;
+    private float vMinLimit = -7.0f;
+    private float vMaxLimit = 80.0f;
+    private float zoomSpeed = 1.0f;
+    private float maxDist = 50.0f;
+    private float minDist = 3.0f;
+    //---- 카메라 회전 / 거리 관련 변수
 
-    //---- 계산에 필요한 변수들...
+    //---- 기본 카메라 값
+    private float m_DefaltRotH = 100.0f;
+    private float m_DefaltRotV = 17.0f;
+    private float m_DefaltDist = 10.0f;
+    //---- 기본 카메라 값
+
+    //---- 계산용 변수
     private Quaternion a_BuffRot;
     private Vector3 a_BasicPos = Vector3.zero;
     private float distance = 30.0f;
     private Vector3 a_BuffPos;
-    //---- 계산에 필요한 변수들...
+    //---- 계산용 변수
+
+    [Header("Skill Camera Follow")]
+    [SerializeField] private float targetHeight = 3.0f;
+    [SerializeField] private float followSmooth = 8.0f;   // 평소 따라갈 때 부드러움
+    [SerializeField] private float catchUpSmooth = 4.0f;  // 지연 후 복귀할 때 부드러움
+
+    private bool isFollowDelayed = false;
+    private float followDelayTimer = 0.0f;
 
     public void InitCamera(GameObject a_Player)
     {
         m_Player = a_Player;
     }
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// 카메라가 플레이어를 일정 시간 따라가지 않도록 함
+    /// </summary>
+    public void DelayFollow(float delay)
+    {
+        isFollowDelayed = true;
+        followDelayTimer = delay;
+    }
+
     void Start()
     {
         if (m_Player == null)
             return;
-   
-        
-        m_TargetPos = m_Player.transform.position;
-        m_TargetPos.y = m_TargetPos.y + 1.4f;
 
-        //-------카메라 위치 계산 공식 (구좌표계를 직각좌표계로 환산하는 부분)
-        m_RotH = m_DefaltRotH;  //평면 기준의 회전 각도 
-        m_RotV = m_DefaltRotV;  //높이 기준의 회전 각도
+        m_TargetPos = m_Player.transform.position;
+        m_TargetPos.y += 1.4f;
+
+        m_RotH = m_DefaltRotH;
+        m_RotV = m_DefaltRotV;
         distance = m_DefaltDist;
 
         a_BuffRot = Quaternion.Euler(m_RotV, m_RotH, 0);
-        a_BasicPos.x = 0.0f;
-        a_BasicPos.y = 0.0f;
-        a_BasicPos.z = -distance;
-
+        a_BasicPos = new Vector3(0.0f, 0.0f, -distance);
         a_BuffPos = (a_BuffRot * a_BasicPos) + m_TargetPos;
 
-        transform.position = a_BuffPos;  //<--- 카메라의 직각좌표계 기준의 위치
-
-        //transform.LookAt(m_TargetPos);
-        //-------카메라 위치 계산 공식
+        transform.position = a_BuffPos;
+        transform.LookAt(m_TargetPos);
     }
 
-    // Update is called once per frame
-    //void Update()
     void LateUpdate()
     {
         if (m_Player == null)
             return;
 
-        m_TargetPos = m_Player.transform.position;
-        m_TargetPos.y = m_TargetPos.y + 3.0f;
-
-        if (Input.GetMouseButton(1))  //마우스 우측버튼을 누르고 있는 동안
+        // 1) 플레이어 따라가기 지연 처리
+        if (isFollowDelayed == true)
         {
-            //마우스를 좌우로 움직였을 때 값
-            m_RotH += Input.GetAxis("Mouse X") * hSpeed;
-            //마우스를 위아래로 움직였을 때 값
-            m_RotV -= Input.GetAxis("Mouse Y") * vSpeed;
+            followDelayTimer -= Time.deltaTime;
+            if (followDelayTimer <= 0.0f)
+            {
+                followDelayTimer = 0.0f;
+                isFollowDelayed = false;
+            }
+        }
 
+        // 2) 지연 중이 아닐 때만 타겟 위치를 플레이어 쪽으로 갱신
+        if (isFollowDelayed == false)
+        {
+            Vector3 desiredTargetPos = m_Player.transform.position;
+            desiredTargetPos.y += targetHeight;
+
+            // 지연 후 복귀하거나 평상시 따라갈 때 너무 딱딱하지 않게 보간
+            float currentSmooth = catchUpSmooth;
+
+            m_TargetPos = Vector3.Lerp(m_TargetPos, desiredTargetPos, Time.deltaTime * currentSmooth);
+        }
+
+        // 3) 우클릭 회전
+        if (Input.GetMouseButton(1))
+        {
+            m_RotH += Input.GetAxis("Mouse X") * hSpeed;
+            m_RotV -= Input.GetAxis("Mouse Y") * vSpeed;
             m_RotV = ClampAngle(m_RotV, vMinLimit, vMaxLimit);
         }
 
+        // 4) 줌
         if (Input.GetAxis("Mouse ScrollWheel") < 0 && distance < maxDist)
         {
             distance += zoomSpeed;
@@ -95,6 +123,7 @@ public class Cam : MonoBehaviour
             distance -= zoomSpeed;
         }
 
+        // 5) 카메라 위치 계산
         a_BuffRot = Quaternion.Euler(m_RotV, m_RotH, 0);
         a_BasicPos.x = 0.0f;
         a_BasicPos.y = 0.0f;
@@ -102,18 +131,20 @@ public class Cam : MonoBehaviour
 
         a_BuffPos = a_BuffRot * a_BasicPos + m_TargetPos;
 
-        transform.position = a_BuffPos;
-        //< ---카메라의 직각좌표계 기준의 위치
+        // 6) 카메라도 부드럽게 이동
+        transform.position = a_BuffPos;//Vector3.Lerp(transform.position, a_BuffPos, Time.deltaTime * followSmooth);
 
+        // 7) 타겟 바라보기
         transform.LookAt(m_TargetPos);
     }
 
     public static float ClampAngle(float angle, float min, float max)
     {
-        if (angle < -360)
-            angle += 360;
-        if (angle > 360)
-            angle -= 360;
+        if (angle < -360.0f)
+            angle += 360.0f;
+        if (angle > 360.0f)
+            angle -= 360.0f;
+
         return Mathf.Clamp(angle, min, max);
     }
 }
